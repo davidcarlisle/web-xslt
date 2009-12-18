@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.8 2004-08-06 16:29:52 David Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.9 2004-08-06 20:35:55 David Exp $-->
 
 <xsl:variable name="d:attr"
    select="'([a-zA-Z:\-]+)\s*(=\s*(&quot;[^&quot;]*&quot;|''[^'']*''|[a-zA-Z0-9]+))?\s*'"/>
@@ -62,13 +62,11 @@
             <xsl:matching-substring>
               <xsl:choose>
               <xsl:when test="starts-with(regex-group(1),'xmlns')">
-                <!-- prototype support for embedded (MS-style) namespaced XML inside
-                     html ignore namespaces for now
+                <!-- prototype support for embedded (MS-style) namespaced XML inside html -->
                  <d:ns>
                    <xsl:namespace name="{substring-after(regex-group(1),'xmlns:')}"
                                   select="d:chars(substring(regex-group(3),2,string-length(regex-group(3))-2))"/>
                  </d:ns>
-                -->
               </xsl:when>
               <xsl:otherwise>
                 <xsl:attribute name="{lower-case(regex-group(1))}">
@@ -110,17 +108,23 @@
   <xsl:apply-templates mode="d:html" select="$x/node()[1]"/>
   </xsl:variable>
   
-  
+  <xsl:variable name="j">
+    <x xmlns="http://www.w3.org/1999/xhtml"/> 
+  </xsl:variable>
+
   <xsl:variable name="z">
-  <xsl:apply-templates mode="d:tree" select="$y/node()[1]"/>
+  <xsl:apply-templates mode="d:tree" select="$y/node()[1]">
+    <xsl:with-param name="ns" select="$j/*/namespace::*[name()='']"/>
+   </xsl:apply-templates>
   </xsl:variable>
   
   <!--
-  <xsl:copy-of select="$x"/>
+   <xsl:copy-of select="$x"/>
   ===
   <xsl:copy-of select="$y"/>
   ===
-  -->
+ -->
+
   <xsl:copy-of select="$z"/>
   
 </xsl:function>
@@ -342,40 +346,53 @@
 
 
 <xsl:template mode="d:tree" match="text()">
+  <xsl:param name="ns"/>
   <xsl:copy-of select="."/>
-  <xsl:apply-templates select="following-sibling::node()[1]" mode="d:tree"/>
+  <xsl:apply-templates select="following-sibling::node()[1]" mode="d:tree">
+    <xsl:with-param name="ns" select="$ns"/>
+  </xsl:apply-templates>
 </xsl:template>
 
 <xsl:template mode="d:tree" match="comment">
-<xsl:comment>
-  <xsl:value-of select="."/>
-</xsl:comment>
-  <xsl:apply-templates select="following-sibling::node()[1]" mode="d:tree"/>
+  <xsl:param name="ns"/>
+  <xsl:comment>
+    <xsl:value-of select="."/>
+  </xsl:comment>
+  <xsl:apply-templates select="following-sibling::node()[1]" mode="d:tree">
+    <xsl:with-param name="ns" select="$ns"/>
+  </xsl:apply-templates>
 </xsl:template>
 
 <xsl:template mode="d:tree" match="pi">
-<xsl:processing-instruction name="{substring-before(.,' ')}">
-  <xsl:value-of select="substring-after(.,' ')"/>
-</xsl:processing-instruction>
-  <xsl:apply-templates select="following-sibling::node()[1]" mode="d:tree"/>
+  <xsl:param name="ns"/>
+  <xsl:processing-instruction name="{substring-before(.,' ')}">
+    <xsl:value-of select="substring-after(.,' ')"/>
+  </xsl:processing-instruction>
+  <xsl:apply-templates select="following-sibling::node()[1]" mode="d:tree">
+    <xsl:with-param name="ns" select="$ns"/>
+  </xsl:apply-templates>
 </xsl:template>
 
 
-<!--
-Using preceding-sibling expensive and not correct as doesn't take acount of nesting
-needs more thought (there shouldn't be namespaced xml in html documents anyway....
 
 <xsl:template mode="d:tree" match="start">
+  <xsl:param name="ns"/>
   <xsl:variable name="n" select="following-sibling::end[@s=current()/@s][1]"/>
-  <xsl:element name="{@name}" namespace="{if (true()) then (
-((preceding-sibling::start|.)/attrib/d:ns/namespace::*[name()=substring-before(current()/@name,':')])[last()]  ) else ('http://www.w3.org/1999/xhtml')}">
-  <xsl:copy-of select="attrib/(@*|d:ns/namespace::*[not(.='data:,dpc')])"/>
-  <xsl:apply-templates select="following-sibling::node()[1][not(. is $n)]" mode="d:tree"/>
+  <xsl:variable name="xns" select="attrib/d:ns/namespace::*[not(.='data:,dpc')]"/>
+  <xsl:variable name="nns" select="($ns,$xns)"/>
+  <xsl:element name="{@name}" namespace="{$nns[name()=substring-before(current()/@name,':')][last()]}">
+  <xsl:copy-of select="attrib/(@*|$nns[not(name()='')])"/>
+  <xsl:apply-templates select="following-sibling::node()[1][not(. is $n)]" mode="d:tree">
+    <xsl:with-param name="ns" select="$nns"/>
+  </xsl:apply-templates>
   </xsl:element>
-  <xsl:apply-templates select="$n/following-sibling::node()[1]" mode="d:tree"/>
+  <xsl:apply-templates select="$n/following-sibling::node()[1]" mode="d:tree">
+    <xsl:with-param name="ns" select="$ns"/>
+  </xsl:apply-templates>
 </xsl:template>
--->
 
+<!--
+Old version without NS support
 <xsl:template mode="d:tree" match="start">
   <xsl:variable name="n" select="following-sibling::end[@s=current()/@s][1]"/>
   <xsl:element name="{@name}" namespace="http://www.w3.org/1999/xhtml">
@@ -384,6 +401,8 @@ needs more thought (there shouldn't be namespaced xml in html documents anyway..
   </xsl:element>
   <xsl:apply-templates select="$n/following-sibling::node()[1]" mode="d:tree"/>
 </xsl:template>
+-->
+
 
 <xsl:variable name="d:ents">
   
