@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.11 2004-08-07 18:30:05 David Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.12 2004-08-08 20:04:48 David Exp $-->
 
 <xsl:variable name="d:attr"
    select="'([a-zA-Z:\-]+)\s*(=\s*(&quot;[^&quot;]*&quot;|''[^'']*''|[a-zA-Z0-9]+))?\s*'"/>
@@ -70,8 +70,10 @@
               <xsl:when test="starts-with(regex-group(1),'xmlns')">
                 <!-- prototype support for embedded (MS-style) namespaced XML inside html -->
                  <d:ns>
+                   <xsl:variable name="n"
+                     select="d:chars(substring(regex-group(3),2,string-length(regex-group(3))-2))"/>
                    <xsl:namespace name="{substring-after(regex-group(1),'xmlns:')}"
-                                  select="d:chars(substring(regex-group(3),2,string-length(regex-group(3))-2))"/>
+                                  select="if ($n) then $n else 'data:,dpc'"/>
                  </d:ns>
               </xsl:when>
               <xsl:otherwise>
@@ -122,7 +124,7 @@
 </xsl:variable>
   
   <xsl:variable name="j">
-   <xsl:element name="x" namespace="{$ns}"/> 
+   <xsl:element name="x" namespace="{if ($ns) then $ns else ''}"/> 
   </xsl:variable>
 
   <xsl:variable name="z">
@@ -386,10 +388,12 @@
 <xsl:template mode="d:tree" match="start">
   <xsl:param name="ns"/>
   <xsl:variable name="n" select="following-sibling::end[@s=current()/@s][1]"/>
-  <xsl:variable name="xns" select="attrib/d:ns/namespace::*[not(.='data:,dpc')]"/>
+  <xsl:variable name="xns" select="attrib/d:ns/namespace::*"/>
   <xsl:variable name="nns" select="($ns,$xns)"/>
-  <xsl:element name="{@name}" namespace="{$nns[name()=substring-before(current()/@name,':')][last()]}">
-  <xsl:copy-of select="attrib/(@*|$nns[not(name()='')])"/>
+<xsl:if test="@name='dx'">
+</xsl:if>
+  <xsl:element name="{@name}" namespace="{$nns[name()=substring-before(current()/@name,':')][last()][not(.='data:,dpc')]}">
+  <xsl:copy-of select="attrib/(@*|$xns[not(.='data:,dpc')])"/>
   <xsl:apply-templates select="following-sibling::node()[1][not(. is $n)]" mode="d:tree">
     <xsl:with-param name="ns" select="$nns"/>
   </xsl:apply-templates>
