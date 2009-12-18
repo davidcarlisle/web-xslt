@@ -1,6 +1,6 @@
 
 <!--
-$Id$
+$id: pmathmlascii.xsl,v 1.6 2004/11/01 13:44:32 davidc Exp $
 
 Copyright David Carlisle 2004.
 
@@ -333,19 +333,8 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
   <b f="=" width="3" height="0" depth="0"><l> = </l></b>
   <b f="+" width="3" height="0" depth="0"><l> + </l></b>
   <b f="-" width="3" height="0" depth="0"><l> - </l></b>
-  <b f="&#x2243;" width="3" height="1" depth="0">
-   <l> ~ </l>
-   <l> - </l>
-  </b>
-  <b f="&#x2264;" width="4" height="0" depth="0"><l> &lt;= </l> </b>
-  <b f="&#8195;" width="1" height="0" depth="0"><l> </l></b>
-  <b f="&#8656;" width="4" height="0" depth="0"><l> &lt;= </l></b>
-  <b f="&#8658;" width="4" height="0" depth="0"><l> =&gt; </l></b>
-  <b f="&#8660;" width="5" height="0" depth="0"><l> &lt;=&gt; </l></b>
-  <b f="&#8594;" width="4" height="0" depth="0"><l> -&gt; </l></b>
-  <b f="&#8712;" width="4" height="0" depth="0"><l> in </l></b>
-  <b f="&#8734;" width="8" height="0" depth="0"><l>infinity</l></b>
-  <b f="&#8706;" width="1" height="0" depth="0"><l>d</l></b>
+  <b f="&#x000B1;" width="5" height="0" depth="0"><l> +/- </l></b>
+  <b f="&#x2032;" width="1" height="0" depth="0"><l>'</l></b>
 
   <b f="&#x3B1;" width="5" height="0" depth="0"><l>alpha</l></b>
   <b f="&#x3B2;" width="4" height="0" depth="0"><l>beta</l></b>
@@ -372,7 +361,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
   <b f="&#x3D5;" width="3" height="0" depth="0"><l>phi</l></b>
   <b f="&#x3C6;" width="4" height="0" depth="0"><l>phiv</l></b>
   <b f="&#x3A0;" width="2" height="0" depth="0"><l>Pi</l></b>
-  <b f="&#x3C0;" width="2" height="0" depth="0"><l>pi</l></b>
+  <b f="&#x3C0;" width="4" height="0" depth="0"><l> pi </l></b>
   <b f="&#x3D6;" width="3" height="0" depth="0"><l>piv</l></b>
   <b f="&#x3A8;" width="3" height="0" depth="0"><l>Psi</l></b>
   <b f="&#x3C8;" width="3" height="0" depth="0"><l>psi</l></b>
@@ -391,6 +380,36 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
   <b f="&#x3BE;" width="2" height="0" depth="0"><l>xi</l></b>
   <b f="&#x3B6;" width="4" height="0" depth="0"><l>zeta</l></b>
 
+  <b f="&#x2003;" width="1" height="0" depth="0"><l> </l></b>
+  <b f="&#x2026;" width="5" height="0" depth="0"><l> ... </l></b>
+  <b f="&#x211D;" width="1" height="0" depth="0"><l>R</l></b>
+  <b f="&#x2192;" width="4" height="0" depth="0"><l> -&gt; </l></b>
+  <b f="&#x21D0;" width="4" height="0" depth="0"><l> &lt;= </l></b>
+  <b f="&#x21D2;" width="4" height="0" depth="0"><l> =&gt; </l></b>
+  <b f="&#x21D4;" width="5" height="0" depth="0"><l> &lt;=&gt; </l></b>
+  <b f="&#x2202;" width="1" height="0" depth="0"><l>d</l></b>
+  <b f="&#x2208;" width="4" height="0" depth="0"><l> in </l></b>
+  <b f="&#x221E;" width="8" height="0" depth="0"><l>infinity</l></b>
+  <b f="&#x2243;" width="3" height="1" depth="0">
+   <l> ~ </l>
+   <l> - </l>
+  </b>
+  <b f="&#x2245;" width="3" height="1" depth="0">
+   <l> ~ </l>
+   <l> = </l>
+  </b>
+  <b f="&#x22ee;" width="3" height="1" depth="1">
+   <l> . </l>
+   <l> . </l>
+   <l> . </l>
+  </b>
+  <b f="&#x2261;" width="3" height="1" depth="0">
+   <l> _ </l>
+   <l> = </l>
+  </b>
+  <b f="&#x2264;" width="4" height="0" depth="0"><l> &lt;= </l> </b>
+  <b f="&#x2265;" width="4" height="0" depth="0"><l> &gt;= </l> </b>
+  <b f="&#x22EF;" width="5" height="0" depth="0"><l> ... </l></b>
   <b f="&#8518;" width="1" height="0" depth="0"><l>d</l></b>
   <b f="&#8519;" width="1" height="0" depth="0"><l>e</l></b>
   <b f="&#8290;" width="0" height="0" depth="0"><l></l></b>
@@ -587,11 +606,12 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
   <xsl:variable name="b">
     <xsl:call-template name="mrow"/>
   </xsl:variable>
-<b width="{$b/b/@width + 3}" depth="{$b/b/@depth}"
+<b width="{$b/b/@width + 4}" depth="{$b/b/@depth}"
          height="{$b/b/@height +1}">
 <l>
 <xsl:text>   </xsl:text>
 <xsl:value-of select="x:pad('_',$b/b/@width)"/>
+<xsl:text> </xsl:text>
 </l>
  <xsl:for-each select="$b/b/l">
 <l>
@@ -599,6 +619,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 else if (position()=last()) then (' \|') else '  |'
 "/>
 <xsl:value-of select="."/>
+<xsl:text> </xsl:text>
 </l>
 </xsl:for-each>
 </b>
@@ -663,9 +684,9 @@ else if (position()=last()) then ('\|') else '  '
 <xsl:variable name="s" select="max($x/b/(@height|@depth))"/>
 <xsl:variable name="xx" select="for $b in $x/b return x:stretch($b,$s)"/>
 <!-- bug avoid, where is empty width comming from... -->
-<xsl:variable name="w" select="sum($xx/@width[.!=''])"/>
-<xsl:variable name="h" select="max($xx/@height)"/>
-<xsl:variable name="d" select="max($xx/@depth)"/>
+<xsl:variable name="w" select="xs:integer(0+sum((0,$xx/@width[.!=''])))"/>
+<xsl:variable name="h" select="xs:integer(max((0,$xx/@height)))"/>
+<xsl:variable name="d" select="xs:integer(max((0,$xx/@depth)))"/>
 <b height="{$h}" width="{$w}" depth="{$d}">
 <xsl:for-each select="1 to $h">
 <xsl:variable name="l" select="position()"/>
