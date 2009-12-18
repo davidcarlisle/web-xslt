@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.9 2004-08-06 20:35:55 David Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.10 2004-08-07 18:27:09 David Exp $-->
 
 <xsl:variable name="d:attr"
    select="'([a-zA-Z:\-]+)\s*(=\s*(&quot;[^&quot;]*&quot;|''[^'']*''|[a-zA-Z0-9]+))?\s*'"/>
@@ -30,9 +30,15 @@
 <xsl:variable name="d:cdata"
    select="'&lt;!\[CDATA(.|\s)*\]\]>'"/>
 
+<xsl:function  name="d:htmlparse">
+ <xsl:param name="s"/>
+ <xsl:copy-of select="d:htmlparse($s,'http://www.w3.org/1999/xhtml')"/>
+</xsl:function>
 
 <xsl:function name="d:htmlparse">
  <xsl:param name="s"/>
+ <xsl:param name="ns"/>
+ <xsl:variable name="xhtml" select="$ns='http://www.w3.org/1999/xhtml'"/>
  <xsl:variable name="x">
   <xsl:analyze-string select="replace($s,'&#13;&#10;','&#10;')"
      regex="&lt;(/?){$d:elem}\s*(({$d:attr})*)(/?)>|{$d:comment}|{$d:pi}|{$d:doctype}|{$d:cdata}">
@@ -53,10 +59,10 @@
         </pi>
       </xsl:when>
       <xsl:when test="(regex-group(1)='/')">
-        <end name="{lower-case(regex-group(2))}"/>
+        <end name="{if ($xhtml) then lower-case(regex-group(2)) else regex-group(2)}"/>
       </xsl:when>
       <xsl:otherwise>
-        <start name="{lower-case(regex-group(2))}">
+        <start name="{if ($xhtml) then lower-case(regex-group(2)) else regex-group(2)}">
           <attrib>
             <xsl:analyze-string regex="{$d:attr}" select="regex-group(3)">
             <xsl:matching-substring>
@@ -69,7 +75,7 @@
                  </d:ns>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:attribute name="{lower-case(regex-group(1))}">
+                <xsl:attribute name="{if ($xhtml) then lower-case(regex-group(1)) else regex-group(1)}">
                   <xsl:choose>
                   <xsl:when test="starts-with(regex-group(3),'&quot;')">
                     <xsl:value-of select="d:chars(substring(regex-group(3),2,string-length(regex-group(3))-2))"/>
@@ -92,7 +98,7 @@
           </attrib>
         </start>
         <xsl:if test="regex-group(8)='/'">
-        <end name="{lower-case(regex-group(2))}"/>
+        <end name="{if ($xhtml) then lower-case(regex-group(2)) else regex-group(2)}"/>
         </xsl:if>
       </xsl:otherwise>
       </xsl:choose>
@@ -105,11 +111,18 @@
   
   
   <xsl:variable name="y">
-  <xsl:apply-templates mode="d:html" select="$x/node()[1]"/>
-  </xsl:variable>
+  <xsl:choose>
+  <xsl:when test="$xhtml">
+    <xsl:apply-templates mode="d:html" select="$x/node()[1]"/>
+  </xsl:when>
+  <xsl:otherwise>  
+    <xsl:apply-templates mode="d:gxml" select="$x/node()[1]"/>
+  </xsl:otherwise>  
+  </xsl:choose>
+</xsl:variable>
   
   <xsl:variable name="j">
-    <x xmlns="http://www.w3.org/1999/xhtml"/> 
+   <xsl:element name="x" namespace="{$ns}"/> 
   </xsl:variable>
 
   <xsl:variable name="z">
@@ -177,7 +190,7 @@
   </xsl:apply-templates>
 </xsl:template>
 
-<xsl:template mode="d:html"  match="text()">
+<xsl:template mode="d:html d:gxml"  match="text()">
 <xsl:param name="s" select="()"/>
   <xsl:value-of select="d:chars(.)"/>
   <xsl:apply-templates mode="#current" select="following-sibling::node()[1]">
@@ -185,7 +198,7 @@
   </xsl:apply-templates>
 </xsl:template>
 
-<xsl:template mode="d:html"  match="comment|pi">
+<xsl:template mode="d:html d:gxml"  match="comment|pi">
 <xsl:param name="s" select="()"/>
   <xsl:copy-of select="."/>
   <xsl:apply-templates mode="#current" select="following-sibling::node()[1]">
@@ -215,13 +228,12 @@
   <xsl:apply-templates mode="d:cdata" select="following-sibling::node()[1]"/>
 </xsl:template>
 
-<xsl:template mode="d:html" match="start">
+<xsl:template mode="d:html d:gxml" match="start">
 <xsl:param name="s" select="()"/>
   <start name="{@name}" s="{$s}">
    <xsl:copy-of select="attrib"/>
   </start>
-  <xsl:apply-templates mode="d:html"
-  select="following-sibling::node()[1]">
+  <xsl:apply-templates mode="#current"  select="following-sibling::node()[1]">
    <xsl:with-param  name="s" select="(string(@name),$s)"/>
   </xsl:apply-templates>
 </xsl:template>
@@ -232,8 +244,7 @@
    <xsl:copy-of select="attrib"/>
   </start>
   <end name="{@name}" s="{$s}"/>
-  <xsl:apply-templates mode="d:html"
-  select="following-sibling::node()[1]">
+  <xsl:apply-templates mode="d:html" select="following-sibling::node()[1]">
    <xsl:with-param  name="s" select="$s"/>
   </xsl:apply-templates>
 </xsl:template>
@@ -248,8 +259,7 @@
   <start name="{@name}" s="{$s}">
    <xsl:copy-of select="attrib"/>
   </start>
-  <xsl:apply-templates mode="d:html"
-  select="following-sibling::node()[1]">
+  <xsl:apply-templates mode="d:html" select="following-sibling::node()[1]">
    <xsl:with-param  name="s" select="(string(@name),$s)"/>
   </xsl:apply-templates>
   </xsl:when>
@@ -272,8 +282,7 @@
   <start name="{@name}" s="{$s}">
    <xsl:copy-of select="attrib"/>
   </start>
-  <xsl:apply-templates mode="d:html"
-  select="following-sibling::node()[1]">
+  <xsl:apply-templates mode="d:html" select="following-sibling::node()[1]">
    <xsl:with-param  name="s" select="(string(@name),$s)"/>
   </xsl:apply-templates>
   </xsl:when>
@@ -295,8 +304,7 @@
   <start name="{@name}" s="{$s}">
    <xsl:copy-of select="attrib"/>
   </start>
-  <xsl:apply-templates mode="d:html"
-  select="following-sibling::node()[1]">
+  <xsl:apply-templates mode="d:html" select="following-sibling::node()[1]">
    <xsl:with-param  name="s" select="(string(@name),$s)"/>
   </xsl:apply-templates>
   </xsl:when>
@@ -311,7 +319,7 @@
 </xsl:template>
 
 
-<xsl:template mode="d:html" match="end" name="d:end">
+<xsl:template mode="d:html d:gxml" match="end" name="d:end">
 <xsl:param name="n" select="@name"/>
 <xsl:param name="s" select="()"/>
 <xsl:param name="next" select="following-sibling::node()[1]"/>
@@ -323,20 +331,20 @@
   </xsl:when>
   <xsl:when test="$s[1]=$n">
   <end name="{$n}" s="{$s2}"/>
-  <xsl:apply-templates mode="d:html" select="$next">
+  <xsl:apply-templates mode="#current" select="$next">
    <xsl:with-param name="s" select="$s2"/>
   </xsl:apply-templates>
   </xsl:when>
   <xsl:when test="not($n=$s)">
   <!--====/<xsl:value-of select="$n"/>======-->
   <xsl:message>htmlparse: Not well formed (ignoring /<xsl:value-of select="$n"/>)</xsl:message>
-  <xsl:apply-templates mode="d:html" select="$next">
+  <xsl:apply-templates mode="#current" select="$next">
    <xsl:with-param name="s" select="$s"/>
   </xsl:apply-templates>
   </xsl:when>
   <xsl:otherwise>
   <end name="{$s[1]}" s="{$s2}"/>
-  <xsl:apply-templates mode="d:html" select=".">
+  <xsl:apply-templates mode="#current" select=".">
    <xsl:with-param name="s" select="$s2"/>
   </xsl:apply-templates>
   </xsl:otherwise>
