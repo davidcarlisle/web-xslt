@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.20 2004-08-20 10:37:18 David Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.21 2004-08-20 10:45:22 David Exp $-->
 
 <!--
 
@@ -53,6 +53,19 @@ d:htmlparse(string,namespace,html-mode)
   HTML Script and Style elemnets have some support as CDATA elements if
   html-mode=true()
 
+  If html-mode is true() then the parser will restart certain elements if
+  their clsure has been forced.  This feature (based on an idea
+  described in some slides on John Cowan's TagSoup parser) affects
+  elements named in the variable d:restart, which may be redefined by
+  any importing stylesheet as required). So an input of
+  normal <b> bold <i> bold italic </b> italic </i> normal
+  parses as
+  normal <b> bold <i> bold italic </i></b><i> italic </i> normal
+  in html mode. If html-mode is false() it would parse as
+  normal <b> bold <i> bold italic </i></b> italic  normal
+  with the <I> being closed at the /b and the later /i being ifnored
+  (with a warning message).
+  
   XML "/>" empty element syntax is also accepted as are XML Namespace
   declarations, resulting elements will be in the specified namespaces
   (So Microsoft Style embedding of XML inside HTML should be parsed
@@ -443,7 +456,7 @@ Typical use:
 </xsl:template>
 
 
-<xsl:variable name="restart" select="('i', 'b', 'font')"/>
+<xsl:variable name="d:restart" select="('i', 'b', 'font')"/>
 
 <xsl:template mode="d:html" match="end" name="d:end">
 <xsl:param name="n" select="@name"/>
@@ -473,7 +486,7 @@ Typical use:
   <end name="{$s[1]}" s="{$s2}"/>
   <xsl:apply-templates mode="#current" select=".">
    <xsl:with-param name="s" select="$s2"/>
-   <xsl:with-param name="r" select="if ($s[1] = $restart) then ($r,$s[1]) else ()"/>
+   <xsl:with-param name="r" select="if ($s[1] = $d:restart) then ($r,$s[1]) else ()"/>
   </xsl:apply-templates>
   </xsl:otherwise>
   </xsl:choose>
