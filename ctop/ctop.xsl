@@ -5,7 +5,7 @@
 >
 
 <!--
-$Id: ctop-me.xsl,v 1.4 2009/01/13 22:53:41 dcarlis Exp $
+$Id: ctop-me.xsl,v 1.5 2009/01/14 00:23:19 dcarlis Exp $
 
 Copyright David Carlisle 2001, 2002, 2008.
 
@@ -280,7 +280,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 
 <!-- 4.4.2.15` domainofapplication -->
 <xsl:template mode="c2p" match="mml:domainofapplication">
- <mml:merror/>
+ <mml:merror><mml:mtext>unexpected domainofapplication</mml:mtext></mml:merror>
 </xsl:template>
 
 <!-- 4.4.2.16` piecewise -->
@@ -1313,6 +1313,29 @@ priority="2">
 </mml:mtable>
 <mml:mo>)</mml:mo>
 </mml:mrow>
+</xsl:template>
+
+
+<xsl:template mode="c2p" match="mml:vector[mml:condition]">
+  <mml:mrow>
+    <mml:mo>[</mml:mo>
+    <xsl:apply-templates mode="c2p" select="*[last()]"/>
+    <mml:mo>|</mml:mo>
+    <xsl:apply-templates mode="c2p" select="mml:condition"/>
+    <mml:mo>]</mml:mo>
+  </mml:mrow>
+</xsl:template>
+
+<xsl:template mode="c2p" match="mml:vector[mml:domainofapplication]">
+  <mml:mrow>
+    <mml:mo>[</mml:mo>
+    <xsl:apply-templates mode="c2p" select="*[last()]"/>
+    <mml:mo>|</mml:mo>
+    <xsl:apply-templates mode="c2p" select="mml:bvar/*"/>
+    <mml:mo>&#x2208;</mml:mo>
+    <xsl:apply-templates mode="c2p" select="mml:domainofapplication/*"/>
+    <mml:mo>]</mml:mo>
+  </mml:mrow>
 </xsl:template>
 
 <xsl:template mode="c2p" match="mml:apply[*[1][self::mml:csymbol='vector']]">
