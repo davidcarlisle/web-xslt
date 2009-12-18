@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.23 2004-08-20 10:58:51 David Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.24 2007-04-22 21:52:33 David Carlisle Exp $-->
 
 <!--
 
@@ -166,7 +166,6 @@ Typical use:
       </xsl:when>
       <xsl:otherwise>
         <start name="{if ($html-mode) then lower-case(regex-group(2)) else regex-group(2)}">
-<!--
           <attrib>
             <xsl:analyze-string regex="{$d:attr}" select="regex-group(3)">
             <xsl:matching-substring>
@@ -180,7 +179,7 @@ Typical use:
                  </d:ns>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:attribute name="{if ($html-mode) then lower-case(regex-group(1)) else regex-group(1)}">
+                <attribute name="{if ($html-mode) then lower-case(regex-group(1)) else regex-group(1)}">
                   <xsl:choose>
                   <xsl:when test="starts-with(regex-group(3),'&quot;')">
                     <xsl:value-of select="d:chars(substring(regex-group(3),2,string-length(regex-group(3))-2))"/>
@@ -195,13 +194,12 @@ Typical use:
                     <xsl:value-of select="regex-group(1)"/>
                   </xsl:otherwise>
                   </xsl:choose>
-                </xsl:attribute>
+                </attribute>
               </xsl:otherwise>
               </xsl:choose>
             </xsl:matching-substring>
             </xsl:analyze-string>
           </attrib>
--->
         </start>
         <xsl:if test="regex-group(8)='/'">
         <end name="{if ($html-mode) then lower-case(regex-group(2)) else regex-group(2)}"/>
@@ -533,7 +531,9 @@ Typical use:
 </xsl:if>
   <xsl:element name="{@name}"
                namespace="{$nns[name()=substring-before(current()/@name,':')][last()][not(.='data:,dpc')]}">
-  <xsl:copy-of select="attrib/(@*|$xns[not(.='data:,dpc')])"/>
+  <xsl:for-each select="attrib/attribute">
+    <xsl:attribute name="{@name}" namespace="{if(contains(@name,':')) then $nns[name()=substring-before(current()/@name,':')][last()][not(.='data:,dpc')] else ''}" select="."/>
+  </xsl:for-each>
   <xsl:apply-templates select="following-sibling::node()[1][not(. is $n)]" mode="d:tree">
     <xsl:with-param name="ns" select="$nns"/>
   </xsl:apply-templates>
