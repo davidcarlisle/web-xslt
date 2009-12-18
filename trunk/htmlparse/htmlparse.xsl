@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.21 2004-08-20 10:45:22 David Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.22 2004-08-20 10:49:23 David Exp $-->
 
 <!--
 
@@ -54,7 +54,7 @@ d:htmlparse(string,namespace,html-mode)
   html-mode=true()
 
   If html-mode is true() then the parser will restart certain elements if
-  their clsure has been forced.  This feature (based on an idea
+  their closure has been forced.  This feature (based on an idea
   described in some slides on John Cowan's TagSoup parser) affects
   elements named in the variable d:restart, which may be redefined by
   any importing stylesheet as required). So an input of
@@ -63,7 +63,7 @@ d:htmlparse(string,namespace,html-mode)
   normal <b> bold <i> bold italic </i></b><i> italic </i> normal
   in html mode. If html-mode is false() it would parse as
   normal <b> bold <i> bold italic </i></b> italic  normal
-  with the <I> being closed at the /b and the later /i being ifnored
+  with the <i> being closed at the </b> and the later </i> being ignored
   (with a warning message).
   
   XML "/>" empty element syntax is also accepted as are XML Namespace
