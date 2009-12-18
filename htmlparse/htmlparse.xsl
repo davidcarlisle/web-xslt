@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.16 2004-08-09 22:33:55 David Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.17 2004-08-09 22:43:30 David Exp $-->
 
 <!--
 
@@ -27,7 +27,7 @@ d:htmlparse(string,namespace,html-mode)
   It doesn't have full knowledge of HTML DTD but does have full list of
   empty elements and full list of entity definitions. HTML entities, and
   decimal and hex character references are all accepted. Note html-entities
-  are recognised even if html-mode=false.
+  are recognised even if html-mode=false().
 
   Element names are lowercased (if html-mode is true()) and placed into the
   namespace specified by the namespace parameter (which may be "" to denote
