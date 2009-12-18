@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.5 2004-08-06 11:51:03 David Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.6 2004-08-06 15:23:10 David Exp $-->
 
 <xsl:variable name="d:attr"
    select="'([a-zA-Z:\-]+)\s*(=\s*(&quot;[^&quot;]*&quot;|''[^'']*''|[a-zA-Z0-9]+))?\s*'"/>
@@ -35,7 +35,7 @@
  <xsl:param name="s"/>
  <xsl:variable name="x">
 <xsl:analyze-string select="replace($s,'&#13;&#10;','&#10;')"
- regex="&lt;(/?){$d:elem}\s*(({$d:attr})*)/?>|{$d:comment}|{$d:pi}|{$d:doctype}|{$d:cdata}">
+ regex="&lt;(/?){$d:elem}\s*(({$d:attr})*)(/?)>|{$d:comment}|{$d:pi}|{$d:doctype}|{$d:cdata}">
 <xsl:matching-substring>
 <xsl:choose>
 <xsl:when test="starts-with(.,'&lt;![CDATA')">
@@ -93,6 +93,9 @@
 </xsl:analyze-string>
 </attrib>
  </start>
+<xsl:if test="regex-group(8)='/'">
+<end name="{lower-case(regex-group(2))}"/>
+</xsl:if>
 </xsl:otherwise>
 </xsl:choose>
 </xsl:matching-substring>
