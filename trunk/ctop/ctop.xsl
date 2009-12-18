@@ -5,7 +5,7 @@
 >
 
 <!--
-$Id: ctop-me.xsl,v 1.16 2009/01/20 23:32:55 dcarlis Exp $
+$Id: ctop-me.xsl,v 1.17 2009/01/24 00:33:14 dcarlis Exp $
 
 Copyright David Carlisle 2001, 2002, 2008, 2009.
 
@@ -618,8 +618,8 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
        </m:mrow>
        <m:mo>&#8712;<!-- in --></m:mo>
        <xsl:apply-templates mode="c2p" select="m:domainofapplication/*"/>
-       <m:mo>&#8743;<!-- and --></m:mo>
        </m:mrow>
+       <m:mo>&#8743;<!-- and --></m:mo>
      </xsl:when>
    </xsl:choose>
   <xsl:apply-templates mode="c2p" select="*[last()]"/>
@@ -814,7 +814,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 </xsl:template>
 
 <!-- 4.4.5.2 diff -->
-<xsl:template mode="c2p" match="m:apply[*[1][self::m:diff] and m:ci and count(*)=2]" priority="2">
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:diff] and not(m:bvar)]" priority="2">
  <m:msup>
  <m:mrow><xsl:apply-templates mode="c2p" select="*[2]"/></m:mrow>
  <m:mo>&#8242;<!--prime--></m:mo>
