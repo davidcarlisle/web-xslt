@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.27 2009-04-18 01:24:34 David Carlisle Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.28 2009-04-22 16:21:35 David Carlisle Exp $-->
 
 <!--
 
@@ -581,6 +581,7 @@ Old version without NS support
   <entity name="cedil">&#xB8;</entity>
   <entity name="cent">&#xA2;</entity>
   <entity name="copy">&#xA9;</entity>
+  <entity name="COPY">&#xA9;</entity>
   <entity name="curren">&#xA4;</entity>
   <entity name="deg">&#xB0;</entity>
   <entity name="divide">&#xF7;</entity>
@@ -634,6 +635,7 @@ Old version without NS support
   <entity name="pound">&#xA3;</entity>
   <entity name="raquo">&#xBB;</entity>
   <entity name="reg">&#xAE;</entity>
+  <entity name="REG">&#xAE;</entity>
   <entity name="sect">&#xA7;</entity>
   <entity name="shy">&#xAD;</entity>
   <entity name="sup1">&#xB9;</entity>
@@ -666,17 +668,22 @@ Old version without NS support
   <entity name="ensp">&#x2002;</entity>
   <entity name="euro">&#x20AC;</entity>
   <entity name="gt">&#x3E;</entity>
+  <entity name="GT">&#x3E;</entity>
   <entity name="ldquo">&#x201C;</entity>
   <entity name="lrm">&#x200E;</entity>
   <entity name="lsaquo">&#x2039;</entity>
   <entity name="lsquo">&#x2018;</entity>
-  <entity name="lt">&#38;#60;</entity>
+  <entity name="lt">&#60;</entity>
+  <entity name="LT">&#60;</entity>
+  <entity name="amp">&#38;</entity>
+  <entity name="AMP">&#38;</entity>
   <entity name="mdash">&#x2014;</entity>
   <entity name="ndash">&#x2013;</entity>
   <entity name="OElig">&#x152;</entity>
   <entity name="oelig">&#x153;</entity>
   <entity name="permil">&#x2030;</entity>
   <entity name="quot">&#x22;</entity>
+  <entity name="QUOT">&#x22;</entity>
   <entity name="rdquo">&#x201D;</entity>
   <entity name="rlm">&#x200F;</entity>
   <entity name="rsaquo">&#x203A;</entity>
@@ -805,6 +812,7 @@ Old version without NS support
   <entity name="theta">&#x3B8;</entity>
   <entity name="thetasym">&#x3D1;</entity>
   <entity name="trade">&#x2122;</entity>
+  <entity name="TRADE">&#x2122;</entity>
   <entity name="uArr">&#x21D1;</entity>
   <entity name="uarr">&#x2191;</entity>
   <entity name="upsih">&#x3D2;</entity>
