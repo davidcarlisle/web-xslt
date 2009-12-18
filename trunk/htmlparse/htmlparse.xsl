@@ -10,9 +10,9 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.2 2004-08-05 15:23:25 David Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.3 2004-08-06 09:29:59 David Exp $-->
 
-<xsl:variable name="d:attr" select="'([a-zA-Z:]+)\s*(=\s*(&quot;[^&quot;]*&quot;|''[^'']*''|[a-zA-Z0-9]+))?\s*'"/>
+<xsl:variable name="d:attr" select="'([a-zA-Z:\-]+)\s*(=\s*(&quot;[^&quot;]*&quot;|''[^'']*''|[a-zA-Z0-9]+))?\s*'"/>
 
 
 <xsl:function name="d:htmlparse">
