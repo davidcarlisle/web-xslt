@@ -10,16 +10,32 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.3 2004-08-06 09:29:59 David Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.4 2004-08-06 11:49:52 David Exp $-->
 
-<xsl:variable name="d:attr" select="'([a-zA-Z:\-]+)\s*(=\s*(&quot;[^&quot;]*&quot;|''[^'']*''|[a-zA-Z0-9]+))?\s*'"/>
+<xsl:variable name="d:attr"
+   select="'([a-zA-Z:\-]+)\s*(=\s*(&quot;[^&quot;]*&quot;|''[^'']*''|[a-zA-Z0-9]+))?\s*'"/>
+
+<xsl:variable name="d:elem"
+   select="'([a-zA-Z][A-Za-z0-9:\-]*)'"/>
+
+<xsl:variable name="d:comment"
+   select="'&lt;!\-\-[^\-]*(\-[^\-]+)*\-\->'"/>
+
+<xsl:variable name="d:pi"
+   select="'&lt;\?[a-zA-Z0-9]+[^>]*>'"/>
+
+<xsl:variable name="d:doctype"
+   select="'&lt;!D[^\[&lt;>]*(\[[^\]]*\])?>'"/>
+
+<xsl:variable name="d:cdata"
+   select="'&lt;!\[CDATA(.|\s)*\]\]>'"/>
 
 
 <xsl:function name="d:htmlparse">
  <xsl:param name="s"/>
  <xsl:variable name="x">
 <xsl:analyze-string select="replace($s,'&#13;&#10;','&#10;')"
- regex="&lt;(/?)([a-zA-Z]+[0-9]?)\s*(({$d:attr})*)>|&lt;!\-\-[^\-]*(\-[^\-]+)*\-\->|&lt;\?[a-zA-Z0-9]+[^>]*>|&lt;!D[^\[&lt;>]*(\[[^\]]*\])?>|&lt;!\[CDATA(.|\s)*\]\]>">
+ regex="&lt;(/?){$d:elem}\s*(({$d:attr})*)/?>|{$d:comment}|{$d:pi}|{$d:doctype}|{$d:cdata}">
 <xsl:matching-substring>
 <xsl:choose>
 <xsl:when test="starts-with(.,'&lt;![CDATA')">
@@ -46,6 +62,13 @@
 <xsl:matching-substring>
 <xsl:choose>
 <xsl:when test="starts-with(regex-group(1),'xmlns')">
+<!-- prototype support for embedded (MS-style) namespaced XML inside
+     html ignore namespaces for now
+ <d:ns>
+ <xsl:namespace name="{substring-after(regex-group(1),'xmlns:')}"
+                select="d:chars(substring(regex-group(3),2,string-length(regex-group(3))-2))"/>
+ </d:ns>
+-->
 </xsl:when>
 <xsl:otherwise>
 <xsl:attribute name="{lower-case(regex-group(1))}">
@@ -90,11 +113,11 @@
 </xsl:variable>
 
 <!--
+-->
 <xsl:copy-of select="$x"/>
 ===
 <xsl:copy-of select="$y"/>
 ===
--->
 <xsl:copy-of select="$z"/>
 
 
@@ -335,6 +358,22 @@ select="following-sibling::node()[1]">
 </xsl:processing-instruction>
   <xsl:apply-templates select="following-sibling::node()[1]" mode="d:tree"/>
 </xsl:template>
+
+
+<!--
+Using preceding-sibling expensive and not correct as doesn't take acount of nesting
+needs more thought (there shouldn't be namespaced xml in html documents anyway....
+
+<xsl:template mode="d:tree" match="start">
+  <xsl:variable name="n" select="following-sibling::end[@s=current()/@s][1]"/>
+  <xsl:element name="{@name}" namespace="{if (true()) then (
+((preceding-sibling::start|.)/attrib/d:ns/namespace::*[name()=substring-before(current()/@name,':')])[last()]  ) else ('http://www.w3.org/1999/xhtml')}">
+  <xsl:copy-of select="attrib/(@*|d:ns/namespace::*[not(.='data:,dpc')])"/>
+  <xsl:apply-templates select="following-sibling::node()[1][not(. is $n)]" mode="d:tree"/>
+  </xsl:element>
+  <xsl:apply-templates select="$n/following-sibling::node()[1]" mode="d:tree"/>
+</xsl:template>
+-->
 
 <xsl:template mode="d:tree" match="start">
   <xsl:variable name="n" select="following-sibling::end[@s=current()/@s][1]"/>
