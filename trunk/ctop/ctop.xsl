@@ -5,7 +5,7 @@
 >
 
 <!--
-$Id: ctop-me.xsl,v 1.5 2009/01/14 00:23:19 dcarlis Exp $
+$Id: ctop-me.xsl,v 1.6 2009/01/14 01:10:39 dcarlis Exp $
 
 Copyright David Carlisle 2001, 2002, 2008.
 
@@ -1272,15 +1272,27 @@ priority="2">
 
 <!-- 4.4.9.5 moment -->
 <xsl:template mode="c2p" match="mml:apply[*[1][self::mml:moment]]
-                       |mml:apply[*[1][self::mml:csymbol='moment']]">
-<mml:mrow>
- <mml:mo>&#9001;<!--langle--></mml:mo>
-       <mml:msup>
-      <xsl:apply-templates mode="c2p" select="*[last()]"/>
+				|mml:apply[*[1][self::mml:csymbol='moment']]">
+  <mml:mrow>
+    <mml:mo>&#9001;<!--langle--></mml:mo>
+    <mml:msup>
+      <xsl:variable name="data" 
+		    select="*[not(position()=1)]
+			    [not(self::mml:degree or self::mml:momentabout)]"/>
+      <xsl:choose>
+	<xsl:when test="$data[2]">
+	  <mml:mfenced>
+	    <xsl:apply-templates mode="c2p" select="$data"/>
+	  </mml:mfenced>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:apply-templates mode="c2p" select="$data"/>
+	</xsl:otherwise>
+      </xsl:choose>
       <mml:mrow><xsl:apply-templates mode="c2p" select="mml:degree/node()"/></mml:mrow>
-       </mml:msup>
-<mml:mo>&#9002;<!--rangle--></mml:mo>
-</mml:mrow>
+    </mml:msup>
+    <mml:mo>&#9002;<!--rangle--></mml:mo>
+  </mml:mrow>
 </xsl:template>
 
 <!-- 4.4.9.5 momentabout -->
@@ -1288,17 +1300,29 @@ priority="2">
 
 <xsl:template mode="c2p" match="mml:apply[*[1][self::mml:moment]][mml:momentabout]" priority="2">
   <mml:msub>
-<mml:mrow>
- <mml:mo>&#9001;<!--langle--></mml:mo>
-       <mml:msup>
-      <xsl:apply-templates mode="c2p" select="*[last()]"/>
-      <mml:mrow><xsl:apply-templates mode="c2p" select="mml:degree/node()"/></mml:mrow>
-       </mml:msup>
-<mml:mo>&#9002;<!--rangle--></mml:mo>
-</mml:mrow>
-<mml:mrow>
-  <xsl:apply-templates mode="c2p" select="mml:momentabout/*"/>
-</mml:mrow>
+    <mml:mrow>
+      <mml:mo>&#9001;<!--langle--></mml:mo>
+      <mml:msup>
+	<xsl:variable name="data" 
+		      select="*[not(position()=1)]
+			      [not(self::mml:degree or self::mml:momentabout)]"/>
+	<xsl:choose>
+	  <xsl:when test="$data[2]">
+	    <mml:mfenced>
+	      <xsl:apply-templates mode="c2p" select="$data"/>
+	    </mml:mfenced>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:apply-templates mode="c2p" select="$data"/>
+	  </xsl:otherwise>
+	</xsl:choose>
+	<mml:mrow><xsl:apply-templates mode="c2p" select="mml:degree/node()"/></mml:mrow>
+      </mml:msup>
+      <mml:mo>&#9002;<!--rangle--></mml:mo>
+    </mml:mrow>
+    <mml:mrow>
+      <xsl:apply-templates mode="c2p" select="mml:momentabout/*"/>
+    </mml:mrow>
   </mml:msub>
 </xsl:template>
 
