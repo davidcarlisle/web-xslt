@@ -5,7 +5,7 @@
 >
 
 <!--
-$Id: ctop-me.xsl,v 1.6 2009/01/14 01:10:39 dcarlis Exp $
+$Id: ctop-me.xsl,v 1.7 2009/01/15 00:29:03 dcarlis Exp $
 
 Copyright David Carlisle 2001, 2002, 2008.
 
@@ -451,7 +451,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
                        |mml:apply[*[1][self::mml:csymbol='rem']]">
   <xsl:param name="p" select="0"/>
 <xsl:call-template name="binary">
-  <xsl:with-param name="mo"><mml:mi>mod</mml:mi></xsl:with-param>
+  <xsl:with-param name="mo"><mml:mo>mod</mml:mo></xsl:with-param>
   <xsl:with-param name="p" select="$p"/>
   <xsl:with-param name="this-p" select="3"/>
 </xsl:call-template>
@@ -542,7 +542,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 <xsl:call-template name="infix">
  <xsl:with-param name="this-p" select="3"/>
  <xsl:with-param name="p" select="$p"/>
- <xsl:with-param name="mo"><mml:mi>xor</mml:mi></xsl:with-param>
+ <xsl:with-param name="mo"><mml:mo>xor</mml:mo></xsl:with-param>
 </xsl:call-template>
 </xsl:template>
 
@@ -1168,12 +1168,13 @@ priority="2">
  or self::mml:arccot or self::mml:arccoth or self::mml:arccsc or
  self::mml:arccsch or self::mml:arcsec or self::mml:arcsech or
  self::mml:arcsinh or self::mml:arctanh or self::mml:ln]]">
-<mml:mrow>
-<mml:mi><xsl:value-of select="local-name(*[1])"/></mml:mi>
-<xsl:apply-templates mode="c2p" select="*[2]">
-  <xsl:with-param name="p" select="7"/>
-</xsl:apply-templates>
-</mml:mrow>
+  <mml:mrow>
+    <mml:mi><xsl:value-of select="local-name(*[1])"/></mml:mi>
+    <mml:mo>&#8289;<!--function application--></mml:mo>
+    <xsl:apply-templates mode="c2p" select="*[2]">
+      <xsl:with-param name="p" select="7"/>
+    </xsl:apply-templates>
+  </mml:mrow>
 </xsl:template>
 
 <!-- Vasil I. Yaroshevich shade33ATmail.ru -->
@@ -1218,6 +1219,7 @@ priority="2">
 </mml:msub>
 </xsl:otherwise>
 </xsl:choose>
+<mml:mo>&#8289;<!--function application--></mml:mo>
 <xsl:apply-templates mode="c2p" select="*[last()]">
   <xsl:with-param name="p" select="7"/>
 </xsl:apply-templates>
