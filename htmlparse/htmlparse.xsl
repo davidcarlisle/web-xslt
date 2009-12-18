@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.31 2009-05-08 13:36:12 David Carlisle Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.32 2009-05-08 13:51:12 David Carlisle Exp $-->
 
 <!--
 
@@ -503,7 +503,7 @@ Typical use:
 
 
 <xsl:template mode="d:tree" match="text()">
-  <xsl:param name="ns" as="xs:string*"/>
+  <xsl:param name="ns" as="node()*"/>
   <xsl:copy-of select="."/>
   <xsl:apply-templates select="following-sibling::node()[1]" mode="d:tree">
     <xsl:with-param name="ns" select="$ns"/>
@@ -511,7 +511,7 @@ Typical use:
 </xsl:template>
 
 <xsl:template mode="d:tree" match="comment">
-  <xsl:param name="ns" as="xs:string*"/>
+  <xsl:param name="ns" as="node()*"/>
   <xsl:comment>
     <xsl:value-of select="."/>
   </xsl:comment>
@@ -521,7 +521,7 @@ Typical use:
 </xsl:template>
 
 <xsl:template mode="d:tree" match="pi">
-  <xsl:param name="ns" as="xs:string*"/>
+  <xsl:param name="ns" as="node()*"/>
   <xsl:processing-instruction name="{substring-before(.,' ')}">
     <xsl:value-of select="substring-after(.,' ')"/>
   </xsl:processing-instruction>
@@ -533,7 +533,7 @@ Typical use:
 
 
 <xsl:template mode="d:tree" match="start">
-  <xsl:param name="ns" as="xs:string*"/>
+  <xsl:param name="ns" as="node()*"/>
   <xsl:variable name="n" select="following-sibling::end[@s=current()/@s][1]"/>
   <xsl:variable name="xns" select="attrib/d:ns/namespace::*"/>
   <xsl:variable name="nns" select="($ns,$xns)"/>
