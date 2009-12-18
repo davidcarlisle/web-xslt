@@ -5,7 +5,7 @@
 >
 
 <!--
-$Id: ctop-me.xsl,v 1.9 2009/01/16 23:45:19 dcarlis Exp $
+$Id: ctop-me.xsl,v 1.10 2009/01/17 21:47:35 dcarlis Exp $
 
 Copyright David Carlisle 2001, 2002, 2008.
 
@@ -946,6 +946,22 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 <mml:msup><mml:mo>&#8711;<!-- nabla --></mml:mo><mml:mn>2</mml:mn></mml:msup>
 </xsl:template>
 
+<xsl:template mode="c2p" match="mml:apply[*[1][self::mml:laplacian]and mml:bvar]">
+<mml:mrow>
+<xsl:apply-templates mode="c2p" select="*[1]"/>
+<mml:mo>&#8289;<!--function application--></mml:mo>
+<mml:mrow>
+<mml:mo>(</mml:mo>
+<mml:mfenced>
+<xsl:apply-templates mode="c2p" select="mml:bvar/*"/>
+</mml:mfenced>
+<mml:mo>&#x21a6;<!-- map--></mml:mo>
+<xsl:apply-templates mode="c2p" select="*[position()!=1][not(self::mml:bvar)]"/>
+<mml:mo>)</mml:mo>
+</mml:mrow>
+</mml:mrow>
+</xsl:template>
+
 <!-- 4.4.6.1 set -->
 
 <xsl:template mode="c2p" match="mml:set">
@@ -1288,9 +1304,10 @@ priority="2">
 <mml:msup>
 <mml:mrow>
 <mml:mo>&#963;<!--sigma--></mml:mo>
-<mml:mo>(</mml:mo>
-<xsl:apply-templates mode="c2p" select="*[2]"/>
-<mml:mo>)</mml:mo>
+ <mml:mo>&#8289;<!--function application--></mml:mo>
+<mml:mfenced>
+<xsl:apply-templates mode="c2p" select="*[position()!=1]"/>
+</mml:mfenced>
 </mml:mrow>
 <mml:mn>2</mml:mn>
 </mml:msup>
