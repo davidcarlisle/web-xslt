@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.26 2007-05-27 23:57:23 David Carlisle Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.27 2009-04-18 01:24:34 David Carlisle Exp $-->
 
 <!--
 
@@ -114,7 +114,7 @@ Typical use:
 
 
 <xsl:variable name="d:attr"
-   select="'(\i\c*)\s*(=\s*(&quot;[^&quot;]*&quot;|''[^'']*''|\c+))?\s*'"/>
+   select="'(\i\c*)\s*(=\s*(&quot;[^&quot;]*&quot;|''[^'']*''|#?\c+))?\s*'"/>
 
 <xsl:variable name="d:elem"
    select="'(\i\c*)'"/>
