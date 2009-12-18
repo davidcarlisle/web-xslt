@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.19 2004-08-16 22:21:23 David Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.20 2004-08-20 10:37:18 David Exp $-->
 
 <!--
 
@@ -455,8 +455,8 @@ Typical use:
   <xsl:when test="$s[1]=$n">
   <end name="{$n}" s="{$s2}"/>
   <xsl:for-each select="$r">
-   <xsl:variable name="rp" select="position()"/>
-   <start name="{$r[1+last()-$rp]}" s="{($r[position()&gt;1+last()-$rp],$s2)}"/>
+   <xsl:variable name="rp" select="1+last()-position()"/>
+   <start name="{$r[$rp]}" s="{($r[position()&gt;$rp],$s2)}"/>
   </xsl:for-each>
   <xsl:apply-templates mode="#current" select="$next">
    <xsl:with-param name="s" select="($r,$s2)"/>
