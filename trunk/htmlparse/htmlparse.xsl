@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.25 2007-04-22 23:38:47 David Carlisle Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.26 2007-05-27 23:57:23 David Carlisle Exp $-->
 
 <!--
 
@@ -137,7 +137,7 @@ Typical use:
 
 <xsl:function  name="d:htmlparse">
  <xsl:param name="string" as="xs:string"/>
- <xsl:copy-of select="d:htmlparse($string,'http://www.w3.org/1999/xhtml',true())"/>
+ <xsl:sequence select="d:htmlparse($string,'http://www.w3.org/1999/xhtml',true())"/>
 </xsl:function>
 
 <xsl:function name="d:htmlparse">
