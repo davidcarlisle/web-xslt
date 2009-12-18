@@ -5,9 +5,9 @@
 >
 
 <!--
-$Id: ctop-me.xsl,v 1.12 2009/01/17 21:57:06 dcarlis Exp $
+$Id: ctop-me.xsl,v 1.13 2009/01/19 00:48:37 dcarlis Exp $
 
-Copyright David Carlisle 2001, 2002, 2008.
+Copyright David Carlisle 2001, 2002, 2008, 2009.
 
 Use and distribution of this code are permitted under the terms of the <a
 href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
@@ -1128,7 +1128,7 @@ priority="2">
  <m:mrow>
  <m:msubsup>
   <m:mo>&#8721;<!--sum--></m:mo>
- <m:mrow><xsl:apply-templates mode="c2p" select="m:lowlimit|m:interval/*[1]|m:condition/*"/></m:mrow><!-- Alexey Shamrin shamrinATmail.ru -->
+ <m:mrow><xsl:apply-templates mode="c2p" select="m:lowlimit|m:interval/*[1]|m:condition/*|m:domainofapplication/*"/></m:mrow><!-- Alexey Shamrin shamrinATmail.ru -->
  <m:mrow><xsl:apply-templates mode="c2p" select="m:uplimit/*|m:interval/*[2]"/></m:mrow>
  </m:msubsup>
  <xsl:apply-templates mode="c2p" select="*[last()]"/>
