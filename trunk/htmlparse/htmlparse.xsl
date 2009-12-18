@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.6 2004-08-06 15:23:10 David Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.7 2004-08-06 15:54:14 David Exp $-->
 
 <xsl:variable name="d:attr"
    select="'([a-zA-Z:\-]+)\s*(=\s*(&quot;[^&quot;]*&quot;|''[^'']*''|[a-zA-Z0-9]+))?\s*'"/>
@@ -35,73 +35,73 @@
  <xsl:param name="s"/>
  <xsl:variable name="x">
 <xsl:analyze-string select="replace($s,'&#13;&#10;','&#10;')"
- regex="&lt;(/?){$d:elem}\s*(({$d:attr})*)(/?)>|{$d:comment}|{$d:pi}|{$d:doctype}|{$d:cdata}">
-<xsl:matching-substring>
-<xsl:choose>
-<xsl:when test="starts-with(.,'&lt;![CDATA')">
-<xsl:value-of select="substring(.,10,string-length(.)-13)"/>
-</xsl:when>
-<xsl:when test="starts-with(.,'&lt;!D')"></xsl:when>
-<xsl:when test="starts-with(.,'&lt;!-')">
-<comment>
-<xsl:value-of select="substring(.,5,string-length(.)-7)"/>
-</comment>
-</xsl:when>
-<xsl:when test="starts-with(.,'&lt;?')">
-<pi>
-<xsl:value-of select="normalize-space((substring(.,3,string-length(.)-4)))"/>
-</pi>
-</xsl:when>
-<xsl:when test="(regex-group(1)='/')">
-<end name="{lower-case(regex-group(2))}"/>
-</xsl:when>
-<xsl:otherwise>
-<start name="{lower-case(regex-group(2))}">
-<attrib>
-<xsl:analyze-string regex="{$d:attr}" select="regex-group(3)">
-<xsl:matching-substring>
-<xsl:choose>
-<xsl:when test="starts-with(regex-group(1),'xmlns')">
-<!-- prototype support for embedded (MS-style) namespaced XML inside
-     html ignore namespaces for now
- <d:ns>
- <xsl:namespace name="{substring-after(regex-group(1),'xmlns:')}"
-                select="d:chars(substring(regex-group(3),2,string-length(regex-group(3))-2))"/>
- </d:ns>
--->
-</xsl:when>
-<xsl:otherwise>
-<xsl:attribute name="{lower-case(regex-group(1))}">
-<xsl:choose>
-<xsl:when test="starts-with(regex-group(3),'&quot;')">
-  <xsl:value-of select="d:chars(substring(regex-group(3),2,string-length(regex-group(3))-2))"/>
-</xsl:when>
-<xsl:when test="starts-with(regex-group(3),'''')">
-  <xsl:value-of select="d:chars(substring(regex-group(3),2,string-length(regex-group(3))-2))"/>
-</xsl:when>
-<xsl:when test="string(regex-group(2))">
-  <xsl:value-of select="regex-group(3)"/>
-</xsl:when>
-<xsl:otherwise>
-  <xsl:value-of select="regex-group(1)"/>
-</xsl:otherwise>
-</xsl:choose>
-</xsl:attribute>
-</xsl:otherwise>
-</xsl:choose>
-</xsl:matching-substring>
-</xsl:analyze-string>
-</attrib>
- </start>
-<xsl:if test="regex-group(8)='/'">
-<end name="{lower-case(regex-group(2))}"/>
-</xsl:if>
-</xsl:otherwise>
-</xsl:choose>
-</xsl:matching-substring>
-<xsl:non-matching-substring>
-<xsl:value-of select="."/>
-</xsl:non-matching-substring>
+   regex="&lt;(/?){$d:elem}\s*(({$d:attr})*)(/?)>|{$d:comment}|{$d:pi}|{$d:doctype}|{$d:cdata}">
+  <xsl:matching-substring>
+    <xsl:choose>
+    <xsl:when test="starts-with(.,'&lt;![CDATA')">
+      <xsl:value-of select="substring(.,10,string-length(.)-13)"/>
+    </xsl:when>
+    <xsl:when test="starts-with(.,'&lt;!D')"></xsl:when>
+    <xsl:when test="starts-with(.,'&lt;!-')">
+      <comment>
+        <xsl:value-of select="substring(.,5,string-length(.)-7)"/>
+      </comment>
+    </xsl:when>
+    <xsl:when test="starts-with(.,'&lt;?')">
+      <pi>
+        <xsl:value-of select="normalize-space((substring(.,3,string-length(.)-4)))"/>
+      </pi>
+    </xsl:when>
+    <xsl:when test="(regex-group(1)='/')">
+      <end name="{lower-case(regex-group(2))}"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <start name="{lower-case(regex-group(2))}">
+        <attrib>
+          <xsl:analyze-string regex="{$d:attr}" select="regex-group(3)">
+          <xsl:matching-substring>
+            <xsl:choose>
+            <xsl:when test="starts-with(regex-group(1),'xmlns')">
+              <!-- prototype support for embedded (MS-style) namespaced XML inside
+                   html ignore namespaces for now
+               <d:ns>
+                 <xsl:namespace name="{substring-after(regex-group(1),'xmlns:')}"
+                                select="d:chars(substring(regex-group(3),2,string-length(regex-group(3))-2))"/>
+               </d:ns>
+              -->
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:attribute name="{lower-case(regex-group(1))}">
+                <xsl:choose>
+                <xsl:when test="starts-with(regex-group(3),'&quot;')">
+                  <xsl:value-of select="d:chars(substring(regex-group(3),2,string-length(regex-group(3))-2))"/>
+                </xsl:when>
+                <xsl:when test="starts-with(regex-group(3),'''')">
+                  <xsl:value-of select="d:chars(substring(regex-group(3),2,string-length(regex-group(3))-2))"/>
+                </xsl:when>
+                <xsl:when test="string(regex-group(2))">
+                  <xsl:value-of select="regex-group(3)"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="regex-group(1)"/>
+                </xsl:otherwise>
+                </xsl:choose>
+              </xsl:attribute>
+            </xsl:otherwise>
+            </xsl:choose>
+          </xsl:matching-substring>
+          </xsl:analyze-string>
+        </attrib>
+      </start>
+      <xsl:if test="regex-group(8)='/'">
+      <end name="{lower-case(regex-group(2))}"/>
+      </xsl:if>
+    </xsl:otherwise>
+    </xsl:choose>
+  </xsl:matching-substring>
+  <xsl:non-matching-substring>
+    <xsl:value-of select="."/>
+  </xsl:non-matching-substring>
 </xsl:analyze-string>
 </xsl:variable>
 
