@@ -10,98 +10,99 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.13 2004-08-08 20:27:35 David Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.14 2004-08-09 14:13:15 David Exp $-->
 
 <!--
 
 d:htmlparse(string)
 
-parses the string as html using some inbuilt heuristics to control implied
-opening and closing of elements. 
-(doesn't have full knowledge of HTML DTD but does have full list of
-empty elements and full list of entity definitions. HTML entities, and
-decimal and hex character references are all accepted.
-Element names are lowercased and placed into the XHTML1 namespace. 
-Attribute names are lowercased.
-Four styles of attribute value are supported
-    a="double quote delimited, including possibly unquoted < and >"
-    a='single quote delimited, including possibly unquoted < and >'
-    a=unquotedtoken
-    a
-which parse as the XML
-    a="double quote delimited, including possibly unquoted &lt; and &gt;"
-    a="single quote delimited, including possibly unquoted &lt; and &gt;"
-    a="unquotedtoken"
-    a="a"
-Doctype declarations are accepted but ignored
-Comments and Processing instructions produce equivalent constructs in the
-result tree
-CDATA sections are parsed correctly (Baring bugs)
-HTML Script and Style elemnets have some support as CDATA elements.
+  Parses the string as html using some inbuilt heuristics to control implied
+  opening and closing of elements. 
 
-XML "/>" empty element syntax is also accepted as are XML Namespace
-declarations, resulting elements will be in the specified namespaces
-(So Microsoft Style embedding of XML inside HTML should be parsed
-correctly, note howeve that in html mode currently all elements are
-lowercased even in "XML" sections, and html element names such as
-li will be recognised and treated specially even in XML sections.
-Currently XML element names restricted to ASCII (Trivial change to regexp
-would fix this if it doesn't impact badly on HTML parsing")
+  It doesn't have full knowledge of HTML DTD but does have full list of
+  empty elements and full list of entity definitions. HTML entities, and
+  decimal and hex character references are all accepted.
 
-Note: very long attribute values (in excess of 800 characters) can cause 
-javascript regexp stack overflow in Saxon (It may be able to avoid this
-by usinga larger JVM, haven't checked.)
+  Element names are lowercased and placed into the XHTML1 namespace. 
+  Attribute names are lowercased.
+  Four styles of attribute value are supported
+      a="double quote delimited, including possibly unquoted < and >"
+      a='single quote delimited, including possibly unquoted < and >'
+      a=unquotedtoken
+      a
+  which parse as the XML
+      a="double quote delimited, including possibly unquoted &lt; and &gt;"
+      a="single quote delimited, including possibly unquoted &lt; and &gt;"
+      a="unquotedtoken"
+      a="a"
+  Doctype declarations are accepted but ignored
+  Comments and Processing instructions produce equivalent constructs in the
+  result tree
+  CDATA sections are parsed correctly (Baring bugs)
+  HTML Script and Style elemnets have some support as CDATA elements.
+
+  XML "/>" empty element syntax is also accepted as are XML Namespace
+  declarations, resulting elements will be in the specified namespaces
+  (So Microsoft Style embedding of XML inside HTML should be parsed
+  correctly, note howeve that in html mode currently all elements are
+  lowercased even in "XML" sections, and html element names such as
+  li will be recognised and treated specially even in XML sections.
+
+
+  Note: very long attribute values (in excess of 800 characters) can cause 
+  javascript regexp stack overflow in Saxon (It may be able to avoid this
+  by using a larger JVM, haven't checked.)
 
 
 d:htmlparse(string,namespace-uri)
 
 
-In the two argument form, the second argument (which may be "") gives the
-default namespace to use for initial unnamespaced elements in the input
-string. If this is "http://ww.w3.org/1999/xhtml" then the behaviour is
-exactly as described above for the one argument form. Otherwise the special
-casing of HTML element names and lowercasing of element and attreibute
-names is _not_ done. HTML entity names are still recognised though.
-Implied element ending is still implemented so
-
-<a><b><c></a>
-
-parses as
-
-<a><b><c></c></b></a>
-
-<body><p>one <p>two </body>
-
-parses as
-
-<body><p>one <p>two </p></p></body>
-
-In "XHTML mode" however,
-
-<body><p>one <p>two </body>
-
-parses as
-
-<body><p>one </p><p>two </p></body>
-
-AS when producing XHTML, an opening p tag causes the closing of any
-currently open p. Similar code is in place of HTML list items, etc.
+  In the two argument form, the second argument (which may be "") gives the
+  default namespace to use for initial unnamespaced elements in the input
+  string. If this is "http://ww.w3.org/1999/xhtml" then the behaviour is
+  exactly as described above for the one argument form. Otherwise the special
+  casing of HTML element names and lowercasing of element and attreibute
+  names is _not_ done. HTML entity names are still recognised though.
+  Implied element ending is still implemented so
+  
+  <a><b><c></a>
+  
+  parses as
+  
+  <a><b><c></c></b></a>
+  
+  <body><p>one <p>two </body>
+  
+  parses as
+  
+  <body><p>one <p>two </p></p></body>
+  
+  In "XHTML mode" however,
+  
+  <body><p>one <p>two </body>
+  
+  parses as
+  
+  <body><p>one </p><p>two </p></body>
+  
+  AS when producing XHTML, an opening p tag causes the closing of any
+  currently open p. Similar code is in place of HTML list items, etc.
 
 Typical use:
 
-1)
-  To produce a tree corresponding to the external HTML file
-  file.html:
-
-    <xsl:copy-of select="d:htmlparse(unparsed-text('file.html','UTF-8'))"/>
-
-2)
-  To parse a CDATA section quoted snippet of HTML in an element foo:
- <foo><![CDATA[...<a href="#x">click here</a> ...]]><foo>
-
-  <xsl:template match="foo">
-   <xsl:copy-of select="d:htmlparse(.)"/>
-  </xsl:template>
+  1)
+    To produce a tree corresponding to the external HTML file
+    file.html:
+  
+      <xsl:copy-of select="d:htmlparse(unparsed-text('file.html','UTF-8'))"/>
+  
+  2)
+    To parse a CDATA section quoted snippet of HTML in an element foo:
+   <foo><![CDATA[...<a href="#x">click here</a> ...]]><foo>
+  
+    <xsl:template match="foo">
+     <xsl:copy-of select="d:htmlparse(.)"/>
+    </xsl:template>
 
 
 -->
@@ -109,16 +110,16 @@ Typical use:
 
 
 <xsl:variable name="d:attr"
-   select="'([a-zA-Z:\-]+)\s*(=\s*(&quot;[^&quot;]*&quot;|''[^'']*''|[a-zA-Z0-9]+))?\s*'"/>
+   select="'(\i\c*)\s*(=\s*(&quot;[^&quot;]*&quot;|''[^'']*''|\c+))?\s*'"/>
 
 <xsl:variable name="d:elem"
-   select="'([a-zA-Z][A-Za-z0-9:\-]*)'"/>
+   select="'(\i\c*)'"/>
 
 <xsl:variable name="d:comment"
    select="'&lt;!\-\-[^\-]*(\-[^\-]+)*\-\->'"/>
 
 <xsl:variable name="d:pi"
-   select="'&lt;\?[a-zA-Z0-9]+[^>]*>'"/>
+   select="'&lt;\?\i\c*[^>]*>'"/>
 
 <xsl:variable name="d:doctype"
    select="'&lt;!D[^\[&lt;>]*(\[[^\]]*\])?>'"/>
