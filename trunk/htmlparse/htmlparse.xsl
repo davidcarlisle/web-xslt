@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.17 2004-08-09 22:43:30 David Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.18 2004-08-16 22:20:11 David Exp $-->
 
 <!--
 
@@ -153,12 +153,12 @@ Typical use:
       </xsl:when>
       <xsl:otherwise>
         <start name="{if ($html-mode) then lower-case(regex-group(2)) else regex-group(2)}">
+<!--
           <attrib>
             <xsl:analyze-string regex="{$d:attr}" select="regex-group(3)">
             <xsl:matching-substring>
               <xsl:choose>
               <xsl:when test="starts-with(regex-group(1),'xmlns')">
-                <!-- prototype support for embedded (MS-style) namespaced XML inside html -->
                  <d:ns>
                    <xsl:variable name="n"
                      select="d:chars(substring(regex-group(3),2,string-length(regex-group(3))-2))"/>
@@ -188,6 +188,7 @@ Typical use:
             </xsl:matching-substring>
             </xsl:analyze-string>
           </attrib>
+-->
         </start>
         <xsl:if test="regex-group(8)='/'">
         <end name="{if ($html-mode) then lower-case(regex-group(2)) else regex-group(2)}"/>
@@ -223,12 +224,12 @@ Typical use:
    </xsl:apply-templates>
   </xsl:variable>
   
-  <!--
+<!--
    <xsl:copy-of select="$x"/>
   ===
   <xsl:copy-of select="$y"/>
   ===
- -->
+-->
 
   <xsl:copy-of select="$z"/>
   
@@ -413,16 +414,12 @@ Typical use:
 </xsl:template>
 
 
-<xsl:template mode="d:html d:gxml" match="end" name="d:end">
+<xsl:template mode="d:gxml" match="end">
 <xsl:param name="n" select="@name"/>
 <xsl:param name="s" select="()"/>
 <xsl:param name="next" select="following-sibling::node()[1]"/>
 <xsl:variable name="s2" select="$s[position()!=1]"/>
   <xsl:choose>
-  <xsl:when test="empty($s)">
-  <!--====/<xsl:value-of select="$n"/>======-->
-  <xsl:message>htmlparse: Not well formed (<xsl:value-of select="@name"/>)</xsl:message>
-  </xsl:when>
   <xsl:when test="$s[1]=$n">
   <end name="{$n}" s="{$s2}"/>
   <xsl:apply-templates mode="#current" select="$next">
@@ -440,6 +437,43 @@ Typical use:
   <end name="{$s[1]}" s="{$s2}"/>
   <xsl:apply-templates mode="#current" select=".">
    <xsl:with-param name="s" select="$s2"/>
+  </xsl:apply-templates>
+  </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+
+<xsl:variable name="restart" select="('i', 'b', 'font')"/>
+
+<xsl:template mode="d:html" match="end" name="d:end">
+<xsl:param name="n" select="@name"/>
+<xsl:param name="s" select="()"/>
+<xsl:param name="r" select="()"/>
+<xsl:param name="next" select="following-sibling::node()[1]"/>
+<xsl:variable name="s2" select="$s[position()!=1]"/>
+  <xsl:choose>
+  <xsl:when test="$s[1]=$n">
+  <end name="{$n}" s="{$s2}"/>
+  <xsl:for-each select="$r">
+   <xsl:variable name="rp" select="position()"/>
+   <start x="!{$rp}" name="{$r[1+last()-$rp]}" s="{($r[position()&gt;1+last()-$rp],$s2)}"/>
+  </xsl:for-each>
+  <xsl:apply-templates mode="#current" select="$next">
+   <xsl:with-param name="s" select="($r,$s2)"/>
+  </xsl:apply-templates>
+  </xsl:when>
+  <xsl:when test="not($n=$s)">
+  <!--====/<xsl:value-of select="$n"/>======-->
+  <xsl:message>htmlparse: Not well formed (ignoring /<xsl:value-of select="$n"/>)</xsl:message>
+  <xsl:apply-templates mode="#current" select="$next">
+   <xsl:with-param name="s" select="$s"/>
+  </xsl:apply-templates>
+  </xsl:when>
+  <xsl:otherwise>
+  <end x="2" name="{$s[1]}" s="{$s2}"/>
+  <xsl:apply-templates mode="#current" select=".">
+   <xsl:with-param name="s" select="$s2"/>
+   <xsl:with-param name="r" select="if ($s[1] = $restart) then ($r,$s[1]) else ()"/>
   </xsl:apply-templates>
   </xsl:otherwise>
   </xsl:choose>
