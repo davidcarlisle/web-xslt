@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.15 2004-08-09 22:29:16 David Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.16 2004-08-09 22:33:55 David Exp $-->
 
 <!--
 
@@ -86,7 +86,7 @@ Typical use:
     To produce a tree corresponding to the external HTML file
     file.html:
   
-      <xsl:copy-of select="d:htmlparse(unparsed-text('file.html','UTF-8'))"/>
+      <xsl:copy-of select="d:htmlparse(unparsed-text('file.html','ISO-8859-1'))"/>
   
   2)
     To parse a CDATA section quoted snippet of HTML in an element foo:
@@ -306,7 +306,8 @@ Typical use:
   </start>
   <xsl:apply-templates mode="d:cdata" select="following-sibling::node()[1]"/>
   <end name="{@name}" s="{$s}"/>
-  <xsl:apply-templates mode="d:html" select="following-sibling::end[@name=current()/@name][1]/following-sibling::node()[1]">
+  <xsl:apply-templates mode="d:html" 
+                      select="following-sibling::end[@name=current()/@name][1]/following-sibling::node()[1]">
    <xsl:with-param  name="s" select="$s"/>
   </xsl:apply-templates>
 </xsl:template>
@@ -336,7 +337,8 @@ Typical use:
    <xsl:copy-of select="attrib"/>
   </start>
   <end name="{@name}" s="{$s}"/>
-  <xsl:apply-templates mode="d:html" select="following-sibling::node()[not(self::end/@name=current()/@name)][1]">
+  <xsl:apply-templates mode="d:html"
+                       select="following-sibling::node()[not(self::end/@name=current()/@name)][1]">
    <xsl:with-param  name="s" select="$s"/>
   </xsl:apply-templates>
 </xsl:template>
@@ -482,7 +484,8 @@ Typical use:
   <xsl:variable name="nns" select="($ns,$xns)"/>
 <xsl:if test="@name='dx'">
 </xsl:if>
-  <xsl:element name="{@name}" namespace="{$nns[name()=substring-before(current()/@name,':')][last()][not(.='data:,dpc')]}">
+  <xsl:element name="{@name}"
+               namespace="{$nns[name()=substring-before(current()/@name,':')][last()][not(.='data:,dpc')]}">
   <xsl:copy-of select="attrib/(@*|$xns[not(.='data:,dpc')])"/>
   <xsl:apply-templates select="following-sibling::node()[1][not(. is $n)]" mode="d:tree">
     <xsl:with-param name="ns" select="$nns"/>
