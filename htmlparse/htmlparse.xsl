@@ -6,11 +6,11 @@
    exclude-result-prefixes="d xs">
 
 <!-- 
- HTML Parser in XSLT2 Copyright 2004 David Carlisle 
+ HTML Parser in XSLT2 Copyright 2004-2007 David Carlisle 
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.24 2007-04-22 21:52:33 David Carlisle Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.25 2007-04-22 23:38:47 David Carlisle Exp $-->
 
 <!--
 
@@ -113,7 +113,6 @@ Typical use:
 -->
 
 
-
 <xsl:variable name="d:attr"
    select="'(\i\c*)\s*(=\s*(&quot;[^&quot;]*&quot;|''[^'']*''|\c+))?\s*'"/>
 
@@ -128,6 +127,10 @@ Typical use:
 
 <xsl:variable name="d:doctype"
    select="'&lt;!D[^\[&lt;>]*(\[[^\]]*\])?>'"/>
+
+
+<xsl:variable name="d:msif"
+   select="'&lt;!\[(end)?if.*?\]>'"/>
 
 <xsl:variable name="d:cdata"
    select="'&lt;!\[CDATA(.|\s)*\]\]>'"/>
@@ -144,7 +147,7 @@ Typical use:
 
  <xsl:variable name="x">
   <xsl:analyze-string select="replace($string,'&#13;&#10;','&#10;')"
-     regex="&lt;(/?){$d:elem}\s*(({$d:attr})*)(/?)>|{$d:comment}|{$d:pi}|{$d:doctype}|{$d:cdata}">
+     regex="&lt;(/?){$d:elem}\s*(({$d:attr})*)(/?)>|{$d:comment}|{$d:pi}|{$d:doctype}|{$d:cdata}|({$d:msif})">
     <xsl:matching-substring>
       <xsl:choose>
       <xsl:when test="starts-with(.,'&lt;![CDATA')">
@@ -156,6 +159,7 @@ Typical use:
           <xsl:value-of select="substring(.,5,string-length(.)-7)"/>
         </comment>
       </xsl:when>
+      <xsl:when test="starts-with(.,'&lt;![')"></xsl:when>
       <xsl:when test="starts-with(.,'&lt;?')">
         <pi>
           <xsl:value-of select="normalize-space((substring(.,3,string-length(.)-4)))"/>
@@ -527,9 +531,7 @@ Typical use:
   <xsl:variable name="n" select="following-sibling::end[@s=current()/@s][1]"/>
   <xsl:variable name="xns" select="attrib/d:ns/namespace::*"/>
   <xsl:variable name="nns" select="($ns,$xns)"/>
-<xsl:if test="@name='dx'">
-</xsl:if>
-  <xsl:element name="{@name}"
+  <xsl:element name="{if(string(@name))then @name else 'xml'}"
                namespace="{$nns[name()=substring-before(current()/@name,':')][last()][not(.='data:,dpc')]}">
   <xsl:for-each select="attrib/attribute">
     <xsl:attribute name="{@name}" namespace="{if(contains(@name,':')) then $nns[name()=substring-before(current()/@name,':')][last()][not(.='data:,dpc')] else ''}" select="."/>
