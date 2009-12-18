@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.32 2009-05-08 13:51:12 David Carlisle Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.33 2009-05-08 13:52:36 David Carlisle Exp $-->
 
 <!--
 
@@ -535,8 +535,8 @@ Typical use:
 <xsl:template mode="d:tree" match="start">
   <xsl:param name="ns" as="node()*"/>
   <xsl:variable name="n" select="following-sibling::end[@s=current()/@s][1]"/>
-  <xsl:variable name="xns" select="attrib/d:ns/namespace::*"/>
-  <xsl:variable name="nns" select="($ns,$xns)"/>
+  <xsl:variable name="xns" select="attrib/d:ns/namespace::*" as="node()*"/>
+  <xsl:variable name="nns" select="($ns,$xns)" as="node()*"/>
   <xsl:element name="{if(string(@name))then @name else 'xml'}"
                namespace="{$nns[name()=substring-before(current()/@name,':')][last()][not(.='data:,dpc')]}">
   <xsl:for-each select="attrib/attribute">
