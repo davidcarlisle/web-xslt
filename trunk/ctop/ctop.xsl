@@ -5,7 +5,7 @@
 >
 
 <!--
-$Id: ctop-me.xsl,v 1.2 2008/11/10 15:55:38 dcarlis Exp $
+$Id: ctop-me.xsl,v 1.3 2009/01/11 21:37:22 dcarlis Exp $
 
 Copyright David Carlisle 2001, 2002, 2008.
 
@@ -260,22 +260,22 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 
 <!-- 4.4.2.11` ident -->
 <xsl:template mode="c2p" match="mml:ident">
-<mml:mo>id</mml:mo>
+<mml:mi>id</mml:mi>
 </xsl:template>
 
 <!-- 4.4.2.12` domain -->
 <xsl:template mode="c2p" match="mml:domain">
-<mml:mo>domain</mml:mo>
+<mml:mi>domain</mml:mi>
 </xsl:template>
 
 <!-- 4.4.2.13` codomain -->
 <xsl:template mode="c2p" match="mml:codomain">
-<mml:mo>codomain</mml:mo>
+<mml:mi>codomain</mml:mi>
 </xsl:template>
 
 <!-- 4.4.2.14` image -->
 <xsl:template mode="c2p" match="mml:image">
-<mml:mo>image</mml:mo>
+<mml:mi>image</mml:mi>
 </xsl:template>
 
 <!-- 4.4.2.15` domainofapplication -->
@@ -349,14 +349,14 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 <xsl:template mode="c2p" match="mml:apply[*[1][self::mml:max]]
 				|mml:apply[*[1][self::mml:csymbol='max']]">
 <mml:mrow>
-  <mml:mo>max</mml:mo>
+  <mml:mi>max</mml:mi>
   <xsl:call-template name="set"/>
 </mml:mrow>
 </xsl:template>
 
 <xsl:template mode="c2p" match="mml:apply[*[1][self::mml:min]]|mml:reln[*[1][self::mml:min]]">
 <mml:mrow>
-  <mml:mo>min</mml:mo><!--dpc-->
+  <mml:mi>min</mml:mi><!--dpc-->
   <xsl:call-template name="set"/>
 </mml:mrow>
 </xsl:template>
@@ -451,7 +451,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
                        |mml:apply[*[1][self::mml:csymbol='rem']]">
   <xsl:param name="p" select="0"/>
 <xsl:call-template name="binary">
-  <xsl:with-param name="mo"><mml:mo>mod</mml:mo></xsl:with-param>
+  <xsl:with-param name="mo"><mml:mi>mod</mml:mi></xsl:with-param>
   <xsl:with-param name="p" select="$p"/>
   <xsl:with-param name="this-p" select="3"/>
 </xsl:call-template>
@@ -508,7 +508,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 
 <!-- 4.4.3.11 gcd -->
 <xsl:template mode="c2p" match="mml:gcd">
-<mml:mo>gcd</mml:mo>
+<mml:mi>gcd</mml:mi>
 </xsl:template>
 
 <!-- 4.4.3.12 and -->
@@ -542,7 +542,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 <xsl:call-template name="infix">
  <xsl:with-param name="this-p" select="3"/>
  <xsl:with-param name="p" select="$p"/>
- <xsl:with-param name="mo"><mml:mo>xor</mml:mo></xsl:with-param>
+ <xsl:with-param name="mo"><mml:mi>xor</mml:mi></xsl:with-param>
 </xsl:call-template>
 </xsl:template>
 
@@ -628,7 +628,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 
 <!-- 4.4.3.21 arg -->
 <xsl:template mode="c2p" match="mml:arg">
- <mml:mo>arg</mml:mo>
+ <mml:mi>arg</mml:mi>
 </xsl:template>
 
 
@@ -644,7 +644,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 
 <!-- 4.4.3.24 lcm -->
 <xsl:template mode="c2p" match="mml:lcm">
- <mml:mo>lcm</mml:mo>
+ <mml:mi>lcm</mml:mi>
 </xsl:template>
 
 
@@ -784,7 +784,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
  </mml:msubsup>
  <xsl:apply-templates mode="c2p" select="*[last()]"/>
  <xsl:if test="mml:bvar">
-   <mml:mo>d</mml:mo><xsl:apply-templates mode="c2p" select="mml:bvar"/>
+   <mml:mi>d</mml:mi><xsl:apply-templates mode="c2p" select="mml:bvar"/>
  </xsl:if>
 </mml:mrow>
 </xsl:template>
@@ -801,16 +801,16 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
  <mml:mfrac>
  <xsl:choose>
  <xsl:when test="mml:bvar/mml:degree">
- <mml:mrow><mml:msup><mml:mo>d</mml:mo><xsl:apply-templates mode="c2p" select="mml:bvar/mml:degree/node()"/></mml:msup>
+ <mml:mrow><mml:msup><mml:mi>d</mml:mi><xsl:apply-templates mode="c2p" select="mml:bvar/mml:degree/node()"/></mml:msup>
      <xsl:apply-templates mode="c2p"  select="*[last()]"/></mml:mrow>
- <mml:mrow><mml:mo>d</mml:mo><mml:msup><xsl:apply-templates mode="c2p"
+ <mml:mrow><mml:mi>d</mml:mi><mml:msup><xsl:apply-templates mode="c2p"
  select="mml:bvar/node()"/><xsl:apply-templates mode="c2p"
  select="mml:bvar/mml:degree/node()"/></mml:msup>
 </mml:mrow>
 </xsl:when>
 <xsl:otherwise>
- <mml:mrow><mml:mo>d</mml:mo><xsl:apply-templates mode="c2p" select="*[last()]"/></mml:mrow>
- <mml:mrow><mml:mo>d</mml:mo><xsl:apply-templates mode="c2p" select="mml:bvar"/></mml:mrow>
+ <mml:mrow><mml:mi>d</mml:mi><xsl:apply-templates mode="c2p" select="*[last()]"/></mml:mrow>
+ <mml:mrow><mml:mi>d</mml:mi><xsl:apply-templates mode="c2p" select="mml:bvar"/></mml:mrow>
 </xsl:otherwise>
  </xsl:choose>
  </mml:mfrac>
@@ -820,7 +820,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 <!-- 4.4.5.3 partialdiff -->
 <xsl:template mode="c2p" match="mml:apply[*[1][self::mml:partialdiff] and mml:list and mml:ci and count(*)=3]" priority="2">
 <mml:mrow>
- <mml:msub><mml:mo>D</mml:mo><mml:mrow>
+ <mml:msub><mml:mi>D</mml:mi><mml:mrow>
 <xsl:for-each select="mml:list[1]/*">
 <xsl:apply-templates mode="c2p" select="."/>
 <xsl:if test="position()&lt;last()"><mml:mo>,</mml:mo></xsl:if>
@@ -891,17 +891,17 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 
 <!-- 4.4.5.8 divergence-->
 <xsl:template mode="c2p" match="mml:divergence">
-<mml:mo>div</mml:mo>
+<mml:mi>div</mml:mi>
 </xsl:template>
 
 <!-- 4.4.5.9 grad-->
 <xsl:template mode="c2p" match="mml:grad">
-<mml:mo>grad</mml:mo>
+<mml:mi>grad</mml:mi>
 </xsl:template>
 
 <!-- 4.4.5.10 curl -->
 <xsl:template mode="c2p" match="mml:curl">
-<mml:mo>curl</mml:mo>
+<mml:mi>curl</mml:mi>
 </xsl:template>
 
 
@@ -1261,13 +1261,13 @@ priority="2">
 
 <!-- 4.4.9.4 median -->
 <xsl:template mode="c2p" match="mml:median">
-<mml:mo>median</mml:mo>
+<mml:mi>median</mml:mi>
 </xsl:template>
 
 
 <!-- 4.4.9.5 mode -->
 <xsl:template mode="c2p" match="mml:mode">
-<mml:mo>mode</mml:mo>
+<mml:mi>mode</mml:mi>
 </xsl:template>
 
 <!-- 4.4.9.5 moment -->
