@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.10 2004-08-07 18:27:09 David Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.11 2004-08-07 18:30:05 David Exp $-->
 
 <xsl:variable name="d:attr"
    select="'([a-zA-Z:\-]+)\s*(=\s*(&quot;[^&quot;]*&quot;|''[^'']*''|[a-zA-Z0-9]+))?\s*'"/>
@@ -244,7 +244,7 @@
    <xsl:copy-of select="attrib"/>
   </start>
   <end name="{@name}" s="{$s}"/>
-  <xsl:apply-templates mode="d:html" select="following-sibling::node()[1]">
+  <xsl:apply-templates mode="d:html" select="following-sibling::node()[not(self::end/@name=current()/@name)][1]">
    <xsl:with-param  name="s" select="$s"/>
   </xsl:apply-templates>
 </xsl:template>
