@@ -675,7 +675,8 @@ else if (position()=last()) then ('\|') else '  '
 </b>
 </xsl:template>
 
-<xsl:template mode="mml2a" match="m:mrow" name="mrow">
+
+<xsl:template mode="mml2a" match="m:mrow|m:mstyle" name="mrow">
 <xsl:param name="x">
   <xsl:apply-templates mode="mml2a" select="*"/>
 </xsl:param>
