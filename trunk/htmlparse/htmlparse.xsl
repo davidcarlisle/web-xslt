@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.29 2009-05-06 20:52:34 David Carlisle Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.30 2009-05-08 09:48:54 David Carlisle Exp $-->
 
 <!--
 
@@ -253,7 +253,7 @@ Typical use:
 </xsl:function>
 
 <xsl:function name="d:chars">
- <xsl:param name="s"/>
+ <xsl:param name="s" as="xs:string"/>
  <xsl:value-of>
   <xsl:analyze-string select="$s" regex="&amp;(#?)(x?)([0-9a-fA-F]+|[a-zA-Z][a-zA-Z0-9]*);">
   <xsl:matching-substring>
@@ -286,14 +286,14 @@ Typical use:
 </xsl:function>
 
 
-<xsl:function name="d:hex">
-<xsl:param name="x"/>
+<xsl:function name="d:hex" as="xs:integer">
+<xsl:param name="x" as="xs:integer*"/>
   <xsl:value-of
     select="if (empty($x)) then 0 else ($x[last()] + 16* d:hex($x[position()!=last()]))"/>
 </xsl:function>
 
 <xsl:template mode="d:cdata"  match="text()">
-<xsl:param name="s" select="()"/>
+<xsl:param name="s" select="()" as="xs:string*"/>
   <xsl:value-of select="."/>
   <xsl:apply-templates mode="#current" select="following-sibling::node()[1]">
     <xsl:with-param name="s" select="$s"/>
@@ -301,7 +301,7 @@ Typical use:
 </xsl:template>
 
 <xsl:template mode="d:html d:gxml"  match="text()">
-<xsl:param name="s" select="()"/>
+<xsl:param name="s" select="()" as="xs:string*"/>
   <xsl:value-of select="d:chars(.)"/>
   <xsl:apply-templates mode="#current" select="following-sibling::node()[1]">
     <xsl:with-param name="s" select="$s"/>
@@ -309,7 +309,7 @@ Typical use:
 </xsl:template>
 
 <xsl:template mode="d:html d:gxml"  match="comment|pi">
-<xsl:param name="s" select="()"/>
+<xsl:param name="s" select="()" as="xs:string*"/>
   <xsl:copy-of select="."/>
   <xsl:apply-templates mode="#current" select="following-sibling::node()[1]">
     <xsl:with-param name="s" select="$s"/>
@@ -318,7 +318,7 @@ Typical use:
 
 
 <xsl:template mode="d:html" match="start[@name=('script','style')]">
-<xsl:param name="s" select="()"/>
+<xsl:param name="s" select="()" as="xs:string*"/>
   <start name="{@name}" s="{$s}">
    <xsl:copy-of select="attrib"/>
   </start>
@@ -340,7 +340,7 @@ Typical use:
 </xsl:template>
 
 <xsl:template mode="d:html d:gxml" match="start">
-<xsl:param name="s" select="()"/>
+<xsl:param name="s" select="()" as="xs:string*"/>
   <start name="{@name}" s="{$s}">
    <xsl:copy-of select="attrib"/>
   </start>
@@ -350,7 +350,7 @@ Typical use:
 </xsl:template>
 
 <xsl:template mode="d:html" match="start[@name=('br','hr','basefont','area','link','img','param','input','col','frame','isindex','base','meta')]">
-<xsl:param name="s" select="()"/>
+<xsl:param name="s" select="()" as="xs:string*"/>
   <start name="{@name}" s="{$s}">
    <xsl:copy-of select="attrib"/>
   </start>
@@ -365,7 +365,7 @@ Typical use:
 <xsl:variable name="d:listitems" select="('li','dt','dd')"/>
 
 <xsl:template mode="d:html" match="start[@name=$d:listitems]">
-<xsl:param name="s" select="()"/>
+<xsl:param name="s" select="()" as="xs:string*"/>
   <xsl:choose>
   <xsl:when test="not($d:lists=$s) or $d:lists=$s[1]">
   <start name="{@name}" s="{$s}">
@@ -388,7 +388,7 @@ Typical use:
 
 
 <xsl:template mode="d:html" match="start[@name='td']">
-<xsl:param name="s" select="()"/>
+<xsl:param name="s" select="()" as="xs:string*"/>
   <xsl:choose>
   <xsl:when test="not('tr'=$s) or 'tr'=$s[1]">
   <start name="{@name}" s="{$s}">
@@ -410,7 +410,7 @@ Typical use:
 
 
 <xsl:template mode="d:html" match="start[@name='p']">
-<xsl:param name="s" select="()"/>
+<xsl:param name="s" select="()" as="xs:string*"/>
   <xsl:choose>
   <xsl:when test="not('p'=$s)">
   <start name="{@name}" s="{$s}">
@@ -432,9 +432,9 @@ Typical use:
 
 
 <xsl:template mode="d:gxml" match="end">
-<xsl:param name="n" select="@name"/>
-<xsl:param name="s" select="()"/>
-<xsl:param name="next" select="following-sibling::node()[1]"/>
+<xsl:param name="n" select="@name" as="xs:string"/>
+<xsl:param name="s" select="()" as="xs:string*"/>
+<xsl:param name="next" select="following-sibling::node()[1]" as="node()?"/>
 <xsl:variable name="s2" select="$s[position()!=1]"/>
   <xsl:choose>
   <xsl:when test="$s[1]=$n">
@@ -463,10 +463,10 @@ Typical use:
 <xsl:variable name="d:restart" select="('i', 'b', 'font')"/>
 
 <xsl:template mode="d:html" match="end" name="d:end">
-<xsl:param name="n" select="@name"/>
-<xsl:param name="s" select="()"/>
-<xsl:param name="r" select="()"/>
-<xsl:param name="next" select="following-sibling::node()[1]"/>
+<xsl:param name="n" select="@name" as="xs:string"/>
+<xsl:param name="s" select="()" as="xs:string*"/>
+<xsl:param name="r" select="()" as="xs:string*"/>
+<xsl:param name="next" select="following-sibling::node()[1]" as="node()?"/>
 <xsl:variable name="s2" select="$s[position()!=1]"/>
   <xsl:choose>
   <xsl:when test="$s[1]=$n">
@@ -499,7 +499,7 @@ Typical use:
 
 
 <xsl:template mode="d:tree" match="text()">
-  <xsl:param name="ns"/>
+  <xsl:param name="ns" as="xs:string*"/>
   <xsl:copy-of select="."/>
   <xsl:apply-templates select="following-sibling::node()[1]" mode="d:tree">
     <xsl:with-param name="ns" select="$ns"/>
@@ -507,7 +507,7 @@ Typical use:
 </xsl:template>
 
 <xsl:template mode="d:tree" match="comment">
-  <xsl:param name="ns"/>
+  <xsl:param name="ns" as="xs:string*"/>
   <xsl:comment>
     <xsl:value-of select="."/>
   </xsl:comment>
@@ -517,7 +517,7 @@ Typical use:
 </xsl:template>
 
 <xsl:template mode="d:tree" match="pi">
-  <xsl:param name="ns"/>
+  <xsl:param name="ns" as="xs:string*"/>
   <xsl:processing-instruction name="{substring-before(.,' ')}">
     <xsl:value-of select="substring-after(.,' ')"/>
   </xsl:processing-instruction>
@@ -529,7 +529,7 @@ Typical use:
 
 
 <xsl:template mode="d:tree" match="start">
-  <xsl:param name="ns"/>
+  <xsl:param name="ns" as="xs:string*"/>
   <xsl:variable name="n" select="following-sibling::end[@s=current()/@s][1]"/>
   <xsl:variable name="xns" select="attrib/d:ns/namespace::*"/>
   <xsl:variable name="nns" select="($ns,$xns)"/>
