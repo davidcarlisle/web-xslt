@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.4 2004-08-06 11:49:52 David Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.5 2004-08-06 11:51:03 David Exp $-->
 
 <xsl:variable name="d:attr"
    select="'([a-zA-Z:\-]+)\s*(=\s*(&quot;[^&quot;]*&quot;|''[^'']*''|[a-zA-Z0-9]+))?\s*'"/>
@@ -113,11 +113,11 @@
 </xsl:variable>
 
 <!--
--->
 <xsl:copy-of select="$x"/>
 ===
 <xsl:copy-of select="$y"/>
 ===
+-->
 <xsl:copy-of select="$z"/>
 
 
