@@ -5,7 +5,7 @@
 >
 
 <!--
-$Id: ctop-me.xsl,v 1.15 2009/01/19 23:59:19 dcarlis Exp $
+$Id: ctop-me.xsl,v 1.16 2009/01/20 23:32:55 dcarlis Exp $
 
 Copyright David Carlisle 2001, 2002, 2008, 2009.
 
@@ -600,11 +600,33 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
   <m:mo>&#8707;<!--exists--></m:mo>
  <m:mrow><xsl:apply-templates mode="c2p" select="m:bvar[not(current()/m:condition)]/*|m:condition/*"/></m:mrow>
  <m:mo>.</m:mo>
- <m:mfenced>
+ <m:mfenced separators="">
+   <xsl:choose>
+     <xsl:when test="m:condition">
+       <xsl:apply-templates mode="c2p" select="m:condition/*"/>
+       <m:mo>&#8743;<!-- and --></m:mo>
+     </xsl:when>
+     <xsl:when test="m:domainofapplication">
+       <m:mrow>
+       <m:mrow>
+	 <xsl:for-each select="m:bvar">
+	   <xsl:apply-templates mode="c2p"/>
+	   <xsl:if test="position()!=last()">
+	     <m:mo>,</m:mo>
+	   </xsl:if>
+	 </xsl:for-each>
+       </m:mrow>
+       <m:mo>&#8712;<!-- in --></m:mo>
+       <xsl:apply-templates mode="c2p" select="m:domainofapplication/*"/>
+       <m:mo>&#8743;<!-- and --></m:mo>
+       </m:mrow>
+     </xsl:when>
+   </xsl:choose>
   <xsl:apply-templates mode="c2p" select="*[last()]"/>
  </m:mfenced>
 </m:mrow>
 </xsl:template>
+
 
 
 <!-- 4.4.3.19 abs -->
