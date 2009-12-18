@@ -5,7 +5,7 @@
 >
 
 <!--
-$Id: ctop-me.xsl,v 1.3 2009/01/11 21:37:22 dcarlis Exp $
+$Id: ctop-me.xsl,v 1.4 2009/01/13 22:53:41 dcarlis Exp $
 
 Copyright David Carlisle 2001, 2002, 2008.
 
@@ -41,7 +41,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
     <mml:mn><xsl:apply-templates mode="c2p" select="text()[1]"/></mml:mn>
     <mml:mo>+</mml:mo>
     <mml:mn><xsl:apply-templates mode="c2p" select="text()[2]"/></mml:mn>
-    <mml:mo><!--&#8290;--><!--invisible times--></mml:mo>
+    <mml:mo>&#8290;<!--invisible times--></mml:mo>
     <mml:mi>i<!-- imaginary i --></mml:mi>
   </mml:mrow>
 </xsl:template>
@@ -51,7 +51,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
     <mml:mn><xsl:apply-templates mode="c2p" select="*[2]"/></mml:mn>
     <mml:mo>+</mml:mo>
     <mml:mn><xsl:apply-templates mode="c2p" select="*[3]"/></mml:mn>
-    <mml:mo><!--&#8290;--><!--invisible times--></mml:mo>
+    <mml:mo>&#8290;<!--invisible times--></mml:mo>
     <mml:mi>i<!-- imaginary i --></mml:mi>
   </mml:mrow>
 </xsl:template>
@@ -89,12 +89,12 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 <xsl:template mode="c2p" match="mml:cn[@type='complex-polar']">
   <mml:mrow>
     <mml:mn><xsl:apply-templates mode="c2p" select="text()[1]"/></mml:mn>
-    <mml:mo><!--&#8290;--><!--invisible times--></mml:mo>
+    <mml:mo>&#8290;<!--invisible times--></mml:mo>
     <mml:msup>
     <mml:mi>e<!-- exponential e--></mml:mi>
     <mml:mrow>
      <mml:mi>i<!-- imaginary i--></mml:mi>
-     <mml:mo><!--&#8290;--><!--invisible times--></mml:mo>
+     <mml:mo>&#8290;<!--invisible times--></mml:mo>
      <mml:mn><xsl:apply-templates mode="c2p" select="text()[2]"/></mml:mn>
     </mml:mrow>
     </mml:msup>
@@ -104,12 +104,12 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 <xsl:template mode="c2p" match="mml:apply[*[1][self::mml:csymbol='complex_polar']]">
   <mml:mrow>
     <xsl:apply-templates mode="c2p" select="*[2]"/>
-    <mml:mo><!--&#8290;--><!--invisible times--></mml:mo>
+    <mml:mo>&#8290;<!--invisible times--></mml:mo>
     <mml:msup>
     <mml:mi>e<!-- exponential e--></mml:mi>
     <mml:mrow>
      <mml:mi>i<!-- imaginary i--></mml:mi>
-     <mml:mo><!--&#8290;--><!--invisible times--></mml:mo>
+     <mml:mo>&#8290;<!--invisible times--></mml:mo>
      <xsl:apply-templates mode="c2p" select="*[3]"/>
     </mml:mrow>
     </mml:msup>
@@ -158,7 +158,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
        </xsl:apply-templates>
      </xsl:otherwise>
    </xsl:choose>
- <mml:mo><!--&#8290;--><!--invisible times--></mml:mo>
+ <mml:mo>&#8289;<!--function application--></mml:mo>
  <mml:mfenced open="(" close=")" separators=",">
  <xsl:apply-templates mode="c2p" select="*[position()>1]"/>
  </mml:mfenced>
@@ -404,7 +404,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
       *[2][self::mml:cn[not(mml:sep) and (number(.) &lt;0)]]]">
      <mml:mrow>
      <mml:mn><xsl:value-of select="-(*[2])"/></mml:mn>
-      <mml:mo><!--&#8290;--><!--invisible times--></mml:mo>
+      <mml:mo>&#8290;<!--invisible times--></mml:mo>
      <xsl:apply-templates mode="c2p" select=".">
      <xsl:with-param name="first" select="2"/>
      <xsl:with-param name="p" select="2"/>
@@ -470,7 +470,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
     <mml:mo>
     <xsl:choose>
       <xsl:when test="self::mml:cn">&#215;<!-- times --></xsl:when>
-      <xsl:otherwise><!--&#8290;--><!--invisible times--></xsl:otherwise>
+      <xsl:otherwise>&#8290;<!--invisible times--></xsl:otherwise>
     </xsl:choose>
     </mml:mo>
    </xsl:if> 
@@ -1340,6 +1340,38 @@ priority="2">
 </mml:mrow>
 </xsl:template>
 
+<xsl:template mode="c2p" match="mml:matrix[mml:condition]">
+  <mml:mrow>
+    <mml:mo>[</mml:mo>
+    <mml:msub>
+      <mml:mi>m</mml:mi>
+      <mml:mrow>
+	<xsl:for-each select="mml:bvar">
+	  <xsl:apply-templates mode="c2p"/>
+	  <xsl:if test="position()!=last()"><mml:mo>,</mml:mo></xsl:if>
+	</xsl:for-each>
+      </mml:mrow>
+    </mml:msub>
+    <mml:mo>|</mml:mo>
+    <mml:mrow>
+      <mml:msub>
+	<mml:mi>m</mml:mi>
+	<mml:mrow>
+	  <xsl:for-each select="mml:bvar">
+	    <xsl:apply-templates mode="c2p"/>
+	    <xsl:if test="position()!=last()"><mml:mo>,</mml:mo></xsl:if>
+	  </xsl:for-each>
+	</mml:mrow>
+      </mml:msub>
+      <mml:mo>=</mml:mo>
+      <xsl:apply-templates mode="c2p" select="*[last()]"/>
+    </mml:mrow>
+    <mml:mo>;</mml:mo>
+    <xsl:apply-templates mode="c2p" select="mml:condition"/>
+    <mml:mo>]</mml:mo>
+  </mml:mrow>
+</xsl:template>
+
 <xsl:template mode="c2p" match="mml:apply[*[1][self::mml:csymbol='matrix']]">
 <mml:mrow>
 <mml:mo>(</mml:mo>
@@ -1349,6 +1381,7 @@ priority="2">
 <mml:mo>)</mml:mo>
 </mml:mrow>
 </xsl:template>
+
 
 <!-- 4.4.10.3 matrixrow  -->
 <xsl:template mode="c2p" match="mml:matrix/mml:matrixrow">
