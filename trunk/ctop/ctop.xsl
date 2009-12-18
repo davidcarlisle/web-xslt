@@ -5,7 +5,7 @@
 >
 
 <!--
-$Id: ctop-me.xsl,v 1.17 2009/01/24 00:33:14 dcarlis Exp $
+$Id: ctop-me.xsl,v 1.18 2009/04/03 13:21:46 dcarlis Exp $
 
 Copyright David Carlisle 2001, 2002, 2008, 2009.
 
@@ -1773,5 +1773,27 @@ match="m:apply[*[1][self::m:determinant]][*[2][self::m:matrix]]" priority="2">
   </m:mrow>
 </xsl:template>
 
+
+<!-- mathml 3 addtitions -->
+
+<xsl:template mode="c2p" match="m:cs">
+  <m:ms>
+   <xsl:value-of select="
+			 translate(.,
+			 '&#9;&#10;&#13;&#32;',
+			 '&#160;&#160;&#160;&#160;')"/>
+ </m:ms>
+</xsl:template>
+
+<xsl:template mode="c2p" match="m:cbytes">
+ <m:mrow/>
+</xsl:template>
+
+<xsl:template mode="c2p" match="m:cerror">
+ <m:merror>
+   <xsl:apply-templates mode="c2p"/>
+ </m:merror>
+</xsl:template>
+ 
 </xsl:stylesheet>
 
