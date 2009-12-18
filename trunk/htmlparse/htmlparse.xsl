@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.22 2004-08-20 10:49:23 David Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.23 2004-08-20 10:58:51 David Exp $-->
 
 <!--
 
@@ -75,7 +75,7 @@ d:htmlparse(string,namespace,html-mode)
 
 
   Note: very long attribute values (in excess of 800 characters) can cause 
-  javascript regexp stack overflow in Saxon (It may be able to avoid this
+  java regexp stack overflow in Saxon (It may be able to avoid this
   by using a larger JVM, haven't checked.)
 
 
