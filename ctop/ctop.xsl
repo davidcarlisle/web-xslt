@@ -5,7 +5,7 @@
 >
 
 <!--
-$Id: ctop-me.xsl,v 1.1 2008/10/24 05:43:49 dcarlis Exp $
+$Id: ctop-me.xsl,v 1.2 2008/11/10 15:55:38 dcarlis Exp $
 
 Copyright David Carlisle 2001, 2002, 2008.
 
@@ -280,7 +280,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 
 <!-- 4.4.2.15` domainofapplication -->
 <xsl:template mode="c2p" match="mml:domainofapplication">
- <mml:error/>
+ <mml:merror/>
 </xsl:template>
 
 <!-- 4.4.2.16` piecewise -->
@@ -1184,7 +1184,7 @@ priority="2">
  mml:arcsin | mml:arccos | mml:arctan | mml:arccosh
  | mml:arccot | mml:arccoth | mml:arccsc |
  mml:arccsch | mml:arcsec | mml:arcsech |
- mml:arcsinh | mml:arctanh | mml:ln">
+ mml:arcsinh | mml:arctanh | mml:ln|mml:mean">
 <mml:mi><xsl:value-of select="local-name()"/></mml:mi>
 </xsl:template>
 
