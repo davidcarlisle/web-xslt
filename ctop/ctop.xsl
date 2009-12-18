@@ -5,7 +5,7 @@
 >
 
 <!--
-$Id: ctop-me.xsl,v 1.7 2009/01/15 00:29:03 dcarlis Exp $
+$Id: ctop-me.xsl,v 1.8 2009/01/16 23:21:50 dcarlis Exp $
 
 Copyright David Carlisle 2001, 2002, 2008.
 
@@ -892,6 +892,26 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 <!-- 4.4.5.8 divergence-->
 <xsl:template mode="c2p" match="mml:divergence">
 <mml:mi>div</mml:mi>
+</xsl:template>
+
+<xsl:template mode="c2p" match="mml:apply[*[1][self::mml:divergence]and mml:vector]">
+<xsl:variable name="v" select="mml:bvar"/>
+<mml:mrow>
+<mml:mi>div</mml:mi>
+<mml:mo>&#8289;<!--function application--></mml:mo>
+<mml:mo>(</mml:mo>
+<mml:mtable>
+<xsl:for-each select="mml:vector/*">
+<xsl:variable name="p" select="position()"/>
+<mml:mtr><mml:mtd>
+<xsl:apply-templates mode="c2p" select="$v[$p]/*"/>
+<mml:mo>&#x21a6;<!-- map--></mml:mo>
+<xsl:apply-templates mode="c2p" select="."/>
+</mml:mtd></mml:mtr>
+</xsl:for-each>
+</mml:mtable>
+<mml:mo>)</mml:mo>
+</mml:mrow>
 </xsl:template>
 
 <!-- 4.4.5.9 grad-->
