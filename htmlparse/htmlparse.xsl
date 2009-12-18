@@ -10,21 +10,32 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.14 2004-08-09 14:13:15 David Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.15 2004-08-09 22:29:16 David Exp $-->
 
 <!--
 
 d:htmlparse(string)
+d:htmlparse(string,namespace,html-mode)
 
-  Parses the string as html using some inbuilt heuristics to control implied
-  opening and closing of elements. 
+  The one argument form is equivalent to
+  d:htmlparse(string,'http://ww.w3.org/1999/xhtml',true())
+
+
+  Parses the string as HTML and/or XML using some inbuilt heuristics to
+  control implied opening and closing of elements. 
 
   It doesn't have full knowledge of HTML DTD but does have full list of
   empty elements and full list of entity definitions. HTML entities, and
-  decimal and hex character references are all accepted.
+  decimal and hex character references are all accepted. Note html-entities
+  are recognised even if html-mode=false.
 
-  Element names are lowercased and placed into the XHTML1 namespace. 
-  Attribute names are lowercased.
+  Element names are lowercased (if html-mode is true()) and placed into the
+  namespace specified by the namespace parameter (which may be "" to denote
+  no-namespace unless the input has explict namespace declarations, in
+  which case these will be honoured. 
+
+  Attribute names are lowercased if html-mode=true()
+
   Four styles of attribute value are supported
       a="double quote delimited, including possibly unquoted < and >"
       a='single quote delimited, including possibly unquoted < and >'
@@ -36,15 +47,16 @@ d:htmlparse(string)
       a="unquotedtoken"
       a="a"
   Doctype declarations are accepted but ignored
-  Comments and Processing instructions produce equivalent constructs in the
+  Comments and processing instructions produce equivalent constructs in the
   result tree
   CDATA sections are parsed correctly (Baring bugs)
-  HTML Script and Style elemnets have some support as CDATA elements.
+  HTML Script and Style elemnets have some support as CDATA elements if
+  html-mode=true()
 
   XML "/>" empty element syntax is also accepted as are XML Namespace
   declarations, resulting elements will be in the specified namespaces
   (So Microsoft Style embedding of XML inside HTML should be parsed
-  correctly, note howeve that in html mode currently all elements are
+  correctly, note however that if html-mode=true() all elements are
   lowercased even in "XML" sections, and html element names such as
   li will be recognised and treated specially even in XML sections.
 
@@ -54,40 +66,20 @@ d:htmlparse(string)
   by using a larger JVM, haven't checked.)
 
 
-d:htmlparse(string,namespace-uri)
+Examples
 
-
-  In the two argument form, the second argument (which may be "") gives the
-  default namespace to use for initial unnamespaced elements in the input
-  string. If this is "http://ww.w3.org/1999/xhtml" then the behaviour is
-  exactly as described above for the one argument form. Otherwise the special
-  casing of HTML element names and lowercasing of element and attreibute
-  names is _not_ done. HTML entity names are still recognised though.
-  Implied element ending is still implemented so
-  
-  <a><b><c></a>
+  "<body><a>1<BR>2</a><p>zzz<p>www</body>"
   
   parses as
   
-  <a><b><c></c></b></a>
+  <body xmlns="http://www/w3.org/1999/xhtml"><a>1<br/>2</a><p>zzz</p><p>www</p></body>
   
-  <body><p>one <p>two </body>
-  
-  parses as
-  
-  <body><p>one <p>two </p></p></body>
-  
-  In "XHTML mode" however,
-  
-  <body><p>one <p>two </body>
-  
-  parses as
-  
-  <body><p>one </p><p>two </p></body>
-  
-  AS when producing XHTML, an opening p tag causes the closing of any
-  currently open p. Similar code is in place of HTML list items, etc.
+  With the default (one argument form) and parses as
 
+  <body><a>1<BR>2</BR></a><p>zzz<p>www</p></p></body>
+  
+  if namespace="" and html-mode=false()
+  
 Typical use:
 
   1)
@@ -128,16 +120,17 @@ Typical use:
    select="'&lt;!\[CDATA(.|\s)*\]\]>'"/>
 
 <xsl:function  name="d:htmlparse">
- <xsl:param name="s"/>
- <xsl:copy-of select="d:htmlparse($s,'http://www.w3.org/1999/xhtml')"/>
+ <xsl:param name="string" as="xs:string"/>
+ <xsl:copy-of select="d:htmlparse($string,'http://www.w3.org/1999/xhtml',true())"/>
 </xsl:function>
 
 <xsl:function name="d:htmlparse">
- <xsl:param name="s"/>
- <xsl:param name="ns"/>
- <xsl:variable name="xhtml" select="$ns='http://www.w3.org/1999/xhtml'"/>
+ <xsl:param name="string" as="xs:string"/>
+ <xsl:param name="namespace" as="xs:string"/> <!-- anyURI -->
+ <xsl:param name="html-mode" as="xs:boolean"/>
+
  <xsl:variable name="x">
-  <xsl:analyze-string select="replace($s,'&#13;&#10;','&#10;')"
+  <xsl:analyze-string select="replace($string,'&#13;&#10;','&#10;')"
      regex="&lt;(/?){$d:elem}\s*(({$d:attr})*)(/?)>|{$d:comment}|{$d:pi}|{$d:doctype}|{$d:cdata}">
     <xsl:matching-substring>
       <xsl:choose>
@@ -156,10 +149,10 @@ Typical use:
         </pi>
       </xsl:when>
       <xsl:when test="(regex-group(1)='/')">
-        <end name="{if ($xhtml) then lower-case(regex-group(2)) else regex-group(2)}"/>
+        <end name="{if ($html-mode) then lower-case(regex-group(2)) else regex-group(2)}"/>
       </xsl:when>
       <xsl:otherwise>
-        <start name="{if ($xhtml) then lower-case(regex-group(2)) else regex-group(2)}">
+        <start name="{if ($html-mode) then lower-case(regex-group(2)) else regex-group(2)}">
           <attrib>
             <xsl:analyze-string regex="{$d:attr}" select="regex-group(3)">
             <xsl:matching-substring>
@@ -174,7 +167,7 @@ Typical use:
                  </d:ns>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:attribute name="{if ($xhtml) then lower-case(regex-group(1)) else regex-group(1)}">
+                <xsl:attribute name="{if ($html-mode) then lower-case(regex-group(1)) else regex-group(1)}">
                   <xsl:choose>
                   <xsl:when test="starts-with(regex-group(3),'&quot;')">
                     <xsl:value-of select="d:chars(substring(regex-group(3),2,string-length(regex-group(3))-2))"/>
@@ -197,7 +190,7 @@ Typical use:
           </attrib>
         </start>
         <xsl:if test="regex-group(8)='/'">
-        <end name="{if ($xhtml) then lower-case(regex-group(2)) else regex-group(2)}"/>
+        <end name="{if ($html-mode) then lower-case(regex-group(2)) else regex-group(2)}"/>
         </xsl:if>
       </xsl:otherwise>
       </xsl:choose>
@@ -211,17 +204,17 @@ Typical use:
   
   <xsl:variable name="y">
   <xsl:choose>
-  <xsl:when test="$xhtml">
+  <xsl:when test="$html-mode">
     <xsl:apply-templates mode="d:html" select="$x/node()[1]"/>
   </xsl:when>
   <xsl:otherwise>  
     <xsl:apply-templates mode="d:gxml" select="$x/node()[1]"/>
   </xsl:otherwise>  
   </xsl:choose>
-</xsl:variable>
+  </xsl:variable>
   
   <xsl:variable name="j">
-   <xsl:element name="x" namespace="{if ($ns) then $ns else ''}"/> 
+   <xsl:element name="x" namespace="{if ($namespace) then $namespace else ''}"/> 
   </xsl:variable>
 
   <xsl:variable name="z">
