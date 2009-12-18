@@ -10,7 +10,7 @@
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.28 2009-04-22 16:21:35 David Carlisle Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.29 2009-05-06 20:52:34 David Carlisle Exp $-->
 
 <!--
 
@@ -113,8 +113,10 @@ Typical use:
 -->
 
 
+<!-- avoid using a (...)* here to avoid renumbering all the groups.
+     will need to do that one day -->
 <xsl:variable name="d:attr"
-   select="'(\i\c*)\s*(=\s*(&quot;[^&quot;]*&quot;|''[^'']*''|#?\c+))?\s*'"/>
+   select="'(\i\c*)\s*(=\s*(&quot;[^&quot;]*&quot;|''[^'']*''|[#/%]*\c+[#/%]*\c*[#/%]*\c*[#/%]*\c*))?\s*'"/>
 
 <xsl:variable name="d:elem"
    select="'(\i\c*)'"/>
