@@ -5,7 +5,7 @@
 >
 
 <!--
-$Id: ctop-me.xsl,v 1.14 2009/01/19 12:28:44 dcarlis Exp $
+$Id: ctop-me.xsl,v 1.15 2009/01/19 23:59:19 dcarlis Exp $
 
 Copyright David Carlisle 2001, 2002, 2008, 2009.
 
@@ -577,9 +577,10 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 <!-- 4.4.3.17 forall -->
 <xsl:template mode="c2p" match="m:apply[*[1][self::m:forall]]
                        |m:apply[*[1][self::m:csymbol='forall']]
+                       |m:bind[*[1][self::m:forall]]
                        |m:bind[*[1][self::m:csymbol='forall']]">
  <m:mrow>
-  <m:mi>&#8704;<!--forall--></m:mi>
+  <m:mo>&#8704;<!--forall--></m:mo>
  <m:mrow><xsl:apply-templates mode="c2p" select="m:bvar[not(current()/m:condition)]/*|m:condition/*"/></m:mrow>
  <m:mo>.</m:mo>
  <m:mfenced>
@@ -593,9 +594,10 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 <!-- 4.4.3.18 exists -->
 <xsl:template mode="c2p" match="m:apply[*[1][self::m:exists]]
                        |m:apply[*[1][self::m:csymbol='exists']]
+                       |m:bind[*[1][self::m:exists]]
                        |m:bind[*[1][self::m:csymbol='exists']]">
  <m:mrow>
-  <m:mi>&#8707;<!--exists--></m:mi>
+  <m:mo>&#8707;<!--exists--></m:mo>
  <m:mrow><xsl:apply-templates mode="c2p" select="m:bvar[not(current()/m:condition)]/*|m:condition/*"/></m:mrow>
  <m:mo>.</m:mo>
  <m:mfenced>
@@ -1148,11 +1150,11 @@ priority="2">
                        |m:apply[*[1][self::m:csymbol='sum']]">
   <xsl:param name="mo"><m:mo>&#8721;<!--sum--></m:mo></xsl:param>
  <m:mrow>
- <m:msubsup>
+ <m:munderover>
   <xsl:copy-of select="$mo"/>
  <m:mrow><xsl:apply-templates mode="c2p" select="m:lowlimit|m:interval/*[1]|m:condition/*|m:domainofapplication/*"/></m:mrow><!-- Alexey Shamrin shamrinATmail.ru -->
  <m:mrow><xsl:apply-templates mode="c2p" select="m:uplimit/*|m:interval/*[2]"/></m:mrow>
- </m:msubsup>
+ </m:munderover>
  <xsl:apply-templates mode="c2p" select="*[last()]"/>
 </m:mrow>
 </xsl:template>
@@ -1170,14 +1172,9 @@ priority="2">
 <!-- 4.4.7.2 product -->
 <xsl:template mode="c2p" match="m:apply[*[1][self::m:product]]
                        |m:apply[*[1][self::m:csymbol='product']]">
- <m:mrow>
- <m:msubsup>
-  <m:mo>&#8719;<!--product--></m:mo>
- <m:mrow><xsl:apply-templates mode="c2p" select="m:lowlimit|m:interval/*[1]|m:condition/*"/></m:mrow><!-- Alexey Shamrin shamrinATmail.ru -->
- <m:mrow><xsl:apply-templates mode="c2p" select="m:uplimit/*|m:interval/*[2]"/></m:mrow>
- </m:msubsup>
- <xsl:apply-templates mode="c2p" select="*[last()]"/>
-</m:mrow>
+  <xsl:call-template name="sum">
+    <xsl:with-param name="mo"><m:mo>&#8719;<!--product--></m:mo></xsl:with-param>
+  </xsl:call-template>
 </xsl:template>
 
 <!-- 4.4.7.3 limit -->
