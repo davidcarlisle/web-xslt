@@ -5,7 +5,7 @@
 >
 
 <!--
-$Id: ctop-me.xsl,v 1.8 2009/01/16 23:21:50 dcarlis Exp $
+$Id: ctop-me.xsl,v 1.9 2009/01/16 23:45:19 dcarlis Exp $
 
 Copyright David Carlisle 2001, 2002, 2008.
 
@@ -894,7 +894,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 <mml:mi>div</mml:mi>
 </xsl:template>
 
-<xsl:template mode="c2p" match="mml:apply[*[1][self::mml:divergence]and mml:vector]">
+<xsl:template mode="c2p" match="mml:apply[*[1][self::mml:divergence]and mml:bvar and mml:vector]">
 <xsl:variable name="v" select="mml:bvar"/>
 <mml:mrow>
 <mml:mi>div</mml:mi>
@@ -917,6 +917,22 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 <!-- 4.4.5.9 grad-->
 <xsl:template mode="c2p" match="mml:grad">
 <mml:mi>grad</mml:mi>
+</xsl:template>
+
+<xsl:template mode="c2p" match="mml:apply[*[1][self::mml:grad]and mml:bvar]">
+<mml:mrow>
+<mml:mi>grad</mml:mi>
+<mml:mo>&#8289;<!--function application--></mml:mo>
+<mml:mrow>
+<mml:mo>(</mml:mo>
+<mml:mfenced>
+<xsl:apply-templates mode="c2p" select="mml:bvar/*"/>
+</mml:mfenced>
+<mml:mo>&#x21a6;<!-- map--></mml:mo>
+<xsl:apply-templates mode="c2p" select="*[position()!=1][not(self::mml:bvar)]"/>
+<mml:mo>)</mml:mo>
+</mml:mrow>
+</mml:mrow>
 </xsl:template>
 
 <!-- 4.4.5.10 curl -->
