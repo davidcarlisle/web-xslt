@@ -6,11 +6,11 @@
    exclude-result-prefixes="d xs">
 
 <!-- 
- HTML Parser in XSLT2 Copyright 2004-2007 David Carlisle 
+ HTML Parser in XSLT2 Copyright 2004-2009 David Carlisle 
  Distribution, use and modification of this code permited so long as original is cited.
 -->
 
-<!-- $Id: htmlparse.xsl,v 1.30 2009-05-08 09:48:54 David Carlisle Exp $-->
+<!-- $Id: htmlparse.xsl,v 1.31 2009-05-08 13:36:12 David Carlisle Exp $-->
 
 <!--
 
@@ -31,7 +31,7 @@ d:htmlparse(string,namespace,html-mode)
 
   Element names are lowercased (if html-mode is true()) and placed into the
   namespace specified by the namespace parameter (which may be "" to denote
-  no-namespace unless the input has explict namespace declarations, in
+  no-namespace) unless the input has explict namespace declarations, in
   which case these will be honoured. 
 
   Attribute names are lowercased if html-mode=true()
@@ -46,6 +46,10 @@ d:htmlparse(string,namespace,html-mode)
       a="single quote delimited, including possibly unquoted &lt; and &gt;"
       a="unquotedtoken"
       a="a"
+  unquotedtoken here means any non empty sequence that is not white space
+  a single or double quote or a > character (earlier versions were more
+  restrictive but browsers are very forgiving...)
+
   Doctype declarations are accepted but ignored
   Comments and processing instructions produce equivalent constructs in the
   result tree
@@ -116,7 +120,7 @@ Typical use:
 <!-- avoid using a (...)* here to avoid renumbering all the groups.
      will need to do that one day -->
 <xsl:variable name="d:attr"
-   select="'(\i\c*)\s*(=\s*(&quot;[^&quot;]*&quot;|''[^'']*''|[#/%]*\c+[#/%]*\c*[#/%]*\c*[#/%]*\c*))?\s*'"/>
+   select="'(\i\c*)\s*(=\s*(&quot;[^&quot;]*&quot;|''[^'']*''|[^ \t\n\r''&quot;&gt;]+))?\s*'"/>
 
 <xsl:variable name="d:elem"
    select="'(\i\c*)'"/>
