@@ -5,7 +5,7 @@
 >
 
 <!--
-$Id: ctop-me.xsl,v 1.10 2009/01/17 21:47:35 dcarlis Exp $
+$Id: ctop-me.xsl,v 1.11 2009/01/17 21:56:00 dcarlis Exp $
 
 Copyright David Carlisle 2001, 2002, 2008.
 
@@ -1517,6 +1517,7 @@ priority="2">
                        |mml:apply[*[1][self::mml:csymbol='determinant']]">
 <mml:mrow>
 <mml:mi>det</mml:mi>
+ <mml:mo>&#8289;<!--function application--></mml:mo>
 <xsl:apply-templates mode="c2p" select="*[2]">
   <xsl:with-param name="p" select="7"/>
 </xsl:apply-templates>
