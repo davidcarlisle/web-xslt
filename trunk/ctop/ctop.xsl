@@ -5,7 +5,7 @@
 >
 
 <!--
-$Id: ctop-me.xsl,v 1.18 2009/04/03 13:21:46 dcarlis Exp $
+$Id: ctop-me.xsl,v 1.19 2009/04/18 00:54:55 dcarlis Exp $
 
 Copyright David Carlisle 2001, 2002, 2008, 2009.
 
@@ -72,7 +72,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
   </m:mrow>
 </xsl:template>
 
-<xsl:template mode="c2p" match="m:cn[@type='integer']">
+<xsl:template mode="c2p" match="m:cn[not(@type) or @type='integer']">
   <xsl:choose>
   <xsl:when test="not(@base) or @base=10">
        <m:mn><xsl:apply-templates mode="c2p"/></m:mn>
@@ -117,7 +117,18 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 </xsl:template>
 
 <xsl:template mode="c2p" match="m:cn[@type='e-notation']">
-    <m:mn><xsl:apply-templates mode="c2p" select="text()[1]"/>E<xsl:apply-templates mode="c2p" select="text()[2]"/></m:mn>
+  <m:mn>
+    <xsl:apply-templates mode="c2p" select="m:sep/preceding-sibling::node()"/>
+    <xsl:text>E</xsl:text>
+    <xsl:apply-templates mode="c2p" select="m:sep/following-sibling::node()"/>
+  </m:mn>
+</xsl:template>
+
+<xsl:template mode="c2p" match="m:cn[@type='hexdouble']">
+  <m:mn>
+    <xsl:text>0x</xsl:text>
+    <xsl:apply-templates mode="c2p"/>
+  </m:mn>
 </xsl:template>
 
 <!-- 4.4.1.1 ci  -->
