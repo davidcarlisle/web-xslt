@@ -5,7 +5,7 @@
 >
 
 <!--
-$Id: ctop-me.xsl,v 1.13 2009/01/19 00:48:37 dcarlis Exp $
+$Id: ctop-me.xsl,v 1.14 2009/01/19 12:28:44 dcarlis Exp $
 
 Copyright David Carlisle 2001, 2002, 2008, 2009.
 
@@ -1001,6 +1001,15 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 </xsl:call-template>
 </xsl:template>
 
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:union]][m:bvar]
+				|m:apply[*[1][self::m:csymbol='union']][m:bvar]"
+	      priority="2"
+>
+  <xsl:call-template name="sum">
+    <xsl:with-param name="mo"><m:mo>&#x22C3;</m:mo></xsl:with-param>
+  </xsl:call-template>
+</xsl:template>
+
 <!-- 4.4.6.4 intersect -->
 <xsl:template mode="c2p" match="m:apply[*[1][self::m:intersect]]
                        |m:apply[*[1][self::m:csymbol='intersect']]">
@@ -1011,6 +1020,18 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
  <xsl:with-param name="mo"><m:mo>&#8745;<!-- intersect --></m:mo></xsl:with-param>
 </xsl:call-template>
 </xsl:template>
+
+
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:intersect]][m:bvar]
+				|m:apply[*[1][self::m:csymbol='intersect']][m:bvar]"
+	      priority="2"
+>
+  <xsl:call-template name="sum">
+    <xsl:with-param name="mo"><m:mo>&#x22C2;</m:mo></xsl:with-param>
+  </xsl:call-template>
+</xsl:template>
+
+
 
 <!-- 4.4.6.5 in -->
 <xsl:template mode="c2p" match="m:apply[*[1][self::m:in]]
@@ -1123,11 +1144,12 @@ priority="2">
 
 
 <!-- 4.4.7.1 sum -->
-<xsl:template mode="c2p" match="m:apply[*[1][self::m:sum]]
+<xsl:template name="sum"  mode="c2p" match="m:apply[*[1][self::m:sum]]
                        |m:apply[*[1][self::m:csymbol='sum']]">
+  <xsl:param name="mo"><m:mo>&#8721;<!--sum--></m:mo></xsl:param>
  <m:mrow>
  <m:msubsup>
-  <m:mo>&#8721;<!--sum--></m:mo>
+  <xsl:copy-of select="$mo"/>
  <m:mrow><xsl:apply-templates mode="c2p" select="m:lowlimit|m:interval/*[1]|m:condition/*|m:domainofapplication/*"/></m:mrow><!-- Alexey Shamrin shamrinATmail.ru -->
  <m:mrow><xsl:apply-templates mode="c2p" select="m:uplimit/*|m:interval/*[2]"/></m:mrow>
  </m:msubsup>
