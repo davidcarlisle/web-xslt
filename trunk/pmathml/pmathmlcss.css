@@ -1,0 +1,233 @@
+math[display="block"]
+	{display:block;
+	margin:1ex 1em 1ex 12%;
+	text-align:left;
+	page-break-inside:avoid;}
+math[display="block"]:before
+	{content:"(" counter(equation) ")";
+	counter-increment:equation;
+	display:block;
+	float:right;}
+msubsup, msub, msup, munder, mover, munderover
+	{display:inline-table;
+	white-space:nowrap;}
+munder > *, mover > *, munderover > *
+	{display:table-row;
+	text-align:center;}
+mover  > * + *,  munderover > * + * + *
+	{display:table-caption;}
+munder > * + *, mover > * + *, munderover > * + *
+	{line-height:1.2em;
+	font-size:0.7em;}
+msup > *:first-child, msubsup > *:first-child
+	{padding-top:0.6ex;}
+msub > *:first-child, msubsup > *:first-child
+	{padding-bottom:0.6ex;}
+msubsup > *, msub > *, msup > *
+	{display:table-cell;}
+msubsup > * + *, msub > * + *, msup > * + *
+	{font-size:0.7em;}
+msubsup > * + *, msub > * + *
+	{vertical-align:bottom;}
+msubsup > * + * + *, msup > * + *
+	{vertical-align:top;}
+mfenced
+	{display:inline-table;}
+mfenced > *:first-child
+	{display:table-row;}
+mfenced > *:first-child:before,
+mfenced > *:first-child:after
+	{display:table-cell;
+	content:"\A0";
+	border-style:solid;
+	border-width:1px 0 1px 1px;}
+mfenced > *:first-child:after
+	{border-width:1px 1px 1px 0;}
+matrix
+	{display:inline-table;}
+mfrac
+	{display:inline-table;
+	border-collapse:collapse;
+	white-space:nowrap;
+	text-align:center;
+	line-height:1em;
+	margin:0 2px;
+	vertical-align:0.9em;}
+mfrac > *
+	{line-height:1.5em;}
+mfrac > *:first-child
+	{display:inline-table;
+	vertical-align:text-bottom;}
+mfrac > * + *
+	{display:table-row;
+	border-top:solid thin;}
+mfrac[linethickness="0"] > * + *
+	{border-top:none;}
+mfrac[linethickness="2"] > * + *,
+mfrac[linethickness="medium"] > * + *
+	{border-top-width:medium;}
+mfrac[linethickness="3"] > * + *,
+mfrac[linethickness="thick"] > * + *
+	{border-top-width:thick;}
+msqrt
+	{display:inline-block;
+	position:relative;
+	border-top:solid 1px;
+	border-left:groove 2px;
+	z-index:1;
+	margin:1px 0;
+	padding:2px 5px 0 3px;}
+msqrt:before
+	{
+display:inline-block;
+vertical-align: bottom;
+position:relative;
+left: -0.5em;
+top: 0em;
+	content: "\\";
+}
+mtable
+	{display:inline-table;
+	border-collapse:collapse;
+	vertical-align:middle;
+	text-align:center;
+	margin:1px;}
+mtr
+	{display:table-row}
+mtd
+	{display:table-cell;
+	line-height:1.7em;
+	white-space:nowrap;
+	padding:1px 8px}
+mtable[frame="solid"]
+	{border:solid thin;}
+mtable[frame="dashed"]
+	{border:dashed thin;}
+mtable[columnlines="solid"] > * > * + *
+	{border-left:solid thin;}
+mtable[columnlines="dashed"] > * > * + *
+	{border-left:dashed thin;}
+mtable[rowlines="solid"] > * + *
+	{border-top:solid thin;}
+mtable[rowlines="dashed"] > * + *
+	{border-top:dashed thin;}
+mtable[rowalign="top"] > * > *, mtd[rowalign="top"], mtr[rowalign="top"] > *
+	{vertical-align:top;}
+mtable[rowalign="center"] > * > *, mtd[rowalign="center"], mtr[rowalign="center"] > *
+	{vertical-align:middle;}
+mtable[rowalign="bottom"] > * > *, mtd[rowalign="bottom"], mtr[rowalign="bottom"] > *
+	{vertical-align:bottom;}
+mtable[rowalign="baseline"] > * > *, mtd[rowalign="baseline"], mtr[rowalign="baseline"] > *
+	{vertical-align:baseline;}
+mtable[columnalign="left"], mtd[columnalign="left"], mtr[columnalign="left"]
+	{text-align:left;}
+mtable[columnalign="right"], mtd[columnalign="right"], mtr[columnalign="right"]
+	{text-align:right;}
+mtable[columnalign="center"], mtd[columnalign="center"], mtr[columnalign="center"]
+	{text-align:center;}
+mphantom 
+	{visibility:hidden}
+merror
+	{outline:solid thin red}
+merror:before
+	{content:"Error: "}
+maction[actiontype="highlight"]:hover
+	{background-color:InfoBackground;
+	color:InfoText;}
+maction[actiontype="toggle"] > * + *,maction[actiontype="toggle"]:hover > *:first-child
+	{display:none}
+maction[actiontype="toggle"]:hover > *:first-child + *
+	{display:inline-block;}
+maction[actiontype="statusline"] > * + *, maction[actiontype="tooltip"] > * + *
+	{display:none}
+maction[actiontype="statusline"]:hover > * + *, maction[actiontype="tooltip"]:hover > * + *
+	{position:fixed;
+	display:block;
+	top:0;
+	left:0;
+	background-color:InfoBackground;
+	color:InfoText;
+	padding:0.5ex;
+	border:solid 1px}
+mspace[linebreak="goodbreak"]:before
+	{content:"\u200B";
+	white-space:normal;}
+mspace[linebreak="newline"]:before, mspace[linebreak="indentingnewline"]:before 
+	{content:"\\000A";
+	 white-space:pre;}
+mglyph[alt]:before
+	{content:attr(alt);}
+mi[normal], mi[mathvariant="normal"],mn[normal], mn[mathvariant="normal"],mo[normal], mo[mathvariant="normal"],ms[normal], ms[mathvariant="normal"],mtext[normal], mtext[mathvariant="normal"]
+	{font-style:normal;
+	font-weight:normal;}
+mi[mathvariant="italic"], mi[mathvariant="bold-italic"],mi[mathvariant="sans-serif-italic"], mi[mathvariant="sans-serif-bold-italic"],
+mn[mathvariant="italic"], mn[mathvariant="bold-italic"],mn[mathvariant="sans-serif-italic"], mn[mathvariant="sans-serif-bold-italic"],
+mo[mathvariant="italic"], mo[mathvariant="bold-italic"],mo[mathvariant="sans-serif-italic"], mo[mathvariant="sans-serif-bold-italic"],
+ms[mathvariant="italic"], ms[mathvariant="bold-italic"],ms[mathvariant="sans-serif-italic"], ms[mathvariant="sans-serif-bold-italic"],
+mtext[mathvariant="italic"], mtext[mathvariant="bold-italic"],mtext[mathvariant="sans-serif-italic"], mtext[mathvariant="sans-serif-bold-italic"]
+	{font-style:italic;}
+mi[mathvariant="bold"], mi[mathvariant="bold-italic"], mi[mathvariant="bold-sans-serif"], mi[mathvariant="sans-serif-bold-italic"],
+mn[mathvariant="bold"], mn[mathvariant="bold-italic"], mn[mathvariant="bold-sans-serif"], mn[mathvariant="sans-serif-bold-italic"],
+mo[mathvariant="bold"], mo[mathvariant="bold-italic"], mo[mathvariant="bold-sans-serif"], mo[mathvariant="sans-serif-bold-italic"],
+ms[mathvariant="bold"], ms[mathvariant="bold-italic"], ms[mathvariant="bold-sans-serif"], ms[mathvariant="sans-serif-bold-italic"],
+mtext[mathvariant="bold"], mtext[mathvariant="bold-italic"], mtext[mathvariant="bold-sans-serif"], mtext[mathvariant="sans-serif-bold-italic"]
+	{font-weight:bold;}
+mi[mathvariant="monospace"], mn[mathvariant="monospace"],mo[mathvariant="monospace"], ms[mathvariant="monospace"],mtext[mathvariant="monospace"]
+	{font-family:monospace;}
+mi[mathvariant="bold-sans-serif"], mi[mathvariant="bold-sans-serif"], mi[mathvariant="sans-serif-italic"], mi[mathvariant="sans-serif-bold-italic"],
+mn[mathvariant="bold-sans-serif"], mn[mathvariant="bold-sans-serif"], mn[mathvariant="sans-serif-italic"], mn[mathvariant="sans-serif-bold-italic"],
+mo[mathvariant="bold-sans-serif"], mo[mathvariant="bold-sans-serif"], mo[mathvariant="sans-serif-italic"], mo[mathvariant="sans-serif-bold-italic"],
+ms[mathvariant="bold-sans-serif"], ms[mathvariant="bold-sans-serif"], ms[mathvariant="sans-serif-italic"], ms[mathvariant="sans-serif-bold-italic"],
+mtext[mathvariant="bold-sans-serif"], mtext[mathvariant="bold-sans-serif"], mtext[mathvariant="sans-serif-italic"], mtext[mathvariant="sans-serif-bold-italic"]
+	{font-family:sans-serif;}
+mi[mathsize="small"], mn[mathsize="small"],mo[mathsize="small"], ms[mathsize="small"],mtext[mathsize="small"]
+	{font-size:0.8em;}
+mi[mathsize="normal"], mn[mathsize="normal"],mo[mathsize="normal"], ms[mathsize="normal"],mtext[mathsize="normal"]
+	{font-size:1em;}
+mi[mathsize="big"], mn[mathsize="big"],mo[mathsize="big"], ms[mathsize="big"],mtext[mathsize="big"]
+	{font-size:1.3em;}
+ms:before, ms:after 
+	{content:"\\0022"}
+ms[lquote]:before 
+	{content:attr(lquote)}
+ms[rquote]:after 
+	{content:attr(rquote)}
+menclose
+	{display:inline-table;
+	border-style:solid;
+	border-width:1px;
+	padding:0 2px;}
+menclose[notation="vertical"]
+	{border-width:0 1px;}
+menclose[notation="actuarial"]
+	{border-width:1px 0 0 1px;}
+menclose[notation="horizontal"]
+	{border-width:1px 0;}
+menclose[notation="top"]
+	{border-width:1px 0 0 0;}
+menclose[notation="bottom"]
+	{border-width:0 0 1px 0;}
+menclose[notation="left"]
+	{border-width:0 0 0 1px;}
+menclose[notation="right"]
+	{border-width:0 1px 0 0;}
+menclose[notation="overbrace"],	
+menclose[notation="underbrace"]
+	{border-style:none;}
+menclose[notation="overbrace"]:before,	
+menclose[notation="underbrace"]:after
+	{display:block;
+	content:"\A0";
+	border-style:solid;
+	border-width:0 1px 1px 1px;
+	height:3px;}
+menclose[notation="overbrace"]:before
+	{display:table-caption;
+	border-width:1px 1px 0 1px;}
+malign, maligngroup, mglyph, mlabeledtr, mmultiscripts,
+	{content:"Bork!"}	
+
+mrow[class="vert"]
+    {	border-style:solid;
+border-width: 0 1px 0 1px ;
+padding: 0 1px 0 1px;}
