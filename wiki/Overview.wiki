@@ -1,0 +1,14 @@
+#Overview
+
+= Introduction =
+A collection of XSLT stylesheets designed for processing MathML (mainly) but also HTML and perhaps OpenMath. Mostly they will be documented on the blog, tagged with
+[http://dpcarlisle.blogspot.com/search/label/googlecode googlecode].
+
+Currently this collection comprises of the following
+
+  * *[http://code.google.com/p/web-xslt/source/browse/trunk/ctop ctop]*, documentation tagged [http://dpcarlisle.blogspot.com/search/label/ctop ctop]<br>Stylesheet converting Content MathmML to Presntation MathML. This is XSLT 1.0, to allow use within a browser.
+  * *[http://code.google.com/p/web-xslt/source/browse/trunk/htmlparse htmlparse]*, documentation tagged [http://dpcarlisle.blogspot.com/search/label/htmlparse htmlparse]<br>HTML parser, implemented in XSLT 2.0.
+  * *[http://code.google.com/p/web-xslt/source/browse/trunk/node-set node-set]*, documentation tagged [http://dpcarlisle.blogspot.com/search/label/node-set node-set]<br>XSLT 1.0 (extended) stylesheet givig cross browser support for the EXSLT node-set extension.
+  * *[http://code.google.com/p/web-xslt/source/browse/trunk/pmathml pmathml]*, documentation tagged [http://dpcarlisle.blogspot.com/search/label/pmathml pmathml]<br>XSLT 1 stylesheet enabling MathML support in various browsers.
+  * *[http://code.google.com/p/web-xslt/source/browse/trunk/pmathmlascii pmathmlascii]*, documentation tagged [http://dpcarlisle.blogspot.com/search/label/pmathmlascii pmathmlascii]<br>XSLT 2.0 stylesheet displaying MathML as ASCII-art in a style similar to older terminal interfaces of computer algenra systems.
+  * *[http://code.google.com/p/web-xslt/source/browse/trunk/pmml2tex pmml2tex]*, documentation tagged [http://dpcarlisle.blogspot.com/search/label/pml2tex pmml2tex]<br>XSLT 2 stylesheet converting Presntation MathML to TeX for rendering to pdf, etc.
