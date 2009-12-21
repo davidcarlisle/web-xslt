@@ -34,7 +34,6 @@ var lists = document.getElementsByClassName("mmlhref");
 for (var i = 0; i &lt; lists.length; i++) {
     lists[i].onclick = function(){window.location=this.getAttribute('href')};
 }
-alert(lists.length);
 }
 window.onload = init; 
 
