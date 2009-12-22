@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name          ctop2
+// @name          ctop
 // @namespace     http://w3c.org/Math
-// @description   ctop2
-// @include       file:///C:/cygwin/home/w3c/WWW/Math/testsuite/*
+// @description   ctop
 // @include       http://www.w3.org/Math/testsuite/*
+// @include       http://www.w3.org/TR/MathML/*
 // ==/UserScript==
 
 
@@ -16,7 +16,7 @@ var xslt = new DOMParser().parseFromString('<xsl:stylesheet version="1.0" xmlns:
 window.addEventListener("load", function(e) {
 
 if(document.getElementsByTagNameNS('http://www.w3.org/1998/Math/MathML','math').length > 0) {
-//alert("Content mathml is herek13456jk8k9988558890550");
+//alert("Content mathml is here");
 
  var proc = new XSLTProcessor();
     proc.importStylesheet(xslt);
@@ -28,7 +28,6 @@ var newdocument=proc.transformToDocument(document);
 
 document.getElementsByTagNameNS("http://www.w3.org/1999/xhtml","html")[0].replaceChild(newdocument.getElementsByTagNameNS("http://www.w3.org/1999/xhtml","body")[0],document.getElementsByTagNameNS("http://www.w3.org/1999/xhtml","body")[0]);
 
-//document.getElementsByTagNameNS("http://www.w3.org/1999/xhtml","body")[0].appendChild(newdocument.getElementsByTagNameNS("http://www.w3.org/1999/xhtml","body")[0]);
 }
 else {
 // alert("Content mathml is NOT  here")
