@@ -5,7 +5,6 @@
 >
 
 <!--
-$Id: ctop-me.xsl,v 1.19 2009/04/18 00:54:55 dcarlis Exp $
 
 Copyright David Carlisle 2001, 2002, 2008, 2009.
 
@@ -13,7 +12,7 @@ Use and distribution of this code are permitted under the terms of the <a
 href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 >W3C Software Notice and License</a>.
 2001-2002 MathML2 version
-2008-1009     Updates for MathML3
+2008-2009     Updates for MathML3
 -->
 
 <xsl:output method="xml" />
