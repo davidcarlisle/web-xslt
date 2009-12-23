@@ -80,4 +80,23 @@
   </svg>
 </xsl:template>
 
+<!-- links -->
+
+<xsl:template match="*[@href]">
+  <a xmlns="http://www.w3.org/1999/xhtml" style="text-decoration: none" href="{@href}">
+    <xsl:copy>
+      <xsl:copy-of select="@*[not(local-name()='href')]"/>
+      <xsl:attribute name="href">
+	<xsl:value-of select="@href"/>
+      </xsl:attribute>
+      <xsl:attribute name="class">
+	<xsl:text>mmlhref </xsl:text>
+	<xsl:value-of select="@class"/>
+      </xsl:attribute>
+      <xsl:apply-templates/>
+    </xsl:copy>
+  </a>
+</xsl:template>
+
+
 </xsl:stylesheet>
