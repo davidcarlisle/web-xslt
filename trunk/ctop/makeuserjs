@@ -78,6 +78,13 @@ mm[i].parentNode.replaceChild(newmath,mm[i]);
 //alert(\"Content mathml is now presentation\");
 
 
+// hmph this seems to hit a greasemonkey security block
+// so back to putting in xhtml a links in the xslt.
+//var lists = document.getElementsByClassName(\"mmlhref\");
+//for (var i = 0; i < lists.length; i++) {
+//    lists[i].onclick = function(){window.location=this.getAttribute('href')};
+//}
+
 
 }
 else {
