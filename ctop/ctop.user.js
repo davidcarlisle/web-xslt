@@ -15,18 +15,25 @@ var xslt = new DOMParser().parseFromString('<xsl:stylesheet version="1.0" xmlns:
 
 window.addEventListener("load", function(e) {
 
-if(document.getElementsByTagNameNS('http://www.w3.org/1998/Math/MathML','math').length > 0) {
+var mm = document.getElementsByTagNameNS('http://www.w3.org/1998/Math/MathML','math');
+if(mm.length > 0) {
 //alert("Content mathml is here");
+
 
  var proc = new XSLTProcessor();
     proc.importStylesheet(xslt);
-var newdocument=proc.transformToDocument(document);
+
+for (var i = 0; i< mm.length;i++){
+
+var newmath=proc.transformToFragment(mm[i],document);
+//alert(i);
+mm[i].parentNode.replaceChild(newmath,mm[i]); 
+}
 // var dataString = (new XMLSerializer()).serializeToString(newdocument);
 //alert(dataString);
 //alert("Content mathml is now presentation");
 
 
-document.getElementsByTagNameNS("http://www.w3.org/1999/xhtml","html")[0].replaceChild(newdocument.getElementsByTagNameNS("http://www.w3.org/1999/xhtml","body")[0],document.getElementsByTagNameNS("http://www.w3.org/1999/xhtml","body")[0]);
 
 }
 else {
@@ -34,4 +41,3 @@ else {
 }
 
 }, false);
-
