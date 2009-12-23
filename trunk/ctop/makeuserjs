@@ -1,0 +1,89 @@
+print "// ==UserScript==
+// \@name          ctop
+// \@namespace     http://w3c.org/Math
+// \@description   ctop
+// \@include       http://www.w3.org/Math/testsuite/*
+// \@include       http://www.w3.org/TR/MathML/*
+// ==/UserScript==
+
+var xslt = new DOMParser().parseFromString('<x:stylesheet version=\"1.0\" xmlns:x=\"http://www.w3.org/1999/XSL/Transform\" xmlns:m=\"http://www.w3.org/1998/Math/MathML\"> ";
+
+open (CTP,"ctop.xsl") || die ("ctop  not readable!!\n") ;
+
+$ss="";
+
+while($line = <CTP>) {
+$line =~ s/ *[\r\n]+/ /;
+$line =~ s/<!--[^-]*-->//;
+$line =~ s/> */>/g;
+$line =~ s/ *</</g;
+$line =~ s/xsl:/x:/g;
+$line =~ s/ *mode="c2p"//g;
+$line =~ s/'/\\'/g;
+
+
+
+$ss .= $line unless ($line =~ /<\/x:stylesheet>/);
+
+}
+
+$ss =~ s/[^>]*>//;
+
+print $ss;
+
+open (MML2,"mml3mml2.xsl") || die ("mml3mml2  not readable!!\n") ;
+
+$ss="";
+
+while($line = <MML2>) {
+$line =~ s/ *[\r\n]+/ /g;
+$line =~ s/<!--[^-]*-->//g;
+$line =~ s/> */>/g;
+$line =~ s/ *</</g;
+$line =~ s/xsl:/x:/g;
+$line =~ s/ *mode="c2p"//;
+$line =~ s/'/\\'/g;
+
+
+
+$ss .= $line unless ($line =~ /<\/x:stylesheet>/);
+
+}
+
+$ss =~ s/[^>]*>//;
+
+print $ss;
+
+
+print "</x:stylesheet>', \"text/xml\");
+
+window.addEventListener(\"load\", function(e) {
+
+var mm = document.getElementsByTagNameNS('http://www.w3.org/1998/Math/MathML','math');
+if(mm.length > 0) {
+//alert(\"Content mathml is here\");
+
+
+ var proc = new XSLTProcessor();
+    proc.importStylesheet(xslt);
+
+for (var i = 0; i< mm.length;i++){
+
+var newmath=proc.transformToFragment(mm[i],document);
+//alert(i);
+mm[i].parentNode.replaceChild(newmath,mm[i]); 
+}
+// var dataString = (new XMLSerializer()).serializeToString(newdocument);
+//alert(dataString);
+//alert(\"Content mathml is now presentation\");
+
+
+
+}
+else {
+// alert(\"Content mathml is NOT  here\")
+}
+
+}, false);";
+
+
