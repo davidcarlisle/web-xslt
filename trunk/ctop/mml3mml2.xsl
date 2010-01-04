@@ -1,5 +1,6 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-		xmlns:m="http://www.w3.org/1998/Math/MathML">
+		xmlns:m="http://www.w3.org/1998/Math/MathML"
+		xmlns:e="http://exslt.org/strings">
 
 
 <xsl:template match="*[@dir='rtl']" >
@@ -127,5 +128,62 @@
 </xsl:template>
 
 
+<!-- mstack -->
+
+<xsl:template match="m:mstack">
+<m:mtable>
+<xsl:for-each select="*">
+<m:mtr>
+<xsl:apply-templates select="." mode="ms"/>
+</m:mtr>
+</xsl:for-each>
+</m:mtable>
+</xsl:template>
+
+<xsl:template match="m:mn" mode="ms">
+<xsl:for-each select="e:tokenize(.,'')">
+<m:mtd><xsl:value-of select="."/></m:mtd>
+</xsl:for-each>
+</xsl:template>
+
+<xsl:template match="m:msrow" mode="ms">
+<xsl:apply-templates select="*" mode="ms"/>
+</xsl:template>
+
+<xsl:template match="*" mode="ms">
+<m:mtd><xsl:apply-templates select="."/></m:mtd>
+</xsl:template>
+
+<xsl:template match="m:msline" mode="ms">
+<xsl:attribute name="style">border: solid black thin</xsl:attribute>
+<m:mtd>
+<xsl:attribute name="style">border: solid black thin</xsl:attribute>
+</m:mtd>
+</xsl:template>
+
+
+<xsl:template match="m:mscarries" mode="ms">
+<xsl:apply-templates select="*" mode="msc"/>
+</xsl:template>
+
+<xsl:template match="*" mode="msc">
+<m:mtd mathfontsize="0.7"><xsl:apply-templates select="."/></m:mtd>
+</xsl:template>
+
+
+
+<xsl:template match="m:msgroup" mode="ms">
+<xsl:for-each select="*">
+<m:mtr>
+<xsl:apply-templates select="." mode="ms"/>
+<!--<xsl:if test="../@shift">
+<xsl:variable name="n" select="position() * ../@shift"/>
+<xsl:for-each select="(//*)[position() &lt;= $n]">
+<m:mtd/>
+</xsl:for-each>
+</xsl:if>-->
+</m:mtr>
+</xsl:for-each>
+</xsl:template>
 
 </xsl:stylesheet>
