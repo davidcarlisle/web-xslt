@@ -1,6 +1,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		xmlns:m="http://www.w3.org/1998/Math/MathML"
-		xmlns:e="http://exslt.org/strings">
+		xmlns:e="http://exslt.org/strings"
+		xmlns:c="http://exslt.org/common">
 
 
 <xsl:template match="*[@dir='rtl']" >
@@ -131,18 +132,36 @@
 <!-- mstack -->
 
 <xsl:template match="m:mstack">
-<m:mtable>
-<xsl:for-each select="*">
+<m:mtable columnspacing="0em">
+<xsl:variable name="t">
+<xsl:apply-templates select="*" mode="mst"/>
+</xsl:variable>
+<xsl:apply-templates mode="p" select="c:node-set($t)/*">
+  <xsl:with-param name="c" select="10"/>
+</xsl:apply-templates>
+</m:mtable>
+</xsl:template>
+
+<xsl:template match="m:mtr" mode="p">
+<xsl:param name="c"/>
+<xsl:copy>
+<xsl:copy-of select="@*"/>
+<xsl:variable name="n" select="$c - count(*)"/>
+<xsl:for-each select="(//*)[position() &lt;= $n]">
+  <m:mtd></m:mtd>
+</xsl:for-each>
+<xsl:copy-of select="*"/>
+</xsl:copy>
+</xsl:template>
+<xsl:template match="*" mode="mst">
 <m:mtr>
 <xsl:apply-templates select="." mode="ms"/>
 </m:mtr>
-</xsl:for-each>
-</m:mtable>
 </xsl:template>
 
 <xsl:template match="m:mn" mode="ms">
 <xsl:for-each select="e:tokenize(.,'')">
-<m:mtd><xsl:value-of select="."/></m:mtd>
+<m:mtd><m:mn><xsl:value-of select="."/></m:mn></m:mtd>
 </xsl:for-each>
 </xsl:template>
 
@@ -172,16 +191,16 @@
 
 
 
-<xsl:template match="m:msgroup" mode="ms">
+<xsl:template match="m:msgroup" mode="mst">
 <xsl:for-each select="*">
 <m:mtr>
 <xsl:apply-templates select="." mode="ms"/>
-<!--<xsl:if test="../@shift">
+<xsl:if test="../@shift">
 <xsl:variable name="n" select="position() * ../@shift"/>
 <xsl:for-each select="(//*)[position() &lt;= $n]">
-<m:mtd/>
+<m:mtd></m:mtd>
 </xsl:for-each>
-</xsl:if>-->
+</xsl:if>
 </m:mtr>
 </xsl:for-each>
 </xsl:template>
