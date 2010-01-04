@@ -205,4 +205,16 @@
 </xsl:for-each>
 </xsl:template>
 
+
+<xsl:template match="m:mlongdiv">
+<m:mtable columnspacing="0em">
+<xsl:variable name="t">
+<xsl:apply-templates select="*[position()&gt;2]" mode="mst"/>
+</xsl:variable>
+<xsl:apply-templates mode="p" select="c:node-set($t)/*">
+  <xsl:with-param name="c" select="10"/>
+</xsl:apply-templates>
+</m:mtable>
+</xsl:template>
+
 </xsl:stylesheet>
