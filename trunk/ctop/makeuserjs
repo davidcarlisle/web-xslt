@@ -6,7 +6,7 @@ print "// ==UserScript==
 // \@include       http://www.w3.org/TR/MathML/*
 // ==/UserScript==
 
-var xslt = new DOMParser().parseFromString('<x:stylesheet version=\"1.0\" xmlns:x=\"http://www.w3.org/1999/XSL/Transform\" xmlns:m=\"http://www.w3.org/1998/Math/MathML\" xmlns:e=\"http://exslt.org/strings\"> ";
+var xslt = new DOMParser().parseFromString('<x:stylesheet version=\"1.0\" xmlns:x=\"http://www.w3.org/1999/XSL/Transform\" xmlns:m=\"http://www.w3.org/1998/Math/MathML\" xmlns:e=\"http://exslt.org/strings\"  xmlns:c=\"http://exslt.org/common\"> ";
 
 open (CTP,"ctop.xsl") || die ("ctop  not readable!!\n") ;
 
