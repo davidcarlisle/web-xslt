@@ -27,10 +27,16 @@ namespace WindowsFormsApplication1
 
  ido = Clipboard.GetDataObject();
             var data = (MemoryStream)ido.GetData("MathML");
-
+               
             if (data == null)
             {
-                textBox2.Text = "No MathML on Clipboard";
+                textBox2.Text = "No MathML on Clipboard\r\nAvailable formats:\r\n";
+                for (var i = 0; i < ido.GetFormats().Length; i++)
+                {
+                    textBox2.Text += ido.GetFormats()[i];
+                    textBox2.Text += "\r\n";
+                }
+
             }
             else
             {
