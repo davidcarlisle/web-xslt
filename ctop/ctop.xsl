@@ -1079,7 +1079,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 </xsl:template>
 
 <!-- 4.4.6.5 notin -->
-<xsl:template mode="c2p" match="m:apply[*[1][self::m:notin]]
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:notin]]|m:reln[*[1][self::m:notin]]
                        |m:apply[*[1][self::m:csymbol='notin']]">
   <xsl:param name="p" select="0"/>
 <xsl:call-template name="binary">
@@ -1768,12 +1768,19 @@ match="m:apply[*[1][self::m:determinant]][*[2][self::m:matrix]]" priority="2">
    <m:mo><xsl:value-of select="$o"/></m:mo>
    <xsl:choose>
    <xsl:when test="m:condition">
-   <m:mrow><xsl:apply-templates mode="c2p" select="m:bvar/*[not(self::m:bvar or self::m:condition)]"/></m:mrow><!--dpc-->
+   <m:mrow><xsl:apply-templates mode="c2p" select="m:condition/following-sibling::*"/></m:mrow>
    <m:mo>|</m:mo>
    <m:mrow><xsl:apply-templates mode="c2p" select="m:condition/node()"/></m:mrow>
    </xsl:when>
+   <xsl:when test="m:domainofapplication">
+    <m:mrow><xsl:apply-templates mode="c2p" select="m:domainofapplication/following-sibling::*"/></m:mrow>
+    <m:mo>|</m:mo>
+    <m:mrow><xsl:apply-templates mode="c2p" select="m:bvar/node()"/></m:mrow>
+    <m:mo>&#8712;<!-- in --></m:mo>
+    <m:mrow><xsl:apply-templates mode="c2p" select="m:domainofapplication/node()"/></m:mrow>
+   </xsl:when>
    <xsl:otherwise>
-    <xsl:for-each select="*[not(position()=1 and parent::m:apply)]"><!--dpc-->
+    <xsl:for-each select="*[not(position()=1 and parent::m:apply)]">
       <xsl:apply-templates mode="c2p" select="."/>
       <xsl:if test="position() !=last()"><m:mo>,</m:mo></xsl:if>
     </xsl:for-each>
