@@ -4,37 +4,65 @@
 		xmlns:c="http://exslt.org/common">
 
 
-<xsl:template match="*[@dir='rtl']" >
-  <xsl:copy>
-    <xsl:apply-templates select="@*|node()" mode="rtl"/>
-  </xsl:copy>
+<xsl:template match="*[@dir='rtl']"  priority="10">
+<!--starting rtl <xsl:value-of select="name()"/>.-->
+  <xsl:apply-templates mode="rtl" select="."/>
 </xsl:template>
 
 <xsl:template match="@*" mode="rtl">
   <xsl:copy-of select="."/>
 </xsl:template>
 <xsl:template match="*" mode="rtl">
-  <xsl:copy>
+ <xsl:copy>
     <xsl:apply-templates select="@*" mode="rtl"/>
-    <xsl:apply-templates mode="rtl">
+    <xsl:for-each select="node()">
       <xsl:sort data-type="number" order="descending" select="position()"/>
-    </xsl:apply-templates>
+<!--child <xsl:value-of select="name()"/>, <xsl:value-of select="position()"/> of <xsl:value-of select="name(..)"/>-->
+<xsl:text> </xsl:text>
+      <xsl:apply-templates mode="rtl" select="."/>
+    </xsl:for-each>
   </xsl:copy>
 </xsl:template>
-<xsl:template match="mfenced" mode="rtl">
-  <xsl:copy>
-    <xsl:apply-templates select="@*" mode="rtl"/>
-    <xsl:attribute name="open">
-      <xsl:apply-templates select="@close" mode="rtl"/>
-    </xsl:attribute>
-    <xsl:attribute name="close">
-      <xsl:apply-templates select="@open" mode="rtl"/>
-    </xsl:attribute>
-    <xsl:apply-templates mode="rtl">
-      <xsl:sort data-type="number" order="descending" select="position()"/>
-    </xsl:apply-templates>
-  </xsl:copy>
+
+<xsl:template match="@open" mode="rtl">
+    <xsl:attribute name="close"><xsl:value-of select="."/></xsl:attribute>
 </xsl:template>
+<xsl:template match="@close" mode="rtl">
+    <xsl:attribute name="open"><xsl:value-of select="."/></xsl:attribute>
+</xsl:template>
+
+<xsl:template match="m:mfrac[@bevelled='true']" mode="rtl">
+<m:mrow>
+<m:msub><m:mi></m:mi><xsl:apply-templates select="*[2]" mode="rtl"/></m:msub>
+<m:mo>&#x5c;</m:mo>
+<m:msup><m:mi></m:mi><xsl:apply-templates select="*[1]" mode="rtl"/></m:msup>
+</m:mrow>
+</xsl:template>
+
+<xsl:template match="m:mfrac" mode="rtl">
+<xsl:copy>
+ <xsl:apply-templates mode="rtl" select="@*|*"/>
+</xsl:copy>
+</xsl:template>
+
+
+
+<xsl:template match="m:mroot" mode="rtl">
+<m:msup>
+<m:menclose notation="top right">
+ <xsl:apply-templates mode="rtl" select="@*|*[1]"/>
+</m:menclose>
+<xsl:apply-templates mode="rtl" select="*[2]"/>
+</m:msup>
+</xsl:template>
+
+
+<xsl:template match="m:msqrt" mode="rtl">
+<m:menclose notation="top right">
+ <xsl:apply-templates mode="rtl" select="@*|*[1]"/>
+</m:menclose>
+</xsl:template>
+
 <xsl:template match="m:mtable|m:munder|m:over|m:munderover" mode="rtl" priority="2">
   <xsl:copy>
     <xsl:apply-templates select="@*" mode="rtl"/>
@@ -69,13 +97,28 @@
 <xsl:template match="m:mmultiscripts" mode="rtl" priority="2">
   <m:mmultiscripts>
     <xsl:apply-templates select="*[1]" mode="rtl"/>
-    <xsl:apply-templates select="m:mprescripts/following-sibling::*" mode="rtl">
+    <xsl:for-each  select="m:mprescripts/following-sibling::*[position() mod 2 = 1]">
       <xsl:sort data-type="number" order="descending" select="position()"/>
-    </xsl:apply-templates>
+      <xsl:apply-templates select="."  mode="rtl"/>
+      <xsl:apply-templates select="following-sibling::*[1]"  mode="rtl"/>
+    </xsl:for-each>
     <m:mprescripts/>
-    <xsl:apply-templates select="m:mprescripts/preceding-sibling::*[position()!=last()]" mode="rtl">
+    <xsl:for-each  select="m:mprescripts/preceding-sibling::*[position()!=last()][position() mod 2 = 0]">
       <xsl:sort data-type="number" order="descending" select="position()"/>
-    </xsl:apply-templates>
+      <xsl:apply-templates select="."  mode="rtl"/>
+      <xsl:apply-templates select="following-sibling::*[1]"  mode="rtl"/>
+    </xsl:for-each>
+  </m:mmultiscripts>
+</xsl:template>
+<xsl:template match="m:mmultiscripts[not(m:mprescripts)]" mode="rtl" priority="3">
+  <m:mmultiscripts>
+    <xsl:apply-templates select="*[1]" mode="rtl"/>
+    <m:mprescripts/>
+    <xsl:for-each  select="*[position() mod 2 = 0]">
+      <xsl:sort data-type="number" order="descending" select="position()"/>
+      <xsl:apply-templates select="."  mode="rtl"/>
+      <xsl:apply-templates select="following-sibling::*[1]"  mode="rtl"/>
+    </xsl:for-each>
   </m:mmultiscripts>
 </xsl:template>
 <xsl:template match="text()[.='(']" mode="rtl">)</xsl:template>
@@ -95,6 +138,11 @@
     </g>
   </svg>
 </xsl:template>
+
+<xsl:template match="@notation[.='radical']" mode="rtl">
+<xsl:attribute name="notation">top right</xsl:attribute>
+</xsl:template>
+
 
 <!-- attributes-->
 <xsl:template name="mml2attrib">
