@@ -1812,5 +1812,9 @@ match="m:apply[*[1][self::m:determinant]][*[2][self::m:matrix]]" priority="2">
  </m:merror>
 </xsl:template>
  
+<xsl:template  mode="c2p" match="m:share" priority="4">
+ <m:mi href="{@href}">share<xsl:value-of select="substring-after(@href,'#')"/></m:mi>
+</xsl:template>
+
 </xsl:stylesheet>
 
