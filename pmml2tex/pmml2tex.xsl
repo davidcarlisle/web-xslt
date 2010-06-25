@@ -10,7 +10,7 @@
 
 <xsl:import href="pmml2texfrag.xsl"/>
 
-<xsl:output encoding="US-ASCII" omit-xml-declaration="yes" indent="no"/>
+<xsl:output encoding="US-ASCII" method="text" omit-xml-declaration="yes" indent="no"/>
 
 
 
@@ -65,7 +65,7 @@
 
 <xsl:template match="h:img">
 
-\includegraphics{<!--../w3c/WWW/<xsl:text/>
+\includegraphics{../../w3c/WWW/<!--../w3c/WWW/<xsl:text/>
 <xsl:value-of select="substring-after(@src,'w3c/WWW/')"/>--><xsl:value-of select="@src"/>
 <xsl:text>}
 
@@ -103,13 +103,20 @@
   <xsl:apply-templates mode="pmml2tex"/>
 </xsl:variable>
 <xsl:if test="$tex">
-	    <xsl:value-of select="for $c in string-to-codepoints(normalize-space($tex)) return
+	    <xsl:value-of select="for $c in string-to-codepoints(replace($tex,' *&#10;\s+','&#10;')) return
 				  if ($c gt 127) then ('\unicode{',$c,'}') else codepoints-to-string($c)"
 			  separator=""/>
 </xsl:if>
 
 \]
 
+</xsl:template>
+
+
+<xsl:template match="h:pre">
+\begin{verbatim}
+<xsl:apply-templates mode="pmml2tex"/>
+\end{verbatim}
 </xsl:template>
 
 </xsl:stylesheet>
