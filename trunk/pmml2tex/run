@@ -1,0 +1,6 @@
+
+cp /home/w3c/WWW/Math/testsuite/build/main/toc.xml .
+saxon9 -o pmml.xml toc.xml  mml2tex.xsl matches=/ElementaryMathExamples/ posn=7
+saxon9 -o pmml.tex pmml.xml pmml2tex.xsl
+pdflatex pmml
+
