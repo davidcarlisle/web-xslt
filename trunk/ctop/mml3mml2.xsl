@@ -3,6 +3,12 @@
 		xmlns:e="http://exslt.org/strings"
 		xmlns:c="http://exslt.org/common">
 
+<xsl:template match="*">
+<xsl:copy>
+ <xsl:copy-of select="@*"/>
+<xsl:apply-templates/>
+</xsl:copy>
+</xsl:template>
 
 <xsl:template match="*[@dir='rtl']"  priority="10">
 <!--starting rtl <xsl:value-of select="name()"/>.-->
@@ -63,7 +69,7 @@
 </m:menclose>
 </xsl:template>
 
-<xsl:template match="m:mtable|m:munder|m:over|m:munderover" mode="rtl" priority="2">
+<xsl:template match="m:mtable|m:munder|m:mover|m:munderover" mode="rtl" priority="2">
   <xsl:copy>
     <xsl:apply-templates select="@*" mode="rtl"/>
     <xsl:apply-templates mode="rtl">
@@ -265,4 +271,9 @@
 </m:mtable>
 </xsl:template>
 
+<xsl:template match="m:mlabeledtr">
+<m:mtr>
+<xsl:apply-templates/>
+</m:mtr>
+</xsl:template>
 </xsl:stylesheet>
