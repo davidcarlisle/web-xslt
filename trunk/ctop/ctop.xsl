@@ -221,6 +221,19 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
  <m:mfenced open="{{" close="}}"><xsl:apply-templates mode="c2p"/></m:mfenced>
 </xsl:template>
 
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:csymbol='integer_interval']]">
+ <m:mfenced open="[" close="]"><xsl:apply-templates mode="c2p" select="*[position()!=1]"/></m:mfenced>
+</xsl:template>
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:csymbol='interval']]">
+ <m:mfenced open="[" close="]"><xsl:apply-templates mode="c2p" select="*[position()!=1]"/></m:mfenced>
+</xsl:template>
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:csymbol='interval-cc']]">
+ <m:mfenced open="[" close="]"><xsl:apply-templates mode="c2p" select="*[position()!=1]"/></m:mfenced>
+</xsl:template>
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:csymbol='interval-oo']]">
+ <m:mfenced open="(" close=")"><xsl:apply-templates mode="c2p" select="*[position()!=1]"/></m:mfenced>
+</xsl:template>
+
 <!-- 4.4.2.5 inverse -->
 
 <xsl:template mode="c2p" match="m:apply[*[1][self::m:inverse]]
@@ -1178,8 +1191,7 @@ priority="2">
 
 
 <!-- 4.4.7.1 sum -->
-<xsl:template name="sum"  mode="c2p" match="m:apply[*[1][self::m:sum]]
-                       |m:apply[*[1][self::m:csymbol='sum']]">
+<xsl:template name="sum"  mode="c2p" match="m:apply[*[1][self::m:sum]]">
   <xsl:param name="mo"><m:mo>&#8721;<!--sum--></m:mo></xsl:param>
  <m:mrow>
  <m:munderover>
@@ -1187,6 +1199,15 @@ priority="2">
  <m:mrow><xsl:apply-templates mode="c2p" select="m:lowlimit|m:interval/*[1]|m:condition/*|m:domainofapplication/*"/></m:mrow><!-- Alexey Shamrin shamrinATmail.ru -->
  <m:mrow><xsl:apply-templates mode="c2p" select="m:uplimit/*|m:interval/*[2]"/></m:mrow>
  </m:munderover>
+ <xsl:apply-templates mode="c2p" select="*[last()]"/>
+</m:mrow>
+</xsl:template>
+
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:csymbol='sum']]">
+<m:mrow>
+<m:munder><m:mo>&#8721;<!--sum--></m:mo>
+<xsl:apply-templates mode="c2p" select="*[2]"/>
+</m:munder>
  <xsl:apply-templates mode="c2p" select="*[last()]"/>
 </m:mrow>
 </xsl:template>
@@ -1202,16 +1223,24 @@ priority="2">
 </xsl:template>
 
 <!-- 4.4.7.2 product -->
-<xsl:template mode="c2p" match="m:apply[*[1][self::m:product]]
-                       |m:apply[*[1][self::m:csymbol='product']]">
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:product]]">
   <xsl:call-template name="sum">
     <xsl:with-param name="mo"><m:mo>&#8719;<!--product--></m:mo></xsl:with-param>
   </xsl:call-template>
 </xsl:template>
 
+
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:csymbol='product']]">
+<m:mrow>
+<m:munder><m:mo>&#8719;<!--product--></m:mo>
+<xsl:apply-templates mode="c2p" select="*[2]"/>
+</m:munder>
+ <xsl:apply-templates mode="c2p" select="*[last()]"/>
+</m:mrow>
+</xsl:template>
+
 <!-- 4.4.7.3 limit -->
-<xsl:template mode="c2p" match="m:apply[*[1][self::m:limit]]
-                       |m:apply[*[1][self::m:csymbol='limit']]">
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:limit]]">
  <m:mrow>
  <m:munder>
   <m:mi>lim</m:mi> <!-- Alexey Shamrin shamrinATmail.ru -->
@@ -1220,6 +1249,28 @@ priority="2">
  <xsl:apply-templates mode="c2p" select="*[last()]"/>
 </m:mrow>
 </xsl:template>
+
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:csymbol='limit']][m:bind]">
+ <m:mrow>
+ <m:munder>
+  <m:mi>lim</m:mi>
+ <m:mrow>
+ <xsl:apply-templates mode="c2p" select="m:bind/m:bvar/*"/>
+    <m:mo>
+      <xsl:choose>
+	<xsl:when test="*[3]='above'">&#8600;<!--searrow--></xsl:when>
+	<xsl:when test="*[3]='below'">&#8599;<!--nearrow--></xsl:when>
+	<xsl:otherwise>&#8594;<!--rightarrow--></xsl:otherwise>
+      </xsl:choose>
+    </m:mo>
+ <xsl:apply-templates mode="c2p" select="*[2]"/>    
+</m:mrow>
+ </m:munder>
+ <xsl:apply-templates mode="c2p" select="m:bind/*[last()]"/>
+</m:mrow>
+</xsl:template>
+
+
 
 <xsl:template mode="c2p" match="m:apply[m:limit]/m:lowlimit" priority="4">
 <m:mrow>
@@ -1259,6 +1310,14 @@ priority="2">
       </xsl:choose>
     </m:mo>
     <xsl:apply-templates mode="c2p" select="*[4]"/>
+  </m:mrow>
+</xsl:template>
+
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:semantics/m:ci='tendsto']]">
+  <m:mrow>
+    <xsl:apply-templates mode="c2p" select="*[2]"/>
+    <m:mo>&#8594;<!--rightarrow--></m:mo>
+    <xsl:apply-templates mode="c2p" select="*[3]"/>
   </m:mrow>
 </xsl:template>
 
@@ -1345,7 +1404,7 @@ priority="2">
 
 
 <!-- 4.4.9.2 sdef -->
-<xsl:template mode="c2p" match="m:sdev">
+<xsl:template mode="c2p" match="m:sdev|m:csymbol[.='sdev']">
 <m:mo>&#963;<!--sigma--></m:mo>
 </xsl:template>
 
@@ -1377,8 +1436,7 @@ priority="2">
 </xsl:template>
 
 <!-- 4.4.9.5 moment -->
-<xsl:template mode="c2p" match="m:apply[*[1][self::m:moment]]
-				|m:apply[*[1][self::m:csymbol='moment']]">
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:moment]]">
   <m:mrow>
     <m:mo>&#9001;<!--langle--></m:mo>
     <m:msup>
@@ -1399,6 +1457,20 @@ priority="2">
     </m:msup>
     <m:mo>&#9002;<!--rangle--></m:mo>
   </m:mrow>
+</xsl:template>
+
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:csymbol='moment']]">
+<m:msub>
+  <m:mrow>
+    <m:mo>&#9001;<!--langle--></m:mo>
+    <m:msup>
+	  <xsl:apply-templates mode="c2p" select="*[4]"/>
+	  <xsl:apply-templates mode="c2p" select="*[2]"/>
+    </m:msup>
+    <m:mo>&#9002;<!--rangle--></m:mo>
+  </m:mrow>
+  <xsl:apply-templates mode="c2p" select="*[3]"/>	  
+</m:msub>
 </xsl:template>
 
 <!-- 4.4.9.5 momentabout -->
