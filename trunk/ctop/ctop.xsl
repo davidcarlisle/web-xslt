@@ -233,6 +233,9 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 <xsl:template mode="c2p" match="m:apply[*[1][self::m:csymbol='interval-oo']]">
  <m:mfenced open="(" close=")"><xsl:apply-templates mode="c2p" select="*[position()!=1]"/></m:mfenced>
 </xsl:template>
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:csymbol='oriented_interval']]">
+ <m:mfenced open="(" close=")"><xsl:apply-templates mode="c2p" select="*[position()!=1]"/></m:mfenced>
+</xsl:template>
 
 <!-- 4.4.2.5 inverse -->
 
@@ -836,8 +839,18 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 </m:mrow>
 </xsl:template>
 
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:csymbol='defint']]">
+<m:mrow>
+<m:munder><m:mi>&#8747;<!--int--></m:mi>
+<xsl:apply-templates mode="c2p" select="*[2]"/>
+</m:munder>
+ <xsl:apply-templates mode="c2p" select="*[last()]"/>
+</m:mrow>
+</xsl:template>
+
 <!-- 4.4.5.2 diff -->
-<xsl:template mode="c2p" match="m:apply[*[1][self::m:diff] and not(m:bvar)]" priority="2">
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:diff] and not(m:bvar)]|
+				m:apply[*[1][self::m:csymbol='diff']]" priority="2">
  <m:msup>
  <m:mrow><xsl:apply-templates mode="c2p" select="*[2]"/></m:mrow>
  <m:mo>&#8242;<!--prime--></m:mo>
@@ -920,6 +933,22 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
     </m:mrow>
   </m:mfrac>
 </xsl:template>
+
+
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:csymbol='partialdiffdegree']]">
+  <m:mrow>
+   <m:msub>
+    <m:mo>&#8706;<!-- partial --></m:mo>
+    <m:mrow>
+     <xsl:apply-templates mode="c2p" select="*[2]"/>
+    </m:mrow>
+   </m:msub>
+   <m:mfenced>
+     <xsl:apply-templates mode="c2p" select="*[4]"/>
+   </m:mfenced>
+  </m:mrow>
+</xsl:template>
+
 
 <!-- 4.4.5.4  lowlimit-->
 <xsl:template mode="c2p" match="m:lowlimit"/>
