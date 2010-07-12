@@ -33,8 +33,66 @@
 <xsl:template match="@open" mode="rtl">
     <xsl:attribute name="close"><xsl:value-of select="."/></xsl:attribute>
 </xsl:template>
+
+<xsl:template match="@open[.='(']" mode="rtl">
+    <xsl:attribute name="close">)</xsl:attribute>
+</xsl:template>
+
+<xsl:template match="@open[.=')']" mode="rtl">
+    <xsl:attribute name="close">(</xsl:attribute>
+</xsl:template>
+
+
+<xsl:template match="@open[.='[']" mode="rtl">
+    <xsl:attribute name="close">]</xsl:attribute>
+</xsl:template>
+
+
+<xsl:template match="@open[.=']']" mode="rtl">
+    <xsl:attribute name="close">[</xsl:attribute>
+</xsl:template>
+
+
+<xsl:template match="@open[.='{']" mode="rtl">
+    <xsl:attribute name="close">}</xsl:attribute>
+</xsl:template>
+
+
+<xsl:template match="@open[.='}']" mode="rtl">
+    <xsl:attribute name="close">{</xsl:attribute>
+</xsl:template>
+
+
 <xsl:template match="@close" mode="rtl">
     <xsl:attribute name="open"><xsl:value-of select="."/></xsl:attribute>
+</xsl:template>
+
+<xsl:template match="@close[.='(']" mode="rtl">
+    <xsl:attribute name="open">)</xsl:attribute>
+</xsl:template>
+
+<xsl:template match="@close[.=')']" mode="rtl">
+    <xsl:attribute name="open">(</xsl:attribute>
+</xsl:template>
+
+
+<xsl:template match="@close[.='[']" mode="rtl">
+    <xsl:attribute name="open">]</xsl:attribute>
+</xsl:template>
+
+
+<xsl:template match="@close[.=']']" mode="rtl">
+    <xsl:attribute name="open">[</xsl:attribute>
+</xsl:template>
+
+
+<xsl:template match="@close[.='{']" mode="rtl">
+    <xsl:attribute name="open">}</xsl:attribute>
+</xsl:template>
+
+
+<xsl:template match="@close[.='}']" mode="rtl">
+    <xsl:attribute name="open">{</xsl:attribute>
 </xsl:template>
 
 <xsl:template match="m:mfrac[@bevelled='true']" mode="rtl">
@@ -276,4 +334,12 @@
 <xsl:apply-templates/>
 </m:mtr>
 </xsl:template>
+
+
+<xsl:template match="m:menclose[@notation='madruwb']" mode="rtl">
+<m:menclose notation="bottom right">
+ <xsl:apply-templates mode="rtl"/>
+</m:menclose>
+</xsl:template>
+
 </xsl:stylesheet>
