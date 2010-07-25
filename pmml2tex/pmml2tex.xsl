@@ -21,10 +21,13 @@
 \headsep0pt
 \voffset-1cm
 
+\usepackage[T1]{fontenc}
+\usepackage{bm}
+
 \textheight0.6\textheight
 \paperheight0.6\paperheight
 
-\def\menclosebox#1#2{}
+
 
 \usepackage{amssymb,amsmath}
 \setcounter{MaxMatrixCols}{25}
@@ -38,8 +41,11 @@
 
 <xsl:template match="h:body/h:div">
 
-
+\vbox to .7\textheight{
 <xsl:apply-templates/>
+\endgraf
+\vss
+}
 
 \clearpage
 </xsl:template>

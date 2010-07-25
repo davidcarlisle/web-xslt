@@ -2,7 +2,7 @@
 		xmlns:m="http://www.w3.org/1998/Math/MathML"
 		xmlns:xs="http://www.w3.org/2001/XMLSchema"
 		xmlns="http://www.w3.org/1998/Math/MathML"
-		exclude-result-prefixes="m">
+		exclude-result-prefixes="m xs">
   
 
 
@@ -87,7 +87,16 @@
 
 <xsl:template mode="pmml2tex" match="m:mspace[@width]">
  <xsl:text>{\hspace{</xsl:text>
+ <xsl:choose>
+  <xsl:when test="@width='verythinmathspace'">0.1em </xsl:when>
+  <xsl:when test="@width='thinmathspace'">0.2em </xsl:when>
+  <xsl:when test="@width='mediummathspace'">0.3em </xsl:when>
+  <xsl:when test="@width='thickmathspace'">0.4em </xsl:when>
+  <xsl:when test="@width='verythickmathspace'">0.5em </xsl:when>
+  <xsl:otherwise>
  <xsl:value-of select="replace(@width,'px','pt')"/>
+  </xsl:otherwise>
+ </xsl:choose>
  <xsl:text>}}</xsl:text>
 </xsl:template>
 
@@ -553,7 +562,7 @@
    <xsl:when test="@charspacing='medium'">.2em</xsl:when>
    <xsl:when test="@charspacing='tight'">0em</xsl:when>
    <xsl:when test="@charspacing"><xsl:value-of select="replace(@charspacing,'px','pt')"/></xsl:when>
-   <xsl:otherwise>0pt</xsl:otherwise>
+   <xsl:otherwise>0.2em</xsl:otherwise>
   </xsl:choose>
  </xsl:variable>
  <xsl:variable name="stackalign" select="@stackalign"/>
@@ -580,6 +589,8 @@
  <xsl:for-each-group group-ending-with="m:msrow" select="$mstack/*/*">
   <xsl:message select="'@@',name()"/>
   <xsl:apply-templates mode="pmml2tex" select="current-group()[last()]">
+   <xsl:with-param name="stackalign" select="$stackalign"/>
+   <xsl:with-param name="carries" select="current-group()[last()-1][self::m:mscarries]"/>
    <xsl:with-param name="p" select="max($mstack/*/*/(count(*)+@p))" tunnel="yes"/>
   </xsl:apply-templates>
   <xsl:if test="position()!=last() and not(m:msline)">\\&#10;</xsl:if>
@@ -599,7 +610,7 @@
 <xsl:template mode="mstack" match="m:msgroup" priority="3">
  <xsl:param  name="position" tunnel="yes"/>
  <xsl:for-each select="*">
-  <xsl:apply-templates mode="mstack">
+  <xsl:apply-templates mode="mstack" select=".">
    <xsl:with-param name="position" select="number($position) + (@shift,0)[1] * (position()-1) " tunnel="yes"/>
   </xsl:apply-templates>
  </xsl:for-each>
@@ -621,6 +632,7 @@
 
 <xsl:template match="m:mscarries" mode="mstack" priority="3">
  <xsl:param name="position" tunnel="yes"/>
+ <xsl:text>&#10;</xsl:text>
  <mscarries p="{$position}">
   <xsl:copy-of select="@*,*"/>
  </mscarries>
@@ -633,7 +645,8 @@
 
 <xsl:template match="m:msrow" mode="mstack" priority="3">
  <xsl:param name="position" tunnel="yes"/>
- <msrow p="{$position}">
+ <xsl:text>&#10;</xsl:text>
+ <msrow p="{sum($position,@position/number(.))}">
   <xsl:copy-of  select="@*"/>
   <xsl:apply-templates mode="mstack"/>
  </msrow>
@@ -641,12 +654,50 @@
 
 <xsl:template mode="pmml2tex" match="m:msrow">
  <xsl:param name="p" tunnel="yes"/>
+ <xsl:param name="carries" />
+ <xsl:param name="stackalign" />
  <xsl:text>&#10;</xsl:text>
  <xsl:if test="not(m:msline)">
   <xsl:for-each select="1 to xs:integer($p - @p - count(*))">\endcell</xsl:for-each>
  </xsl:if>
+  <xsl:variable name="rowcount" select="count(*)"/>
+  <xsl:variable name="carriescount" select="count($carries/*)"/>
  <xsl:for-each select="*">
+  <xsl:variable name="pn" select="position()"/>
+  <xsl:variable name="cry" select="$carries/*[
+    if($stackalign='left') then $pn
+    else $carriescount -$rowcount + $pn
+   ]"/>
+<xsl:choose>
+<xsl:when test="$cry">
+<xsl:message select="'====',$stackalign,'##',$cry,'@@@'"/>
+<xsl:text>\pmmltexcarry</xsl:text>
+<xsl:text>{</xsl:text>
+<xsl:value-of select="($cry/@location,$cry/../@location,'n')[1]"/>
+<xsl:text>}</xsl:text>
+<!--
+<xsl:text>{</xsl:text>
+<xsl:value-of select="($cry/@crossout,$cry/../@crossout,'none')[1]"/>
+<xsl:text>}</xsl:text>
+-->
+<xsl:text>{</xsl:text>
+<xsl:apply-templates mode="pmml2tex" select="$cry"/>
+<xsl:text>}</xsl:text>
+<xsl:text>{</xsl:text>
+<xsl:variable name="menclose">
+<m:menclose>
+<xsl:attribute name="notation" select="($cry/@crossout,$cry/../@crossout,'none')[1]"/>
+<xsl:copy-of select="."/>
+</m:menclose>
+</xsl:variable>
+<xsl:message select="'crossouts',$menclose"/>
+  <xsl:apply-templates mode="pmml2tex" select="$menclose/*"/>
+<xsl:text>}</xsl:text>
+</xsl:when>
+<xsl:otherwise>
   <xsl:apply-templates mode="pmml2tex" select="."/>
+</xsl:otherwise>
+</xsl:choose>
   <xsl:if test="position()!=last()">\endcell&#10;</xsl:if>
  </xsl:for-each>
  <xsl:text>&#10;</xsl:text>
