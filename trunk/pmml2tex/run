@@ -1,6 +1,39 @@
 
-cp /home/w3c/WWW/Math/testsuite/build/main/toc.xml .
-saxon9 -o pmml.xml toc.xml  mml2tex.xsl matches=/ElementaryMathExamples/ posn=7
-saxon9 -o pmml.tex pmml.xml pmml2tex.xsl
+# cp /home/w3c/WWW/Math/testsuite/results/result-tocs/pmml2tex.xml toc.xml
+
+saxon9 -o pmml.xml toc.xml  mml2tex.xsl matches=/ElementaryMathExamples/ posn=1
+# saxon9 -o pmml.xml toc.xml  mml2tex.xsl matches="/ElementaryMathExamples/|/Presentation/"
+
+# saxon9 -o pmml.xml toc.xml  mml2tex.xsl matches=/ElementaryMathExamples/ 
+ 
+ if [ "$?" -eq "0" ]
+ then
+ echo mml2tex OK
+ else
+ echo mml2tex failed
+ exit
+ fi
+
+
+
+saxon9 -o pmml.tex pmml.xml pmml2tex.xsl 2>&1 | tee pmml2tex.log
+
+
+if [ "$?" -eq "0" ]
+then
+echo pmml2tex OK
+else
+echo pmml2tex failed
+exit
+fi
+
 pdflatex pmml
 
+
+if [ "$?" -eq "0" ]
+then
+echo pdftex OK
+else
+echo pdftex failed
+exit
+fi

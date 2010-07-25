@@ -68,7 +68,7 @@ collection('../w3c/WWW/Math/testsuite/build/main/?select=*.mml;recurse=yes;on-er
    <xsl:copy-of select="."/>
   </xsl:variable>
 
-<div>
+<div class="testcase">
   <xsl:variable name="t" select="substring-after(document-uri(.),'build/main/')"/>
   <h3><xsl:value-of select="$t"/></h3>
   <p>status: <b><xsl:value-of select="$passed"/></b></p>

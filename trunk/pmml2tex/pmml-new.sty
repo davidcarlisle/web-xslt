@@ -22,6 +22,49 @@
 \def\munderover#1#2#3{%
   \mathop{#1}\sb{#2}\sp{#3}}
 
+\def\pmmltexcarry#1#2#3{%
+  {\stackrel{#2}{#3}}}
+
+\def\menclosebox#1#2{%
+ \setbox\@tempboxa\hbox{$\relax#1$}%
+ \copy\@tempboxa
+      \def\width{\wd\@tempboxa}%
+      \def\hwidth{0.5\wd\@tempboxa}%
+     \def\height{\ht\@tempboxa}%
+     \def\hheight{0.5\ht\@tempboxa}%
+     \def\depth{\dp\@tempboxa}%
+\edef\zzz\width\show\zzz
+\edef\zzz\hwidth\show\zzz
+ #2%
+}
+\def\menclosebox#1#2{{%
+ \setbox\@tempboxa\hbox{$\relax#1$}%
+ \copy\@tempboxa
+      \wdef\width{\the\wd\@tempboxa}%
+      \edef\hwidth{0.5\wd\@tempboxa}%
+     \edef\height{\ht\@tempboxa}%
+     \edef\hheight{0.5\ht\@tempboxa}%
+     \edef\depth{\dp\@tempboxa}%
+\edef\aaaa{#2}\show\aaaa
+}}
+
+
+
+\let\stripPT\strip@pt
+\def\menclosebox#1#2{%
+\setbox0\hbox{\fboxrule0pt\fbox{$#1$}}%
+\edef\height{\strip@pt\ht0 \space}%
+\edef\depth{-\strip@pt\dp0 \space}%
+\edef\width{\strip@pt\wd0 \space}%
+\dimen@\ht0
+\advance\dimen@-\dp0
+\divide\dimen@\tw@
+\edef\hheight{\strip@pt\dimen@\space}%
+\dimen@\wd0
+\divide\dimen@\tw@
+\edef\hwidth{\strip@pt\dimen@\space}%
+#2%
+{\box\z@}}
 
 \long\def\miinitial#1{{#1}}
 \long\def\mitailed#1{{#1}}
@@ -46,12 +89,13 @@
 
 
 \def\unicode#1{
-\relax\expandafter\ifx
+%\relax
+\expandafter\ifx
 \csname uc#1\endcsname\relax
    \typeout{UC: bad: #1}%
    \ensuremath{\langle#1\rangle}%
   \else
-   \typeout{UC: good #1 \expandafter\meaning\csname uc#1\endcsname}%
+%   \typeout{UC: good #1 \expandafter\meaning\csname uc#1\endcsname}%
    \csname uc#1\expandafter\endcsname
   \fi}
 
@@ -60,6 +104,7 @@
 \let\ampersand\&
 \@namedef{ucmp}{\ampersand}
 \@namedef{uc8201}{\,}
+\@namedef{uc8214}{\Vert}
 \@namedef{uc8202}{\mkern1mu }
 \@namedef{uc8289}{}
 \@namedef{uc8290}{}
@@ -117,7 +162,7 @@
 \@namedef{uc8723}{\mp }
 \@namedef{uc8724}{\dotplus }
 \@namedef{uc8726}{\setminus }
-\@namedef{uc8727}{{_\ast}}
+\@namedef{uc8727}{{\sb\ast}}
 \@namedef{uc8728}{\circ }
 \@namedef{uc8729}{\bullet }
 \@namedef{uc8730}{\surd }
@@ -245,3 +290,5 @@
 \@namedef{uc8901}{\cdot }
 \@namedef{uc8898}{\bigcap }
 \@namedef{uc8899}{\bigcup }
+\catcode`\_=12
+\catcode`\^=12
