@@ -23,30 +23,43 @@
   \mathop{#1}\sb{#2}\sp{#3}}
 
 \def\pmmltexcarry#1#2#3{%
-  {\stackrel{#2}{#3}}}
+  {\def\tmp{#1}%
+   \ifx\carryn\tmp\stackrel{#2}{#3}%
+   \else\ifx\carrynw\tmp\stackrel{#2\hfill}{#3}%
+   \else\ifx\carryne\tmp\stackrel{\hfill#2}{#3}%
+   \else\ifx\carrys\tmp\ustackrel{#2\hfill}{#3}%
+   \else\ifx\carrysw\tmp\ustackrel{#2\hfill}{#3}%
+   \else\ifx\carryse\tmp\ustackrel{\hfill#2}{#3}%
+   \else\ifx\carrye\tmp{#3}\rlap{$\relax\scriptstyle#2$}%
+   \else\ifx\carryw\tmp\llap{$\relax\scriptstyle#2$}{#3}%
+   \fi\fi\fi\fi\fi\fi\fi\fi}}
 
-\def\menclosebox#1#2{%
- \setbox\@tempboxa\hbox{$\relax#1$}%
- \copy\@tempboxa
-      \def\width{\wd\@tempboxa}%
-      \def\hwidth{0.5\wd\@tempboxa}%
-     \def\height{\ht\@tempboxa}%
-     \def\hheight{0.5\ht\@tempboxa}%
-     \def\depth{\dp\@tempboxa}%
-\edef\zzz\width\show\zzz
-\edef\zzz\hwidth\show\zzz
- #2%
-}
-\def\menclosebox#1#2{{%
- \setbox\@tempboxa\hbox{$\relax#1$}%
- \copy\@tempboxa
-      \wdef\width{\the\wd\@tempboxa}%
-      \edef\hwidth{0.5\wd\@tempboxa}%
-     \edef\height{\ht\@tempboxa}%
-     \edef\hheight{0.5\ht\@tempboxa}%
-     \edef\depth{\dp\@tempboxa}%
-\edef\aaaa{#2}\show\aaaa
-}}
+\def\pmmlcline#1#2#3#4#5{%
+  \omit
+  \@multicnt#1%
+  \advance\@multispan\m@ne
+  \ifnum\@multicnt=\@ne\@firstofone{&\omit}\fi
+  \@multicnt#2%
+  \advance\@multicnt-#1%
+  \advance\@multispan\@ne
+  \arrayrulewidth#3\relax
+  \kern-#4\relax
+ \leaders\hrule\@height\arrayrulewidth\hfill
+  \kern-#5\relax
+  \cr
+  \noalign{\vskip-\arrayrulewidth}}
+
+
+\def\ustackrel#1#2{\mathrel{\mathop{#2}\limits\sb{#1}}}
+\def\carryn{n}
+\def\carrynw{nw}
+\def\carryne{ne}
+\def\carrys{s}
+\def\carrysw{sw}
+\def\carryse{se}
+\def\carryw{w}
+\def\carrye{e}
+
 
 
 
