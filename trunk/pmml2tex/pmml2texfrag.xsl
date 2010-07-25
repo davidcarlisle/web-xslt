@@ -339,6 +339,9 @@
  <xsl:message select="'tex: ',name()"/>
 </xsl:template>
 
+<xsl:template mode="pmml2tex" match="m:mscarry">
+ <xsl:apply-templates mode="pmml2tex" select="*"/>
+</xsl:template>
 
 <xsl:template mode="pmml2tex" match="m:msup">
  <xsl:text>{\msup{</xsl:text>
@@ -565,7 +568,7 @@
    <xsl:otherwise>0.2em</xsl:otherwise>
   </xsl:choose>
  </xsl:variable>
- <xsl:variable name="stackalign" select="@stackalign"/>
+ <xsl:variable name="stackalign" select="(@stackalign,'decimalpoint')[1]"/>
  <xsl:variable name="charalign" select="(@charalign/substring(.,1,1),'c')[1]"/>
  <xsl:variable name="left" select="
 				   max($mstack/*/m:msrow/m:mn[.='.']/count(preceding-sibling::*))"/>
@@ -573,13 +576,17 @@
 				    max($mstack/*/m:msrow/m:mn[.='.']/count(following-sibling::*))"/>
  <xsl:variable name="none" select="
 				   max($mstack/*/m:msrow[not(m:mn[.='.'])or not($stackalign='decimalpoint')]/count(*))"/>
+<xsl:message select="'#@','l',$left,'r',$right,'n',$none,'???',max(($left,$none)) + ($right,0)[1] + 1"/>
+<xsl:variable name="total" select="if($stackalign='decimalpoint') then
+		       max(($left,$none)) + ($right,0)[1] + 1
+		       else
+		       $none"/>
+
+<xsl:message select="'total',$total"/>
  <xsl:text>&#10;\begin{array}{@{\hspace{</xsl:text>
  <xsl:value-of select="$charspace"/>
  <xsl:text>}}*{</xsl:text>
- <xsl:value-of select="if($stackalign='decimalpoint') then
-		       max(($left,$none)) + $right + 1
-		       else
-		       $none"/>
+ <xsl:value-of select="$total"/>
  <xsl:text>}{</xsl:text>
  <xsl:value-of select="$charalign"/>
  <xsl:text>@{\hspace{</xsl:text>
@@ -590,6 +597,7 @@
   <xsl:message select="'@@',name()"/>
   <xsl:apply-templates mode="pmml2tex" select="current-group()[last()]">
    <xsl:with-param name="stackalign" select="$stackalign"/>
+   <xsl:with-param name="total" select="$total"/>
    <xsl:with-param name="carries" select="current-group()[last()-1][self::m:mscarries]"/>
    <xsl:with-param name="p" select="max($mstack/*/*/(count(*)+@p))" tunnel="yes"/>
   </xsl:apply-templates>
@@ -656,10 +664,24 @@
  <xsl:param name="p" tunnel="yes"/>
  <xsl:param name="carries" />
  <xsl:param name="stackalign" />
+<xsl:message select="'sa: ',$stackalign"/>
  <xsl:text>&#10;</xsl:text>
+ <xsl:if test="$stackalign='right'">
  <xsl:if test="not(m:msline)">
   <xsl:for-each select="1 to xs:integer($p - @p - count(*))">\endcell</xsl:for-each>
  </xsl:if>
+ </xsl:if>
+ <xsl:if test="$stackalign='decimalpoint'">
+ <xsl:if test="not(m:msline)">
+  <xsl:for-each select="1 to xs:integer($p - @p - count(*))">\endcell</xsl:for-each>
+ </xsl:if>
+ </xsl:if>
+ <xsl:if test="$stackalign='center'">
+ <xsl:if test="not(m:msline)">
+  <xsl:for-each select="(1 to (xs:integer($p - @p - count(*)) idiv 2)) ">\endcell</xsl:for-each>
+ </xsl:if>
+ </xsl:if>
+
   <xsl:variable name="rowcount" select="count(*)"/>
   <xsl:variable name="carriescount" select="count($carries/*)"/>
  <xsl:for-each select="*">
@@ -700,6 +722,11 @@
 </xsl:choose>
   <xsl:if test="position()!=last()">\endcell&#10;</xsl:if>
  </xsl:for-each>
+ <xsl:if test="$stackalign='left'">
+ <xsl:if test="not(m:msline)">
+  <xsl:for-each select="1 to xs:integer($p - @p - count(*))">\endcell</xsl:for-each>
+ </xsl:if>
+ </xsl:if>
  <xsl:text>&#10;</xsl:text>
 </xsl:template>
 
@@ -707,6 +734,45 @@
 
 <xsl:template mode="pmml2tex" match="m:msline">
  \hline
+</xsl:template>
+
+<xsl:template mode="pmml2tex" match="m:msrow[m:msline]">
+ <xsl:param name="p" tunnel="yes"/>
+ <xsl:param name="stackalign" />
+ <xsl:param name="total" />
+ <xsl:apply-templates mode="pmml2tex" select="m:msline">
+  <xsl:with-param name="stackalign" select="$stackalign"/>
+  <xsl:with-param name="total" select="$total"/>
+ </xsl:apply-templates>
+</xsl:template>
+
+<xsl:template mode="pmml2tex" match="m:msline" priority="2">
+ <xsl:param name="p" tunnel="yes"/>
+ <xsl:param name="stackalign" />
+ <xsl:param name="total" />
+ <xsl:variable name="length" select="(@length,$total)[1]"/>
+ <xsl:variable  name="start" select="max((1,(
+     if($stackalign='right') then $total - $length + 1
+     else if($stackalign='decimalpoint') then $total - $length
+     else if($stackalign='center') then ($total - $length + 1) idiv 2
+     else 1)
+     - (@position,0)[1]))
+     "/>
+<xsl:message select="'cline','t',$total,'s',$start,'l',string($length)"/>
+<xsl:variable name="rulew" select="
+    if(@mslinethickness='thick') then '1pt'
+    else if(@mslinethickness='medium' or not(@mslinethickness)) then '0.4pt'
+    else if(@mslinethickness='thin') then '0.2pt'
+    else replace(@mslinethickness,'px','pt')"/>
+<xsl:variable name="lefto" select="(@leftoverhang,'0pt')[1]"/>
+<xsl:variable name="righto" select="(@rightoverhang,'0pt')[1]"/>
+ <xsl:value-of select="'&#10;\pmmlcline{',
+		       $start,'}{',
+		       min(($start + $length - 1,($total - 1)[$stackalign='decimalpoint'])),'}{' ,
+		       $rulew,'}{' ,
+		       $lefto,'}{' ,
+		       $righto,'}&#10;'"
+	       separator=""/>
 </xsl:template>
 
 </xsl:stylesheet>

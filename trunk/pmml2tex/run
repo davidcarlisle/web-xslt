@@ -1,10 +1,12 @@
 
 # cp /home/w3c/WWW/Math/testsuite/results/result-tocs/pmml2tex.xml toc.xml
 
-saxon9 -o pmml.xml toc.xml  mml2tex.xsl matches=/ElementaryMathExamples/ posn=1
+# saxon9 -o pmml.xml toc.xml  mml2tex.xsl matches=/ElementaryMathExamples/ posn=1
 # saxon9 -o pmml.xml toc.xml  mml2tex.xsl matches="/ElementaryMathExamples/|/Presentation/"
 
-# saxon9 -o pmml.xml toc.xml  mml2tex.xsl matches=/ElementaryMathExamples/ 
+# saxon9 -o pmml.xml toc.xml  mml2tex.xsl matches="/ElementaryMathExamples-msline04"
+
+ saxon9 -o pmml.xml toc.xml  mml2tex.xsl matches=/ElementaryMathExamples
  
  if [ "$?" -eq "0" ]
  then
@@ -16,7 +18,7 @@ saxon9 -o pmml.xml toc.xml  mml2tex.xsl matches=/ElementaryMathExamples/ posn=1
 
 
 
-saxon9 -o pmml.tex pmml.xml pmml2tex.xsl 2>&1 | tee pmml2tex.log
+saxon9 -o pmml.tex pmml.xml pmml2tex.xsl
 
 
 if [ "$?" -eq "0" ]

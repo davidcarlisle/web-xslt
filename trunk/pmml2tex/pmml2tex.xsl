@@ -65,7 +65,11 @@
 
 <xsl:template match="h:hr">
 
+\endgraf
+\smallskip
 \hrule
+\smallskip
+\endgraf
 
 </xsl:template>
 
