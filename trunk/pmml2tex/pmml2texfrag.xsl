@@ -618,8 +618,9 @@
 <xsl:template mode="mstack" match="m:msgroup" priority="3">
  <xsl:param  name="position" tunnel="yes"/>
  <xsl:for-each select="*">
+  <xsl:variable name="pn" select="position()"/>
   <xsl:apply-templates mode="mstack" select=".">
-   <xsl:with-param name="position" select="number($position) + (@shift,0)[1] * (position()-1) " tunnel="yes"/>
+   <xsl:with-param name="position" select="number($position) + (../@shift,0)[1] * ($pn - 1) " tunnel="yes"/>
   </xsl:apply-templates>
  </xsl:for-each>
 </xsl:template>
