@@ -224,8 +224,7 @@ menclose[notation="underbrace"]:after
 menclose[notation="overbrace"]:before
 	{display:table-caption;
 	border-width:1px 1px 0 1px;}
-malign, maligngroup, mglyph, mlabeledtr, mmultiscripts,
-	{content:"Bork!"}	
+
 
 mrow[class="vert"]
     {	border-style:solid;
