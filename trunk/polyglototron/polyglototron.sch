@@ -53,7 +53,7 @@ XML [XML10].
 
 
  <sch:pattern>
-  <sch:rule context="meta[@charset]">
+  <sch:rule context="h:meta[@charset]">
    <sch:assert test="lower-case(@charset)='utf-8'"
 	       >If meta/@charset is used, it must specify utf-8.</sch:assert>
   </sch:rule>
@@ -147,7 +147,7 @@ XML [XML10].
 
  <sch:pattern>
   <sch:rule context="h:noscript">
-   <sch:assert test="true()"
+   <sch:assert test="false()"
 	       >noscript elements should not be used.</sch:assert>
   </sch:rule>
  </sch:pattern>
