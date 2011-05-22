@@ -154,8 +154,8 @@ XML [XML10].
 
  <sch:pattern>
   <sch:rule context="h:textarea|h:pre">
-   <sch:assert test="not(matches(.,(:'^\s':)'[&#10;&#13;]'))"
-	       >textarea and pre should not start with <!--white space-->newline</sch:assert>
+   <sch:assert test="not(matches(.,'^[&#10;&#13;]'))"
+	       >textarea and pre should not start with newline</sch:assert>
   </sch:rule>
  </sch:pattern>
 
