@@ -82,7 +82,7 @@ XML [XML10].
 	       >SVG Mixed case element names should be used (<sch:value-of select="name()"/>)</sch:assert>
   </sch:rule>
   <sch:rule context="*">
-   <sch:assert test="matches(name(),'^[a-z]+$')"
+   <sch:assert test="matches(name(),'^[a-z1-6]+$')"
 	       >elements should use lower case names (<sch:value-of select="name()"/>)
    </sch:assert>
   </sch:rule>
