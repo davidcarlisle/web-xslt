@@ -54,86 +54,98 @@ XML [XML10].
 
  <sch:pattern>
   <sch:rule context="h:meta[@charset]">
-   <sch:assert test="lower-case(@charset)='utf-8'"
-	       >If meta/@charset is used, it must specify utf-8.</sch:assert>
+   <sch:assert test="lower-case(@charset)='utf-8'">
+If meta/@charset is used, it must specify utf-8.</sch:assert>
   </sch:rule>
  </sch:pattern>
 
 
  <sch:pattern>
   <sch:rule context="/">
-   <sch:assert test="h:html"
-	       >Document element should be html in the xhtml namespace</sch:assert>
+   <sch:assert test="h:html">
+The document element should be html in the xhtml namespace.</sch:assert>
   </sch:rule>
  </sch:pattern>
 
  <sch:pattern>
   <sch:rule context="h:html">
-   <sch:assert test="*[1][self::h:head]"
-	       >document should have an explicit head</sch:assert>
-   <sch:assert test="*[2][self::h:body]"
-	       >document should have an explicit body</sch:assert>
+   <sch:assert test="*[1][self::h:head]">
+The document should have an explicit head</sch:assert>
+   <sch:assert test="*[2][self::h:body]">
+The document should have an explicit body</sch:assert>
   </sch:rule>
  </sch:pattern>
 
  <sch:pattern>
   <sch:rule context="*[lower-case(name())=$svglc]">
-   <sch:assert test="name()=$svgmc"
-	       >SVG Mixed case element names should be used (<sch:value-of select="name()"/>)</sch:assert>
+   <sch:assert test="name()=$svgmc">
+SVG Mixed case element names should be used (<sch:value-of select="name()"/>).</sch:assert>
   </sch:rule>
   <sch:rule context="*">
-   <sch:assert test="matches(name(),'^[a-z1-6]+$')"
-	       >elements should use lower case names (<sch:value-of select="name()"/>)
-   </sch:assert>
+   <sch:assert test="matches(name(),'^[a-z1-6]+$')">
+Elements should use lower case names (<sch:value-of select="name()"/>)</sch:assert>
   </sch:rule>
-
  </sch:pattern>
+
+
  <sch:pattern>
   <sch:rule context="*:math|math">
-   <sch:assert test="namespace-uri()='http://www.w3.org/1998/Math/MathML'"
-	       >math should be in the mathml namespace</sch:assert>
+   <sch:assert test="namespace-uri()='http://www.w3.org/1998/Math/MathML'">
+Math should be in the MathML namespace.</sch:assert>
   </sch:rule>
 
  </sch:pattern>
 
  <sch:pattern>
   <sch:rule context="*:svg|svg">
-   <sch:assert test="namespace-uri()='http://www.w3.org/2000/svg'"
-	       >svg should be in the svg namespace</sch:assert>
+   <sch:assert test="namespace-uri()='http://www.w3.org/2000/svg'">
+SVG should be in the svg namespace</sch:assert>
   </sch:rule>
 
  </sch:pattern>
 
  <sch:pattern>
   <sch:rule context="*:html|html">
-   <sch:assert test="namespace-uri()='http://www.w3.org/1999/xhtml'"
-	       >html should be in the xhtml namespace</sch:assert>
+   <sch:assert test="namespace-uri()='http://www.w3.org/1999/xhtml'">
+HTML should be in the xhtml namespace</sch:assert>
   </sch:rule>
 
   <sch:rule context="m:mi|m:mn|m:mo|m:mtext|m:annotation-xml[@encoding=('text/hml','application/xhtml+xml')]">
-   <sch:assert test="*/namespace-uri()='http://www.w3.org/1999/xhtml'"
-	       >Children of MathML tokens should be in the xhtml namespace</sch:assert>
+   <sch:assert test="*/namespace-uri()='http://www.w3.org/1999/xhtml'">
+Children of MathML tokens should be in the xhtml namespace</sch:assert>
   </sch:rule>
  </sch:pattern>
 
 <sch:pattern>
+<sch:rule context="h:*">
+  <sch:assert test="every $a in @*/name() satisfies (lower-case($a)=$a)">
+HTML attributes should use lower case names (<sch:value-of select="@*/name()[not(matches(.,'^[a-z\-]+$'))]"/>)</sch:assert>
+</sch:rule>
+</sch:pattern>
+
+<sch:pattern>
 <sch:rule context="s:*">
-  <sch:assert test="every $a in @*/name()[lower-case(.)=$svgatlc] satisfies $a=$svgatmc"
-	      >SVG attribute names should use the specified mixed case form (<sch:value-of select="@*/name()[lower-case(.)=$svgatlc][not(.=$svgatmc)]"/>)</sch:assert>
+  <sch:assert test="every $a in @*/name()[lower-case(.)=$svgatlc] satisfies $a=$svgatmc">
+SVG attribute names should use the specified mixed case form (<sch:value-of select="@*/name()[lower-case(.)=$svgatlc][not(.=$svgatmc)]"/>)</sch:assert>
+  <sch:assert test="every $a in @*/name() satisfies (lower-case($a)=$a)">
+Most SVG attributes should use lower case names (<sch:value-of select="@*/name()[not(matches(.,'^[a-z\-]+$'))]"/>)</sch:assert>
 </sch:rule>
 </sch:pattern>
 <sch:pattern>
 
 <sch:rule context="m:*">
-  <sch:assert test="every $a in @*/name()[lower-case(.)=$svgatlc] satisfies $a=$mmlatmc"
-	      >MathML attribute names should use the specified mixed case form (<sch:value-of select="@*/name()[lower-case(.)=$mmlatlc][not(.=$mmlatmc)]"/>)</sch:assert>
+  <sch:assert test="every $a in @*/name()[lower-case(.)=$svgatlc] satisfies $a=$mmlatmc">
+MathML attribute names should use the specified mixed case form (<sch:value-of select="@*/name()[lower-case(.)=$mmlatlc][not(.=$mmlatmc)]"/>)</sch:assert>
+  <sch:assert test="every $a in @*/name() satisfies (lower-case($a)=$a)">
+Most MathML attributes should use lower case names (<sch:value-of select="@*/name()[not(matches(.,'^[a-z\-]+$'))]"/>)</sch:assert>
 </sch:rule>
+
 </sch:pattern>
 
  <sch:pattern>
   <sch:rule context="h:tr">
-   <sch:assert test="parent::h:tbody or parent::h:thead or parent::h:foot"
-	       >Table rows should be in an explict thead, tbody or tfoot</sch:assert>
+   <sch:assert test="parent::h:tbody or parent::h:thead or parent::h:foot">
+Table rows should be in an explict thead, tbody or tfoot</sch:assert>
   </sch:rule>
  </sch:pattern>
 
@@ -147,39 +159,39 @@ XML [XML10].
 
  <sch:pattern>
   <sch:rule context="h:noscript">
-   <sch:assert test="false()"
-	       >noscript elements should not be used.</sch:assert>
+   <sch:assert test="false()">
+noscript elements should not be used.</sch:assert>
   </sch:rule>
  </sch:pattern>
 
  <sch:pattern>
   <sch:rule context="h:textarea|h:pre">
-   <sch:assert test="not(matches(.,'^[&#10;&#13;]'))"
-	       >textarea and pre should not start with newline</sch:assert>
+   <sch:assert test="not(matches(.,'^[&#10;&#13;]'))">
+textarea and pre should not start with newline</sch:assert>
   </sch:rule>
  </sch:pattern>
 
 
  <sch:pattern>
   <sch:rule context="*[@lang|@xml:lang]">
-   <sch:assert test="@xml:lang and @lang and @xml:lang=@lang"
-	       >xml:lang and lang should both be used</sch:assert>
+   <sch:assert test="@xml:lang and @lang and @xml:lang=@lang">
+xml:lang and lang should both be used</sch:assert>
   </sch:rule>
  </sch:pattern>
 
 
  <sch:pattern>
   <sch:rule context="h:script|h:style">
-   <sch:assert test="not(matches(.,'[&lt;&amp;]'))"
-	       >script and style should not use &amp; or &lt;</sch:assert>
+   <sch:assert test="not(matches(.,'[&lt;&amp;]'))">
+script and style should not use &amp; or &lt;</sch:assert>
   </sch:rule>
  </sch:pattern>
 
 
  <sch:pattern>
   <sch:rule context="/|*">
-   <sch:assert test="not(comment()[matches(.,'^->?')])"
-	       >comments should not start with - or -&gt;</sch:assert>
+   <sch:assert test="not(comment()[matches(.,'^->?')])">
+Comments should not start with - or -&gt;</sch:assert>
   </sch:rule>
  </sch:pattern>
 
