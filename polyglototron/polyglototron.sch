@@ -127,17 +127,17 @@ HTML attributes should use lower case names (<sch:value-of select="@*/name()[not
 <sch:rule context="s:*">
   <sch:assert test="every $a in @*/name()[lower-case(.)=$svgatlc] satisfies $a=$svgatmc">
 SVG attribute names should use the specified mixed case form (<sch:value-of select="@*/name()[lower-case(.)=$svgatlc][not(.=$svgatmc)]"/>)</sch:assert>
-  <sch:assert test="every $a in @*/name() satisfies (lower-case($a)=$a)">
-Most SVG attributes should use lower case names (<sch:value-of select="@*/name()[not(matches(.,'^[a-z\-]+$'))]"/>)</sch:assert>
+  <sch:assert test="every $a in @*/name()[not(lower-case(.)=$svgatlc)] satisfies (lower-case($a)=$a)">
+Most SVG attributes should use lower case names (<sch:value-of select="@*/name()[not(lower-case(.)=$svgatlc)][not(matches(.,'^[a-z\-]+$'))]"/>)</sch:assert>
 </sch:rule>
 </sch:pattern>
 <sch:pattern>
 
 <sch:rule context="m:*">
-  <sch:assert test="every $a in @*/name()[lower-case(.)=$svgatlc] satisfies $a=$mmlatmc">
+  <sch:assert test="every $a in @*/name()[lower-case(.)=$mmlatlc] satisfies $a=$mmlatmc">
 MathML attribute names should use the specified mixed case form (<sch:value-of select="@*/name()[lower-case(.)=$mmlatlc][not(.=$mmlatmc)]"/>)</sch:assert>
-  <sch:assert test="every $a in @*/name() satisfies (lower-case($a)=$a)">
-Most MathML attributes should use lower case names (<sch:value-of select="@*/name()[not(matches(.,'^[a-z\-]+$'))]"/>)</sch:assert>
+  <sch:assert test="every $a in @*/name()[not(lower-case(.)=$mmlatlc)] satisfies (lower-case($a)=$a)">
+Most MathML attributes should use lower case names (<sch:value-of select="@*/name()[not(lower-case(.)=$mmlatlc)] [not(matches(.,'^[a-z\-]+$'))]"/>)</sch:assert>
 </sch:rule>
 
 </sch:pattern>
