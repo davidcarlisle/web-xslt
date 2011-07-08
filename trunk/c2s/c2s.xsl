@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!-- Copyright Robert Miner 2010 
 
-Use and distribution of this code are permitted under the terms of the <a
+Use and distribution of this code are permitted under the terms of either:
+
+the <a
 href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
->W3C Software Notice and License</a>.-->
+>W3C Software Notice and License</a>
+
+or the <a
+href="http://www.opensource.org/licenses/mit-license.php">MIT License</a>
+.-->
 
 <xsl:stylesheet version="2.0"
                xmlns:dsi="http://www.dessci.com"
