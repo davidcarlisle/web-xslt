@@ -5,7 +5,7 @@ A collection of XSLT stylesheets designed for processing MathML (mainly) but als
 [http://dpcarlisle.blogspot.com/search/label/googlecode googlecode].
 
 Currently this collection comprises of the following
-
+  * *[http://code.google.com/p/web-xslt/source/browse/trunk/c2s c2s]*, documentation tagged [http://dpcarlisle.blogspot.com/search/label/c2s c2s]<br>XSLT (by Robert Miner mostly) to convert Content MathML into the Strict Content MathML form, using the algorithm detailed in Chapter 4 of the [http://www.w3.org/TR/MathML3/ MathML3] spec.
   * *[http://code.google.com/p/web-xslt/source/browse/trunk/ctop ctop]*, documentation tagged [http://dpcarlisle.blogspot.com/search/label/ctop ctop]<br>Stylesheet converting Content MathML to Presentation MathML. This is XSLT 1.0, to allow use within a browser.
   * *[http://code.google.com/p/web-xslt/source/browse/trunk/htmlparse htmlparse]*, documentation tagged [http://dpcarlisle.blogspot.com/search/label/htmlparse htmlparse]<br>HTML parser, implemented in XSLT 2.0.
   * *[http://code.google.com/p/web-xslt/source/browse/trunk/node-set node-set]*, documentation tagged [http://dpcarlisle.blogspot.com/search/label/nodeset nodeset]<br>XSLT 1.0 (extended) stylesheet giving cross browser support for the EXSLT node-set extension.
@@ -14,4 +14,3 @@ Currently this collection comprises of the following
   * *[http://code.google.com/p/web-xslt/source/browse/trunk/pmml2tex pmml2tex]*, documentation tagged [http://dpcarlisle.blogspot.com/search/label/pml2tex pmml2tex]<br>XSLT 2 stylesheet converting Presentation MathML to TeX for rendering to pdf, etc.
   * *[http://code.google.com/p/web-xslt/source/browse/trunk/mmlclipboard mmlclipboard]*, documentation tagged [http://dpcarlisle.blogspot.com/search/label/mmlclipboard mmlclipboard]<br>Small C# code example  for a windows form application that displays any XML on the windows clipboard tagged with the MathML flavor.
   * *[http://code.google.com/p/web-xslt/source/browse/trunk/polyglototron polyglototron]*, documentation tagged [http://dpcarlisle.blogspot.com/search/label/polyglot polyglot]<br>Schematron file to check the constraints in the HTML5 polyglot spec (html/xhtml compatibility). This check assumes that the input is well formed XML and valid HTML(5) and then checks constraints such that that compatible parse trees should result.
-  * *[http://code.google.com/p/web-xslt/source/browse/trunk/c2s c2s]*, documentation tagged [http://dpcarlisle.blogspot.com/search/label/c2s c2s]<br>XSLT (by Robert Miner mostly) to convert Content MathML into the Strict Content MathML form, using the algorithm detailed in Chapter 4 of the [http://www.w3.org/TR/MathML3/ MathML3] spec.
