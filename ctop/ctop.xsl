@@ -309,6 +309,36 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
  <m:merror><m:mtext>unexpected domainofapplication</m:mtext></m:merror>
 </xsl:template>
 
+<xsl:template mode="c2p" match="m:apply[*[2][self::m:bvar]][m:domainofapplication]" priority="0.4">
+ <m:mrow>
+  <m:munder>
+   <xsl:apply-templates mode="c2p" select="*[1]"/>
+   <m:mrow>
+    <xsl:apply-templates mode="c2p" select="m:bvar/*"/>
+    <m:mo>&#8712;<!-- in --></m:mo>
+    <xsl:apply-templates mode="c2p" select="m:domainofapplication/*"/>
+   </m:mrow>
+  </m:munder>
+  <m:mfenced>
+   <xsl:apply-templates mode="c2p" select="m:domainofapplication/following-sibling::*"/>
+  </m:mfenced>
+ </m:mrow>
+</xsl:template>
+
+<xsl:template mode="c2p" match="m:apply[m:domainofapplication]" priority="0.3">
+ <m:mrow>
+  <m:mrow><m:mi>restriction</m:mi>
+  <m:mfenced>
+   <xsl:apply-templates mode="c2p" select="*[1]"/>
+   <xsl:apply-templates mode="c2p" select="m:domainofapplication/*"/>
+  </m:mfenced>
+  </m:mrow>
+  <m:mfenced>
+   <xsl:apply-templates mode="c2p" select="m:domainofapplication/following-sibling::*"/>
+  </m:mfenced>
+ </m:mrow>
+</xsl:template>
+
 <!-- 4.4.2.16` piecewise -->
 <xsl:template mode="c2p" match="m:piecewise">
   <m:mrow>
@@ -1831,11 +1861,26 @@ match="m:apply[*[1][self::m:determinant]][*[2][self::m:matrix]]" priority="2">
   <xsl:param name="mo"/>
   <xsl:param name="p" select="0"/>
   <xsl:param name="this-p" select="0"/>
+  <xsl:variable name="dmo">
+    <xsl:choose>
+     <xsl:when test="m:domainofapplication">
+      <m:munder>
+       <xsl:copy-of select="$mo"/>
+       <m:mrow>
+	<xsl:apply-templates mode="c2p" select="m:domainofapplication/*"/>
+       </m:mrow>
+      </m:munder>
+     </xsl:when>
+     <xsl:otherwise>
+       <xsl:copy-of select="$mo"/>
+     </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
   <m:mrow>
   <xsl:if test="$this-p &lt; $p"><m:mo>(</m:mo></xsl:if>
-  <xsl:for-each select="*[position()&gt;1]">
+  <xsl:for-each select="*[not(self::m:domainofapplication)][position()&gt;1]">
    <xsl:if test="position() &gt; 1">
-    <xsl:copy-of select="$mo"/>
+    <xsl:copy-of select="$dmo"/>
    </xsl:if>   
    <xsl:apply-templates mode="c2p" select=".">
      <xsl:with-param name="p" select="$this-p"/>
