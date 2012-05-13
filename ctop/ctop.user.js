@@ -22,7 +22,9 @@ for (var i = 0; i< mm.length;i++){
 
 var newmath=proc.transformToFragment(mm[i],document);
 //alert(i);
-mm[i].parentNode.replaceChild(newmath,mm[i]); 
+    if(newmath!=null) {
+   mm[i].parentNode.replaceChild(newmath,mm[i]); 
+ }
 }
 // var dataString = (new XMLSerializer()).serializeToString(newdocument);
 //alert(dataString);
