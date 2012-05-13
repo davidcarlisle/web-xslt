@@ -6,7 +6,7 @@ print "// ==UserScript==
 // \@include       http://www.w3.org/TR/MathML/*
 // ==/UserScript==
 
-var xslt = new DOMParser().parseFromString('<x:stylesheet version=\"1.0\" xmlns:x=\"http://www.w3.org/1999/XSL/Transform\" xmlns:m=\"http://www.w3.org/1998/Math/MathML\" xmlns:e=\"http://exslt.org/strings\"  xmlns:c=\"http://exslt.org/common\"> ";
+var xslt = new DOMParser().parseFromString('<x:stylesheet version=\"1.0\" xmlns:x=\"http://www.w3.org/1999/XSL/Transform\" xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:m=\"http://www.w3.org/1998/Math/MathML\" xmlns:e=\"http://exslt.org/strings\"  xmlns:c=\"http://exslt.org/common\" exclude-result-prefixes=\"m e c\"> ";
 
 open (CTP,"ctop.xsl") || die ("ctop  not readable!!\n") ;
 
@@ -18,9 +18,11 @@ $line =~ s/<!--[^-]*-->//;
 $line =~ s/> */>/g;
 $line =~ s/ *</</g;
 $line =~ s/xsl:/x:/g;
+$line =~ s/<m:/</g;
+$line =~ s/\/m:/\//g;
 $line =~ s/ *mode="c2p"//g;
 $line =~ s/'/\\'/g;
-$line =~ s/<m:mi (href="[^\"]*")>([^m]*<\/m:mi>)/<a xmlns="http:\/\/www.w3.org\/1999\/xhtml" $1><m:mi>$2<\/a>/g;
+# $line =~ s/<m:mi (href="[^\"]*")>([^m]*<\/m:mi>)/<a xmlns="http:\/\/www.w3.org\/1999\/xhtml" $1><m:mi>$2<\/a>/g;
 
 
 
@@ -43,6 +45,8 @@ $line =~ s/<!--[^-]*-->//g;
 $line =~ s/> */>/g;
 $line =~ s/ *</</g;
 $line =~ s/xsl:/x:/g;
+$line =~ s/<m:/</g;
+$line =~ s/\/m:/\//g;
 $line =~ s/ *mode="c2p"//;
 $line =~ s/'/\\'/g;
 

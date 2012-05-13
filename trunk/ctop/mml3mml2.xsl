@@ -1,7 +1,8 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		xmlns:m="http://www.w3.org/1998/Math/MathML"
 		xmlns:e="http://exslt.org/strings"
-		xmlns:c="http://exslt.org/common">
+		xmlns:c="http://exslt.org/common"
+		exclude-result-prefixes="m e c">
 
 <xsl:template match="*">
 <xsl:copy>
@@ -210,6 +211,9 @@
 
 <!-- attributes-->
 <xsl:template name="mml2attrib">
+<!--
+  <xsl:copy-of select="@*[not(local-name()='href')]"/>
+-->
   <xsl:copy-of select="@*[not(local-name()='href')]"/>
   <xsl:attribute name="style">
     <xsl:if test="@style"><xsl:value-of select="@style"/>;</xsl:if>
@@ -219,7 +223,7 @@
 </xsl:template>
 
 <!-- links -->
-
+<!--
 <xsl:template match="*[@href]" priority="3">
   <a xmlns="http://www.w3.org/1999/xhtml" style="text-decoration: none" href="{@href}">
     <xsl:copy>
@@ -232,7 +236,7 @@
     </xsl:copy>
   </a>
 </xsl:template>
-
+-->
 <xsl:template match="*[@mathcolor|@mathbackground]">
   <xsl:copy>
     <xsl:call-template name="mml2attrib"/>
