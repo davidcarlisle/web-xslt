@@ -2,6 +2,7 @@
   version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:m="http://www.w3.org/1998/Math/MathML"
+  exclude-result-prefixes="m"
 >
 
 <!--
@@ -1378,6 +1379,10 @@ priority="2">
     <m:mo>&#8594;<!--rightarrow--></m:mo>
     <xsl:apply-templates mode="c2p" select="*[3]"/>
   </m:mrow>
+</xsl:template>
+
+<xsl:template mode="c2p" match="m:tendsto">
+ <m:mi>tendsto</m:mi>
 </xsl:template>
 
 <!-- 4.4.8.1 trig -->
