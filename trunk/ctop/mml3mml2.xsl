@@ -304,7 +304,11 @@
 </xsl:template>
 
 <xsl:template match="*" mode="msc">
-<m:mtd mathfontsize="0.7"><xsl:apply-templates select="."/></m:mtd>
+<m:mtd><m:mstyle mathsize="70%"><xsl:apply-templates select="."/></m:mstyle></m:mtd>
+</xsl:template>
+
+<xsl:template match="m:mscarry" mode="msc">
+ <xsl:apply-templates mode="msc" select="*"/>
 </xsl:template>
 
 
