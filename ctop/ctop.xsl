@@ -1403,7 +1403,7 @@ priority="2">
   </m:mrow>
 </xsl:template>
 
-<!-- Vasil I. Yaroshevich shade33ATmail.ru -->
+<!-- Vasil I. Yaroshevich -->
 <xsl:template mode="c2p" match="
  m:sin | m:cos | m:tan | m:sec |
  m:csc | m:cot | m:sinh | m:cosh |
@@ -1411,7 +1411,8 @@ priority="2">
  m:arcsin | m:arccos | m:arctan | m:arccosh
  | m:arccot | m:arccoth | m:arccsc |
  m:arccsch | m:arcsec | m:arcsech |
- m:arcsinh | m:arctanh | m:ln|m:mean">
+ m:arcsinh | m:arctanh | m:ln|m:mean|
+ m:plus|m:minus">
 <m:mi><xsl:value-of select="local-name()"/></m:mi>
 </xsl:template>
 

@@ -1,8 +1,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		xmlns:m="http://www.w3.org/1998/Math/MathML"
-		xmlns:e="http://exslt.org/strings"
 		xmlns:c="http://exslt.org/common"
-		exclude-result-prefixes="m e c">
+		exclude-result-prefixes="m c">
 
 <xsl:template match="*">
 <xsl:copy>
@@ -276,8 +275,11 @@
 </xsl:template>
 
 <xsl:template match="m:mn" mode="ms">
-<xsl:for-each select="e:tokenize(.,'')">
-<m:mtd><m:mn><xsl:value-of select="."/></m:mn></m:mtd>
+<xsl:variable name="mn" select="normalize-space(.)"/>
+<xsl:variable name="l" select="string-length($mn)"/>
+<xsl:for-each select="(//node())[position() &lt;=$l]">
+<xsl:variable name="p" select="position()"/>
+<m:mtd><m:mn><xsl:value-of select="substring($mn,$p,1)"/></m:mn></m:mtd>
 </xsl:for-each>
 </xsl:template>
 
