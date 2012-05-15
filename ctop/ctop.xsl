@@ -856,6 +856,7 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 <!-- 4.4.5.1 int -->
 <xsl:template mode="c2p" match="m:apply[*[1][self::m:int]]
                        |m:apply[*[1][self::m:csymbol='int']]
+                       |m:bind[*[1][self::m:int]]
                        |m:bind[*[1][self::m:csymbol='int']]">
  <m:mrow>
  <m:msubsup>
