@@ -292,7 +292,9 @@
 </xsl:template>
 
 <xsl:template match="m:msline" mode="ms">
-<xsl:attribute name="style">border: solid black thin</xsl:attribute>
+<xsl:if test="parent::m:mstack or parent::m:mlongdiv">
+ <xsl:attribute name="style">border: solid black thin</xsl:attribute>
+</xsl:if>
 <m:mtd>
 <xsl:attribute name="style">border: solid black thin</xsl:attribute>
 </m:mtd>
@@ -330,7 +332,10 @@
 
 <!-- not right but allows the data through -->
 <xsl:template match="m:msgroup" mode="ms">
-  <xsl:apply-templates  select="*"/>
+  <xsl:apply-templates select="*"/>
+</xsl:template>
+<xsl:template match="m:msline">
+  <xsl:apply-templates mode="ms" select="."/>
 </xsl:template>
 
 
