@@ -307,6 +307,7 @@
 <m:mtd><m:mstyle mathsize="70%"><xsl:apply-templates select="."/></m:mstyle></m:mtd>
 </xsl:template>
 
+<!-- need to handle the attributes -->
 <xsl:template match="m:mscarry" mode="msc">
  <xsl:apply-templates mode="msc" select="*"/>
 </xsl:template>
@@ -325,6 +326,11 @@
 </xsl:if>
 </m:mtr>
 </xsl:for-each>
+</xsl:template>
+
+<!-- not right but allows the data through -->
+<xsl:template match="m:msgroup" mode="ms">
+  <xsl:apply-templates  select="*"/>
 </xsl:template>
 
 
