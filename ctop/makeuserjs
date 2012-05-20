@@ -46,7 +46,7 @@ $line =~ s/> */>/g;
 $line =~ s/ *</</g;
 $line =~ s/xsl:/x:/g;
 $line =~ s/<m:/</g;
-$line =~ s/\/m:/\//g;
+$line =~ s/<\/m:/<\//g;
 $line =~ s/ *mode="c2p"//;
 $line =~ s/'/\\'/g;
 

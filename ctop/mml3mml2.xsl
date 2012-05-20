@@ -247,116 +247,214 @@
 <!-- mstack -->
 
 <xsl:template match="m:mstack">
-<m:mtable columnspacing="0em">
-<xsl:variable name="t">
-<xsl:apply-templates select="*" mode="mst"/>
-</xsl:variable>
-<xsl:apply-templates mode="p" select="c:node-set($t)/*">
-  <xsl:with-param name="c" select="10"/>
-</xsl:apply-templates>
-</m:mtable>
+ <m:mtable columnspacing="0em">
+  <xsl:variable name="t">
+   <xsl:apply-templates select="*" mode="mstack1"/>
+  </xsl:variable>
+  <xsl:variable name="maxl">
+   <xsl:for-each select="c:node-set($t)/*/@l">
+    <xsl:sort data-type="number" order="descending"/>
+    <xsl:if test="position()=1">
+     <xsl:value-of select="."/>
+    </xsl:if>
+   </xsl:for-each>
+  </xsl:variable>
+  <xsl:for-each select="c:node-set($t)/*">
+   <xsl:text>&#10;</xsl:text>
+   <m:mtr l="{@l}">
+    <xsl:variable name="offset" select="$maxl - @l"/>
+    <xsl:choose>
+     <xsl:when test="@class='msline' and (string(*[1]/@columnspan)='' or string(*[1]/@columnspan)='0')">
+      <m:mtd columnspan="{$maxl}">
+      <xsl:copy-of select="*/@style"/></m:mtd>
+     </xsl:when>
+     <xsl:otherwise>
+      <xsl:for-each select="(//*)[position()&lt;= $offset]"><m:mtd/></xsl:for-each>
+      <xsl:copy-of select="*"/>
+     </xsl:otherwise>
+    </xsl:choose>
+   </m:mtr>
+  </xsl:for-each>
+ </m:mtable>
 </xsl:template>
 
-<xsl:template match="m:mtr" mode="p">
-<xsl:param name="c"/>
-<xsl:copy>
-<xsl:copy-of select="@*"/>
-<xsl:variable name="n" select="$c - count(*)"/>
-<xsl:for-each select="(//*)[position() &lt;= $n]">
-  <m:mtd></m:mtd>
-</xsl:for-each>
-<xsl:copy-of select="*"/>
-</xsl:copy>
-</xsl:template>
-<xsl:template match="*" mode="mst">
-<m:mtr>
-<xsl:apply-templates select="." mode="ms"/>
-</m:mtr>
+<xsl:template mode="mstack1" match="*">
+ <xsl:param name="maxl" select="0"/>
+ <m:mtr l="1"><!-- @l = number of entries to left of alignment -->
+  <xsl:if test="ancestor::mstack[1]/@stackalign='left'">
+   <xsl:attribute name="l">0</xsl:attribute>
+  </xsl:if>
+  <m:mtd><xsl:apply-templates select="."/></m:mtd>
+ </m:mtr>
 </xsl:template>
 
-<xsl:template match="m:mn" mode="ms">
-<xsl:variable name="mn" select="normalize-space(.)"/>
-<xsl:variable name="l" select="string-length($mn)"/>
-<xsl:for-each select="(//node())[position() &lt;=$l]">
-<xsl:variable name="p" select="position()"/>
-<m:mtd><m:mn><xsl:value-of select="substring($mn,$p,1)"/></m:mn></m:mtd>
-</xsl:for-each>
+<!-- l is number of entries except left of  alignment -->
+<xsl:template mode="mstack1" match="m:msrow">
+ <xsl:param name="maxl" select="0"/>
+ <xsl:variable name="row">
+  <xsl:apply-templates mode="mstack1" select="*"/>
+ </xsl:variable>
+ <xsl:text>&#10;</xsl:text>
+ <xsl:variable name="l1">
+  <xsl:choose>
+   <xsl:when test="m:mn">
+    <xsl:for-each select="c:node-set($row)/m:mtr[m:mtd/m:mn][1]">
+     <xsl:value-of select="sum(@l)+count(preceding-sibling::*/@l)"/>
+    </xsl:for-each>
+   </xsl:when>
+   <xsl:otherwise>
+    <xsl:value-of select="c:node-set($row)/m:mtr[1]/@l"/>
+   </xsl:otherwise>
+  </xsl:choose>
+ </xsl:variable>
+ <m:mtr class="msrow">
+  <xsl:attribute name="l">
+   <xsl:choose>
+    <xsl:when test="@position">0000<xsl:text/>
+    <xsl:value-of select="$l1 + @position"/>
+    </xsl:when>
+    <xsl:otherwise>000<xsl:text/>
+    <xsl:value-of select="$l1"/>
+    </xsl:otherwise>
+   </xsl:choose>
+  </xsl:attribute>
+  <xsl:copy-of select="c:node-set($row)/m:mtr/*"/>
+ </m:mtr>
 </xsl:template>
 
-<xsl:template match="m:msrow" mode="ms">
-<xsl:apply-templates select="*" mode="ms"/>
+<xsl:template mode="mstack1" match="m:mn">
+ <xsl:variable  name="align1" select="ancestor::m:mstack[1]/@stackalign"/>
+ <xsl:variable name="align">
+  <xsl:choose>
+   <xsl:when test="string($align1)=''">decimalpoint</xsl:when>
+   <xsl:otherwise><xsl:value-of select="$align1"/></xsl:otherwise>
+  </xsl:choose>
+ </xsl:variable>
+ <m:mtr l="0"><!-- @l = number of entries to leftof alignment -->
+  <xsl:variable name="mn" select="normalize-space(.)"/>
+  <xsl:variable name="len" select="string-length($mn)"/>
+  <xsl:choose>
+   <xsl:when test="$align='right' or ($align='decimalpoint' and not(contains($mn,'.')))">
+    <xsl:attribute name="l">00<xsl:value-of select="$len"/></xsl:attribute>
+   </xsl:when>
+   <xsl:when test="$align='decimalpoint'">
+    <xsl:attribute name="l"><xsl:value-of select="string-length(substring-before($mn,'.'))"/></xsl:attribute>
+   </xsl:when>
+  </xsl:choose>
+
+  <xsl:for-each select="(//node())[position() &lt;=$len]">
+   <xsl:variable name="p" select="position()"/>
+   <m:mtd><m:mn><xsl:value-of select="substring($mn,$p,1)"/></m:mn></m:mtd>
+  </xsl:for-each>
+ </m:mtr>
 </xsl:template>
 
-<xsl:template match="*" mode="ms">
-<m:mtd><xsl:apply-templates select="."/></m:mtd>
+
+<xsl:template match="m:msgroup" mode="mstack1">
+ <xsl:variable name="g">
+  <xsl:apply-templates select="*" mode="mstack1"/>
+ </xsl:variable>
+ <xsl:choose>
+  <xsl:when test="@shift or @position">
+   <xsl:variable name="s" select="sum(@shift)"/>
+   <xsl:variable name="p" select="sum(@position)"/>
+   <xsl:for-each select="c:node-set($g)/*">
+    <xsl:copy>
+     <xsl:copy-of select="@*"/>
+     <xsl:attribute name="l"><xsl:value-of select="number(sum(@l)) + (position() - 1)*number($s) + number($p)"/></xsl:attribute>
+     <xsl:copy-of select="*"/>
+    </xsl:copy>
+   </xsl:for-each>
+  </xsl:when>
+  <xsl:otherwise>
+   <xsl:copy-of select="$g"/>
+  </xsl:otherwise>
+ </xsl:choose>
+
 </xsl:template>
 
-<xsl:template match="m:msline" mode="ms">
-<xsl:if test="parent::m:mstack or parent::m:mlongdiv">
- <xsl:attribute name="style">border: solid black thin</xsl:attribute>
-</xsl:if>
-<m:mtd>
-<xsl:attribute name="style">border: solid black thin</xsl:attribute>
-</m:mtd>
+
+<xsl:template match="m:msline" mode="mstack1">
+ <xsl:variable  name="align1" select="ancestor::m:mstack[1]/@stackalign"/>
+ <xsl:variable name="align">
+  <xsl:choose>
+   <xsl:when test="string($align1)=''">decimalpoint</xsl:when>
+   <xsl:otherwise><xsl:value-of select="$align1"/></xsl:otherwise>
+  </xsl:choose>
+ </xsl:variable>
+ <m:mtr class="msline">
+  <xsl:attribute name="l">
+   <xsl:choose>
+    <xsl:when test="string($align)='right' or string($align)='decimalpoint' "><xsl:value-of select="@length"/></xsl:when>
+    <xsl:otherwise>0</xsl:otherwise>
+   </xsl:choose>
+  </xsl:attribute>
+  <m:mtd class="msline" columnspan="{@length}">
+   <xsl:copy-of select="@position"/>
+   <xsl:variable name="w">
+    <xsl:choose>
+     <xsl:when test="@mslinethickness='thin'">0.1em</xsl:when>
+     <xsl:when test="@mslinethickness='medium'">0.15em</xsl:when>
+     <xsl:when test="@mslinethickness='thick'">0.2em</xsl:when>
+     <xsl:when test="@mslinethickness"><xsl:value-of select="@mslinethickness"/></xsl:when>
+     <xsl:otherwise>0.15em</xsl:otherwise>
+    </xsl:choose>
+   </xsl:variable>
+   <xsl:attribute name="style">
+    <xsl:value-of select="concat('border-style: solid; border-width: 0 0 ',$w,' 0')"/>
+   </xsl:attribute>
+  </m:mtd>
+ </m:mtr>
 </xsl:template>
 
 
-<xsl:template match="m:mscarries" mode="ms">
-<xsl:apply-templates select="*" mode="msc"/>
+<xsl:template match="m:mscarries" mode="mstack1">
+ <xsl:variable  name="align1" select="ancestor::m:mstack[1]/@stackalign"/>
+ <xsl:variable name="l1">
+  <xsl:choose>
+   <xsl:when test="string($align1)='left'">0</xsl:when>
+   <xsl:otherwise><xsl:value-of select="count(*)"/></xsl:otherwise>
+  </xsl:choose>
+ </xsl:variable>
+ <m:mtr class="mscarries">
+  <xsl:attribute name="l">
+   <xsl:choose>
+    <xsl:when test="@position">
+     <xsl:value-of select="$l1 + @position"/>
+    </xsl:when>
+    <xsl:otherwise>
+     <xsl:value-of select="$l1"/>
+    </xsl:otherwise>
+   </xsl:choose>
+  </xsl:attribute>
+  <xsl:apply-templates select="*" mode="msc"/>
+ </m:mtr>
 </xsl:template>
 
 <xsl:template match="*" mode="msc">
-<m:mtd><m:mstyle mathsize="70%"><xsl:apply-templates select="."/></m:mstyle></m:mtd>
-</xsl:template>
-
-<!-- need to handle the attributes -->
-<xsl:template match="m:mscarry" mode="msc">
- <xsl:apply-templates mode="msc" select="*"/>
-</xsl:template>
-
-
-
-<xsl:template match="m:msgroup" mode="mst">
-<xsl:for-each select="*">
-<m:mtr>
-<xsl:apply-templates select="." mode="ms"/>
-<xsl:if test="../@shift">
-<xsl:variable name="n" select="position() * ../@shift"/>
-<xsl:for-each select="(//*)[position() &lt;= $n]">
-<m:mtd></m:mtd>
-</xsl:for-each>
-</xsl:if>
-</m:mtr>
-</xsl:for-each>
-</xsl:template>
-
-<!-- not right but allows the data through -->
-<xsl:template match="m:msgroup" mode="ms">
-  <xsl:apply-templates select="*"/>
-</xsl:template>
-<xsl:template match="m:msline">
-  <xsl:apply-templates mode="ms" select="."/>
+ <m:mtd><m:mstyle mathsize="70%"><xsl:apply-templates select="."/></m:mstyle></m:mtd>
 </xsl:template>
 
 
 <xsl:template match="m:mlongdiv">
-<m:mtable columnspacing="0em">
-<xsl:variable name="t">
-<xsl:apply-templates select="*[position()&gt;2]" mode="mst"/>
-</xsl:variable>
-<xsl:apply-templates mode="p" select="c:node-set($t)/*">
-  <xsl:with-param name="c" select="10"/>
-</xsl:apply-templates>
-</m:mtable>
+ <xsl:variable name="ms">
+  <m:mstack>
+   <xsl:copy-of select="*[2]"/>
+   <m:msline/>
+   <m:msrow>
+    <m:mrow><xsl:copy-of select="*[1]"/></m:mrow>
+    <m:mo>)</m:mo>
+    <xsl:copy-of select="*[3]"/>
+   </m:msrow>
+   <xsl:copy-of select="*[position()&gt;3]"/>
+  </m:mstack>
+ </xsl:variable>
+ <xsl:apply-templates select="c:node-set($ms)"/>
 </xsl:template>
 
-<xsl:template match="m:mlabeledtr">
-<m:mtr>
-<xsl:apply-templates/>
-</m:mtr>
-</xsl:template>
 
 
+<!-- madruwb -->
 <xsl:template match="m:menclose[@notation='madruwb']" mode="rtl">
 <m:menclose notation="bottom right">
  <xsl:apply-templates mode="rtl"/>
