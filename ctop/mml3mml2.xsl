@@ -246,7 +246,7 @@
 
 
 <!-- mstack -->
-<xsl:param name="hascolspan" select="false()"/>
+<xsl:param name="hascolspan" select="true()"/>
 
 <xsl:template match="m:mstack">
  <m:mtable columnspacing="0em">
@@ -255,9 +255,6 @@
     <xsl:with-param name="p" select="0"/>
    </xsl:apply-templates>
   </xsl:variable>
-----
-<xsl:copy-of select="$t"/>
-----
   <xsl:variable name="maxl">
    <xsl:for-each select="c:node-set($t)/*/@l">
     <xsl:sort data-type="number" order="descending"/>
