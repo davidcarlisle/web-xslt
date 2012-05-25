@@ -303,6 +303,13 @@
 <xsl:template mode="mstack1" match="m:msrow">
  <xsl:param name="p"/>
  <xsl:param name="maxl" select="0"/>
+ <xsl:variable  name="align1" select="ancestor::m:mstack[1]/@stackalign"/>
+ <xsl:variable name="align">
+  <xsl:choose>
+   <xsl:when test="string($align1)=''">decimalpoint</xsl:when>
+   <xsl:otherwise><xsl:value-of select="$align1"/></xsl:otherwise>
+  </xsl:choose>
+ </xsl:variable>
  <xsl:variable name="row">
   <xsl:apply-templates mode="mstack1" select="*">
    <xsl:with-param name="p" select="0"/>
@@ -311,13 +318,16 @@
  <xsl:text>&#10;</xsl:text>
  <xsl:variable name="l1">
   <xsl:choose>
-   <xsl:when test="m:mn">
+   <xsl:when test="$align='decimalpoint' and m:mn">
     <xsl:for-each select="c:node-set($row)/m:mtr[m:mtd/m:mn][1]">
      <xsl:value-of select="number(sum(@l))+count(preceding-sibling::*/@l)"/>
     </xsl:for-each>
    </xsl:when>
+   <xsl:when test="$align='right' or $align='decimalpoint'">
+    <xsl:value-of select="count(c:node-set($row)/m:mtr/m:mtd)"/>
+   </xsl:when>
    <xsl:otherwise>
-    <xsl:value-of select="c:node-set($row)/m:mtr[1]/@l"/>
+    <xsl:value-of select="0"/>
    </xsl:otherwise>
   </xsl:choose>
  </xsl:variable>
