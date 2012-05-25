@@ -418,7 +418,7 @@
     <xsl:variable name="l" select="@length"/>
     <xsl:for-each select="(//node())[position()&lt;=$l]">
      <m:mtd class="msline">
-      <m:mpadded width="0em" height="0em">
+      <m:mpadded lspace="-0.5em" width="0em" height="0em">
        <m:mfrac linethickness="{$w}">
 	<m:mspace width="1em"/>
 	<m:mrow/>
