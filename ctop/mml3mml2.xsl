@@ -263,7 +263,8 @@
     </xsl:if>
    </xsl:for-each>
   </xsl:variable>
-  <xsl:for-each select="c:node-set($t)/*">
+  <xsl:for-each select="c:node-set($t)/*[not(@class='mscarries') or following-sibling::*[1]/@class='mscarries']">
+<xsl:variable name="c" select="preceding-sibling::*[1][@class='mscarries']"/>
    <xsl:text>&#10;</xsl:text>
    <m:mtr>
     <xsl:variable name="offset" select="$maxl - @l"/>
@@ -276,6 +277,45 @@
       <xsl:variable name="msl" select="*[1]"/>
       <xsl:for-each select="(//node())[position()&lt;=$maxl]">
        <xsl:copy-of select="$msl"/>
+      </xsl:for-each>
+     </xsl:when>
+     <xsl:when test="$c">
+      <xsl:variable name="ldiff" select="$c/@l - @l"/>
+      <xsl:variable name="loffset" select="$maxl - $c/@l"/>
+      <xsl:for-each select="(//*)[position()&lt;= $offset]">
+       <xsl:variable name="pn" select="position()"/>
+       <xsl:variable name="cy" select="$c/*[position()=$pn - $loffset]"/>
+	 <m:mtd>
+	  <xsl:if test="$cy/*"/>
+	  <m:mover><m:mphantom><m:mn>0</m:mn></m:mphantom><m:mpadded width="0em" lspace="-0.5width"><xsl:copy-of select="$cy/*/*"/></m:mpadded></m:mover>
+	 </m:mtd>
+      </xsl:for-each>
+      <xsl:for-each select="*">
+       <xsl:variable name="pn" select="position()"/>
+       <xsl:variable name="cy" select="$c/*[position()=$pn + $ldiff]"/>
+       <xsl:copy>
+	<xsl:copy-of select="@*"/>
+	<xsl:variable name="b">
+	 <xsl:choose>
+	  <xsl:when test="not(string($cy/@crossout) or $cy/@crossout='none')"><xsl:copy-of select="*"/></xsl:when>
+	  <xsl:otherwise>
+	   <m:menclose notation="{$cy/@crossout}"><xsl:copy-of select="*"/></m:menclose>
+	  </xsl:otherwise>
+	 </xsl:choose>
+	</xsl:variable>
+	<xsl:choose>
+	 <xsl:when test="$cy/*/m:none or not($cy/*/*)"><xsl:copy-of select="$b"/></xsl:when>
+	 <xsl:when test="not(string($cy/@location)) or $cy/@location='n'">
+	  <m:mover><xsl:copy-of select="$b"/><m:mpadded width="0em" lspace="-0.5width"><xsl:copy-of select="$cy/*/*"/></m:mpadded></m:mover>
+	 </xsl:when>
+	 <xsl:when test="$cy/@location='nw'">
+	  <m:mmultiscripts><xsl:copy-of select="$b"/><m:mprescripts/><m:none/><m:mpadded lspace="-1width" width="0em"><xsl:copy-of select="$cy/*/*"/></m:mpadded></m:mmultiscripts>
+	 </xsl:when>
+	 <xsl:otherwise>
+	  <xsl:copy-of select="$b"/>
+	 </xsl:otherwise>
+	</xsl:choose>
+       </xsl:copy>
       </xsl:for-each>
      </xsl:when>
      <xsl:otherwise>
@@ -457,11 +497,15 @@
 </xsl:template>
 
 <xsl:template match="*" mode="msc">
- <m:mtd><m:mstyle mathsize="70%"><xsl:apply-templates select="."/></m:mstyle></m:mtd>
+ <m:mtd>
+ <xsl:copy-of select="../@location|../@crossout"/>
+ <m:mstyle mathsize="70%"><xsl:apply-templates select="."/></m:mstyle></m:mtd>
 </xsl:template>
 
 <xsl:template match="m:mscarry" mode="msc">
- <m:mtd><m:mstyle mathsize="70%"><xsl:apply-templates select="*"/></m:mstyle></m:mtd>
+ <m:mtd>
+ <xsl:copy-of select="@location|@crossout"/>
+ <m:mstyle mathsize="70%"><xsl:apply-templates select="*"/></m:mstyle></m:mtd>
 </xsl:template>
 
 
