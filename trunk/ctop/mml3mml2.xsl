@@ -540,13 +540,44 @@
  <xsl:variable name="ms">
   <m:mstack>
    <xsl:copy-of select="(ancestor-or-self::*/@decimalpoint)[last()]"/>
-   <xsl:copy-of select="*[2]"/>
-   <m:msline length="{string-length(*[3])}"/>
-   <m:msrow>
-    <m:mrow><xsl:copy-of select="*[1]"/></m:mrow>
-    <m:mo>)</m:mo>
-    <xsl:copy-of select="*[3]"/>
-   </m:msrow>
+   <xsl:choose>
+    <xsl:when test="@longdivstyle='left/\right'">
+     <m:msrow>
+      <m:mrow><xsl:copy-of select="*[1]"/></m:mrow>
+      <m:mo>/</m:mo>
+      <xsl:copy-of select="*[3]"/>
+      <m:mo>\</m:mo>
+      <xsl:copy-of select="*[2]"/>
+     </m:msrow>
+    </xsl:when>
+    <xsl:when test="@longdivstyle='left)(right'">
+     <m:msrow>
+      <m:mrow><xsl:copy-of select="*[1]"/></m:mrow>
+      <m:mo>)</m:mo>
+      <xsl:copy-of select="*[3]"/>
+      <m:mo>(</m:mo>
+      <xsl:copy-of select="*[2]"/>
+     </m:msrow>
+    </xsl:when>
+    <xsl:when test="@longdivstyle=':right=right'">
+     <m:msrow>
+      <xsl:copy-of select="*[3]"/>
+      <m:mo>:</m:mo>
+      <xsl:copy-of select="*[1]"/>
+      <m:mo>=</m:mo>
+      <xsl:copy-of select="*[2]"/>
+     </m:msrow>
+    </xsl:when>
+    <xsl:otherwise>
+     <xsl:copy-of select="*[2]"/>
+     <m:msline length="{string-length(*[3])}"/>
+     <m:msrow>
+      <m:mrow><xsl:copy-of select="*[1]"/></m:mrow>
+      <m:mo>)</m:mo>
+      <xsl:copy-of select="*[3]"/>
+     </m:msrow>
+    </xsl:otherwise>
+   </xsl:choose>
    <xsl:copy-of select="*[position()&gt;3]"/>
   </m:mstack>
  </xsl:variable>
