@@ -378,22 +378,29 @@
 
 <xsl:template mode="mstack1" match="m:mn">
  <xsl:param name="p"/>
- <xsl:variable  name="align1" select="ancestor::m:mstack[1]/@stackalign"/>
+ <xsl:variable name="align1" select="ancestor::m:mstack[1]/@stackalign"/>
+ <xsl:variable name="dp1" select="ancestor::*[@decimalpoint][1]/@decimalpoint"/>
  <xsl:variable name="align">
   <xsl:choose>
    <xsl:when test="string($align1)=''">decimalpoint</xsl:when>
    <xsl:otherwise><xsl:value-of select="$align1"/></xsl:otherwise>
   </xsl:choose>
  </xsl:variable>
+ <xsl:variable name="dp">
+  <xsl:choose>
+   <xsl:when test="string($dp1)=''">.</xsl:when>
+   <xsl:otherwise><xsl:value-of select="$dp1"/></xsl:otherwise>
+  </xsl:choose>
+ </xsl:variable>
  <m:mtr l="$p">
   <xsl:variable name="mn" select="normalize-space(.)"/>
   <xsl:variable name="len" select="string-length($mn)"/>
   <xsl:choose>
-   <xsl:when test="$align='right' or ($align='decimalpoint' and not(contains($mn,'.')))">
+   <xsl:when test="$align='right' or ($align='decimalpoint' and not(contains($mn,$dp)))">
     <xsl:attribute name="l"><xsl:value-of select="$p + $len"/></xsl:attribute>
    </xsl:when>
    <xsl:when test="$align='decimalpoint'">
-    <xsl:attribute name="l"><xsl:value-of select="$p + string-length(substring-before($mn,'.'))"/></xsl:attribute>
+    <xsl:attribute name="l"><xsl:value-of select="$p + string-length(substring-before($mn,$dp))"/></xsl:attribute>
    </xsl:when>
   </xsl:choose>
 
@@ -512,6 +519,7 @@
 <xsl:template match="m:mlongdiv">
  <xsl:variable name="ms">
   <m:mstack>
+   <xsl:copy-of select="(ancestor-or-self::*/@decimalpoint)[last()]"/>
    <xsl:copy-of select="*[2]"/>
    <m:msline length="{string-length(*[3])}"/>
    <m:msrow>
