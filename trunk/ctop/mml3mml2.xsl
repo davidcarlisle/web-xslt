@@ -311,6 +311,26 @@
 	 <xsl:when test="$cy/@location='nw'">
 	  <m:mmultiscripts><xsl:copy-of select="$b"/><m:mprescripts/><m:none/><m:mpadded lspace="-1width" width="0em"><xsl:copy-of select="$cy/*/*"/></m:mpadded></m:mmultiscripts>
 	 </xsl:when>
+	 <xsl:when test="$cy/@location='s'">
+	  <m:munder><xsl:copy-of select="$b"/><m:mpadded width="0em" lspace="-0.5width"><xsl:copy-of select="$cy/*/*"/></m:mpadded></m:munder>
+	 </xsl:when>
+	 <xsl:when test="$cy/@location='sw'">
+	  <m:mmultiscripts><xsl:copy-of select="$b"/><m:mprescripts/><m:mpadded lspace="-1width" width="0em"><xsl:copy-of select="$cy/*/*"/></m:mpadded><m:none/></m:mmultiscripts>
+	 </xsl:when>
+	 <xsl:when test="$cy/@location='ne'">
+	  <m:msup><xsl:copy-of select="$b"/><m:mpadded width="0em"><xsl:copy-of select="$cy/*/*"/></m:mpadded></m:msup>
+	 </xsl:when>
+	 <xsl:when test="$cy/@location='se'">
+	  <m:msub><xsl:copy-of select="$b"/><m:mpadded width="0em"><xsl:copy-of select="$cy/*/*"/></m:mpadded></m:msub>
+	 </xsl:when>
+	 <xsl:when test="$cy/@location='w'">
+	  <m:msup><m:mrow/><m:mpadded lspace="-1width" width="0em"><xsl:copy-of select="$cy/*/*"/></m:mpadded></m:msup>
+	  <xsl:copy-of select="$b"/>
+	 </xsl:when>
+	 <xsl:when test="$cy/@location='e'">
+	  <xsl:copy-of select="$b"/>
+	  <m:msup><m:mrow/><m:mpadded width="0em"><xsl:copy-of select="$cy/*/*"/></m:mpadded></m:msup>
+	 </xsl:when>
 	 <xsl:otherwise>
 	  <xsl:copy-of select="$b"/>
 	 </xsl:otherwise>
