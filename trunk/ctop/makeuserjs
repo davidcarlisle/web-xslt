@@ -19,7 +19,7 @@ $line =~ s/> */>/g;
 $line =~ s/ *</</g;
 $line =~ s/xsl:/x:/g;
 $line =~ s/<m:/</g;
-$line =~ s/\/m:/\//g;
+$line =~ s/<\/m:/<\//g;
 $line =~ s/ *mode="c2p"//g;
 $line =~ s/'/\\'/g;
 # $line =~ s/<m:mi (href="[^\"]*")>([^m]*<\/m:mi>)/<a xmlns="http:\/\/www.w3.org\/1999\/xhtml" $1><m:mi>$2<\/a>/g;
