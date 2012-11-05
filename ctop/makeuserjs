@@ -1,3 +1,6 @@
+// Make a greasemonkey/user script from the XSLT.
+// May be used/modified under W3C, MIT, MPL 1.1 or MPL 2.0 Licences.
+//
 print "// ==UserScript==
 // \@name          ctop
 // \@namespace     http://w3c.org/Math
