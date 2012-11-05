@@ -1,3 +1,12 @@
+<!--
+
+Copyright David Carlisle 2008-2012.
+
+Use and distribution of this code are permitted under the terms of the <a
+href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
+>W3C Software Notice and License</a>. Or the MIT or MPL 1.1 or MPL 2.0 licences.
+-->
+
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		xmlns:m="http://www.w3.org/1998/Math/MathML"
 		xmlns:c="http://exslt.org/common"
