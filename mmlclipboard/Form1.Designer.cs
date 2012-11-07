@@ -82,8 +82,7 @@
             "MathML",
             "MathML Presentation",
             "MathML Content",
-            "UnicodeText",
-            "Text"});
+            "TeX"});
             this.comboBox1.Location = new System.Drawing.Point(107, 5);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(138, 21);
