@@ -31,11 +31,11 @@ namespace WindowsFormsApplication1
             ido = Clipboard.GetDataObject();
 
 
-            var data = (MemoryStream)ido.GetData("MathML");
+            var data = (MemoryStream)ido.GetData(comboBox1.Text);
 
             if (data == null)
             {
-                textBox2.Text = "No MathML on Clipboard\r\nAvailable formats:\r\n";
+                textBox2.Text = "No \"" + comboBox1.Text + "\" on Clipboard\r\nAvailable formats:\r\n";
                 for (var i = 0; i < ido.GetFormats().Length; i++)
                 {
                     textBox2.Text += ido.GetFormats()[i];
@@ -68,7 +68,7 @@ namespace WindowsFormsApplication1
             str2[1] = 254;
 
             MemoryStream clp = new MemoryStream(str2);
-            Clipboard.SetData("MathML", clp);
+            Clipboard.SetData(comboBox1.Text, clp);
         }
         private void button3_Click(object sender, System.EventArgs e)
         {
@@ -83,7 +83,7 @@ namespace WindowsFormsApplication1
                 str2[0] = 255;
                 str2[1] = 254;
                 MemoryStream clp = new MemoryStream(str2);
-                Clipboard.SetData("MathML", clp);
+                Clipboard.SetData(comboBox1.Text, clp);
             }
             catch (Exception xmlerr)
             {
