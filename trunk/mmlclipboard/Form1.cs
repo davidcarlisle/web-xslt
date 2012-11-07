@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 
 namespace WindowsFormsApplication1
 {
@@ -58,15 +59,22 @@ namespace WindowsFormsApplication1
             }
 
             private void button2_Click(object sender, System.EventArgs e)
-
             {
-                string str1 = "X<?xml version=\"1.0\" encoding=\"UTF-16\"?><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mfrac><mi>a</mi><mi>b</mi></mfrac></math> ";
+                string str1 = "X<?xml version=\"1.0\" encoding=\"UTF-16\"?><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mfrac><mi>a</mi><mi>b</mi></mfrac></math>";
                 Byte[] str2 = System.Text.Encoding.Unicode.GetBytes(str1);
-                str2[0]=255;
-                str2[1]=254;
-                // str2[str2.Length - 1] = 0;
-               // str2[str2.Length -2]=0;
+                str2[0] = 255;
+                str2[1] = 254;
 
+                MemoryStream clp = new MemoryStream(str2);
+                Clipboard.SetData("MathML", clp);
+            }
+            private void button3_Click(object sender, System.EventArgs e)
+            {
+                string str0 = textBox2.Text;
+                string str1=Regex.Replace(str0,@"^(<\?xml.*\?>)?","X<?xml version=\"1.0\" encoding=\"UTF-16\"?>");
+                Byte[] str2 = System.Text.Encoding.Unicode.GetBytes(str1);
+                str2[0] = 255;
+                str2[1] = 254;
                 MemoryStream clp = new MemoryStream(str2);
                 Clipboard.SetData("MathML", clp);
             }
