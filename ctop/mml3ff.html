@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html>
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>ff test</title>
+<script>
+//<![CDATA[
+
+    var mm = document.getElementsByTagName('math');
+
+var xhr = new XMLHttpRequest();
+xhr.onload = function() {
+  dump(xhr.responseXML.documentElement.nodeName);
+}
+xhr.onerror = function() {
+  dump("Error while getting XML.");
+}
+xhr.open("GET", "mml3ff.xsl");
+xhr.responseType = "document";
+xhr.send();
+  function mmlff() {
+	var xsltd=  xhr.responseXML;
+	var proc = new XSLTProcessor();
+	proc.importStylesheet(xsltd);
+	for (var i = 0; i< mm.length;i++){
+	    try {
+		var newmath=proc.transformToFragment(mm[i],document);
+		if(newmath!=null) {
+		    mm[i].parentNode.replaceChild(newmath,mm[i]);
+		} else {
+		}
+	    }
+	    catch(err){
+	    }
+}
+}
+  window.addEventListener('load', mmlff, false);
+//]]>
+</script>
+</head>
+<body>
+<h2>mlabeldetr</h2>
+
+
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+<mtable>
+  <mlabeledtr id="chapter3_e-is-m-c-square">
+    <mtd>
+      <mtext> (2.1) </mtext>
+    </mtd>
+    <mtd>
+     <mrow>
+       <mi>E</mi>
+       <mo>=</mo>
+       <mrow>
+        <mi>m</mi>
+        <mo>&#8290;</mo>
+        <msup>
+         <mi>c</mi>
+         <mn>2</mn>
+        </msup>
+       </mrow>
+     </mrow>
+    </mtd>
+  </mlabeledtr>
+</mtable>
+</math>
+
+
+<h2> mstack</h2>
+
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+<mstack>
+  <mn>424</mn>
+  <msrow> <mo>+</mo> <mn>33</mn> </msrow>
+  <msline></msline>
+</mstack>
+</math>
+
+
+<h2>mlongdiv</h2>
+
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+<mlongdiv longdivstyle="lefttop">
+  <mn> 3 </mn>
+  <mn> 435.3</mn>
+
+  <mn> 1306</mn>
+
+  <msgroup position="2" shift="-1">
+    <msgroup>
+      <mn> 12</mn>
+      <msline length="2"></msline>
+    </msgroup>
+    <msgroup>
+      <mn> 10</mn>
+      <mn> 9</mn>
+      <msline length="2"></msline>
+    </msgroup>
+    <msgroup>
+      <mn> 16</mn>
+      <mn> 15</mn>
+      <msline length="2"></msline>
+      <mn> 1.0</mn>           
+    </msgroup>
+    <msgroup position="-1">   
+       <mn> 9</mn>
+      <msline length="3"></msline>
+      <mn> 1</mn>
+    </msgroup>
+  </msgroup>
+</mlongdiv>
+</math>
+
+<h2>malign</h2>
+
+</body>
+</html>
