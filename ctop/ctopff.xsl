@@ -11,7 +11,8 @@ Copyright David Carlisle 2001, 2002, 2008, 2009.
 
 Use and distribution of this code are permitted under the terms of the <a
 href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
->W3C Software Notice and License</a>. Or the MIT or MPL 1.1 or MPL 2.0 licences.
+>W3C Software Notice and License</a>.
+Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 2001-2002 MathML2 version
 2008-2009     Updates for MathML3
 2012 FF version with modified namespace and mode usage.
