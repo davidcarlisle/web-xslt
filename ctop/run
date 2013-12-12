@@ -1,0 +1,9 @@
+perl makeuserjs > ctop.user.js
+
+# fpq2w68q.default
+# cp ctop.user.js  /c/Users/davidc/AppData/Roaming/Mozilla/Firefox/Profiles/ehqp8c9a.default/gm_scripts/ctop/
+
+
+grep x:sty ctop.user.js | sed -e "s/\\\\'/'/g" -e "s@/x:stylesheet>.*@/x:stylesheet>@" -e "s/^[^']*'//" > c.xsl
+
+sed  -e "/Copyright David/a  FF version with modified namespace and mode usage" -e "s/xmlns:m=\(.*\)\"/xmlns=\\1\"\n  xmlns:m=\\1\"/" -e "s/xsl:/x:/g"  -e "s/<m:/</g" -e "s@</m:@</@"g -e "s/ mode=.c2p.//g" -e "s/xmlns:xsl/xmlns:x/" ctop.xsl >ctopff.xsl
