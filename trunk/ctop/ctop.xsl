@@ -7,7 +7,7 @@
 
 <!--
 
-Copyright David Carlisle 2001, 2002, 2008, 2009.
+Copyright David Carlisle 2001, 2002, 2008, 2009, 2013.
 
 Use and distribution of this code are permitted under the terms of the <a
 href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
@@ -441,22 +441,23 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 </xsl:template>
 
 <!-- 4.4.3.6  plus-->
+<!-- put out - on leading term (mathjax report)-->
 <xsl:template mode="c2p" match="m:apply[*[1][self::m:plus]]
 				|m:apply[*[1][self::m:csymbol='plus']]">
   <xsl:param name="p" select="0"/>
   <m:mrow>
   <xsl:if test="$p &gt; 2"><m:mo>(</m:mo></xsl:if>
   <xsl:for-each select="*[position()&gt;1]">
-   <xsl:if test="position() &gt; 1">
-    <m:mo>
-    <xsl:choose>
-      <xsl:when test="self::m:apply[*[1][self::m:times] and
-      *[2][self::m:apply/*[1][self::m:minus] or self::m:cn[not(m:sep) and
-      (number(.) &lt; 0)]]]">&#8722;<!--minus--></xsl:when>
-      <xsl:otherwise>+</xsl:otherwise>
-    </xsl:choose>
-    </m:mo>
-   </xsl:if>   
+   <xsl:choose>
+    <xsl:when test="self::m:apply[*[1][self::m:times] and
+		    *[2][self::m:apply/*[1][self::m:minus] or self::m:cn[not(m:sep) and
+		    (number(.) &lt; 0)]]]">
+     <m:mo>&#8722;<!--minus--></m:mo>
+    </xsl:when>
+    <xsl:when test="position()!=1">
+      <m:mo>+</m:mo>
+    </xsl:when>
+   </xsl:choose>
     <xsl:choose>
       <xsl:when test="self::m:apply[*[1][self::m:times] and
       *[2][self::m:cn[not(m:sep) and (number(.) &lt;0)]]]">
@@ -1898,12 +1899,13 @@ match="m:apply[*[1][self::m:determinant]][*[2][self::m:matrix]]" priority="2">
   </m:mrow>
 </xsl:template>
 
+ <!-- make 1-(9-2) google code isse 3-->
 <xsl:template name="binary" >
   <xsl:param name="mo"/>
   <xsl:param name="p" select="0"/>
   <xsl:param name="this-p" select="0"/>
   <m:mrow>
-  <xsl:if test="$this-p &lt; $p"><m:mo>(</m:mo></xsl:if>
+  <xsl:if test="($this-p &lt; $p) or ($this-p=$p and $mo='&#8722;')"><m:mo>(</m:mo></xsl:if>
    <xsl:apply-templates mode="c2p" select="*[2]">
      <xsl:with-param name="p" select="$this-p"/>
    </xsl:apply-templates>
@@ -1911,7 +1913,7 @@ match="m:apply[*[1][self::m:determinant]][*[2][self::m:matrix]]" priority="2">
    <xsl:apply-templates mode="c2p" select="*[3]">
      <xsl:with-param name="p" select="$this-p"/>
    </xsl:apply-templates>
-  <xsl:if test="$this-p &lt; $p"><m:mo>)</m:mo></xsl:if>
+  <xsl:if test="($this-p &lt; $p) or ($this-p=$p and $mo='&#8722;')"><m:mo>)</m:mo></xsl:if>
   </m:mrow>
 </xsl:template>
 
@@ -1966,7 +1968,7 @@ match="m:apply[*[1][self::m:determinant]][*[2][self::m:matrix]]" priority="2">
  </m:merror>
 </xsl:template>
  
-<xsl:template  mode="c2p" match="m:share" priority="4">
+<xsl:template mode="c2p" match="m:share" priority="4">
  <m:mi href="{@href}">share<xsl:value-of select="substring-after(@href,'#')"/></m:mi>
 </xsl:template>
 
