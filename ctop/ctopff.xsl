@@ -3,11 +3,13 @@
   xmlns:x="http://www.w3.org/1999/XSL/Transform"
   xmlns="http://www.w3.org/1998/Math/MathML"
   xmlns:m="http://www.w3.org/1998/Math/MathML"
-  exclude-result-prefixes="m">
+  exclude-result-prefixes="m"
+>
 
 <!--
 
-Copyright David Carlisle 2001, 2002, 2008, 2009.
+Copyright David Carlisle 2001, 2002, 2008, 2009, 2013.
+FF version with modified namespace and mode usage
 
 Use and distribution of this code are permitted under the terms of the <a
 href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
@@ -15,7 +17,6 @@ href="http://www.w3.org/Consortium/Legal/copyright-software-19980720"
 Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 2001-2002 MathML2 version
 2008-2009     Updates for MathML3
-2012 FF version with modified namespace and mode usage.
 -->
 
 <x:output method="xml" />
@@ -442,22 +443,23 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 </x:template>
 
 <!-- 4.4.3.6  plus-->
+<!-- put out - on leading term (mathjax report)-->
 <x:template match="m:apply[*[1][self::m:plus]]
 				|m:apply[*[1][self::m:csymbol='plus']]">
   <x:param name="p" select="0"/>
   <mrow>
   <x:if test="$p &gt; 2"><mo>(</mo></x:if>
   <x:for-each select="*[position()&gt;1]">
-   <x:if test="position() &gt; 1">
-    <mo>
-    <x:choose>
-      <x:when test="self::m:apply[*[1][self::m:times] and
-      *[2][self::m:apply/*[1][self::m:minus] or self::m:cn[not(m:sep) and
-      (number(.) &lt; 0)]]]">&#8722;<!--minus--></x:when>
-      <x:otherwise>+</x:otherwise>
-    </x:choose>
-    </mo>
-   </x:if>   
+   <x:choose>
+    <x:when test="self::m:apply[*[1][self::m:times] and
+		    *[2][self::m:apply/*[1][self::m:minus] or self::m:cn[not(m:sep) and
+		    (number(.) &lt; 0)]]]">
+     <mo>&#8722;<!--minus--></mo>
+    </x:when>
+    <x:when test="position()!=1">
+      <mo>+</mo>
+    </x:when>
+   </x:choose>
     <x:choose>
       <x:when test="self::m:apply[*[1][self::m:times] and
       *[2][self::m:cn[not(m:sep) and (number(.) &lt;0)]]]">
@@ -1899,12 +1901,13 @@ match="m:apply[*[1][self::m:determinant]][*[2][self::m:matrix]]" priority="2">
   </mrow>
 </x:template>
 
+ <!-- make 1-(9-2) google code isse 3-->
 <x:template name="binary" >
   <x:param name="mo"/>
   <x:param name="p" select="0"/>
   <x:param name="this-p" select="0"/>
   <mrow>
-  <x:if test="$this-p &lt; $p"><mo>(</mo></x:if>
+  <x:if test="($this-p &lt; $p) or ($this-p=$p and $mo='&#8722;')"><mo>(</mo></x:if>
    <x:apply-templates select="*[2]">
      <x:with-param name="p" select="$this-p"/>
    </x:apply-templates>
@@ -1912,7 +1915,7 @@ match="m:apply[*[1][self::m:determinant]][*[2][self::m:matrix]]" priority="2">
    <x:apply-templates select="*[3]">
      <x:with-param name="p" select="$this-p"/>
    </x:apply-templates>
-  <x:if test="$this-p &lt; $p"><mo>)</mo></x:if>
+  <x:if test="($this-p &lt; $p) or ($this-p=$p and $mo='&#8722;')"><mo>)</mo></x:if>
   </mrow>
 </x:template>
 
