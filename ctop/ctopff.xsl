@@ -161,14 +161,14 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
    <x:choose>
      <x:when test="*[1]/*/*">
        <mfenced separators="">
-	 <x:apply-templates select="*[1]">
-	   <x:with-param name="p" select="10"/>
-	 </x:apply-templates>
+         <x:apply-templates select="*[1]">
+           <x:with-param name="p" select="10"/>
+         </x:apply-templates>
        </mfenced>
      </x:when>
      <x:otherwise>       
        <x:apply-templates select="*[1]">
-	 <x:with-param name="p" select="10"/>
+         <x:with-param name="p" select="10"/>
        </x:apply-templates>
      </x:otherwise>
    </x:choose>
@@ -185,14 +185,14 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
    <x:choose>
      <x:when test="*[1]/*/*">
        <mfenced separators="">
-	 <x:apply-templates select="*[1]">
-	   <x:with-param name="p" select="10"/>
-	 </x:apply-templates>
+         <x:apply-templates select="*[1]">
+           <x:with-param name="p" select="10"/>
+         </x:apply-templates>
        </mfenced>
      </x:when>
      <x:otherwise>       
        <x:apply-templates select="*[1]">
-	 <x:with-param name="p" select="10"/>
+         <x:with-param name="p" select="10"/>
        </x:apply-templates>
      </x:otherwise>
    </x:choose>
@@ -263,8 +263,8 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 
 <!-- 4.4.2.9 lambda -->
 <x:template match="m:lambda
-				|m:apply[*[1][self::m:csymbol='lambda']]
-				|m:bind[*[1][self::m:csymbol='lambda']]"><!--dpc-->
+                                |m:apply[*[1][self::m:csymbol='lambda']]
+                                |m:bind[*[1][self::m:csymbol='lambda']]"><!--dpc-->
  <mrow>
   <mi>&#955;<!--lambda--></mi>
  <mrow><x:apply-templates select="m:bvar/*"/></mrow>
@@ -349,18 +349,18 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
     <mo>{</mo>
     <mtable>
       <x:for-each select="m:piece|m:otherwise">
-	<mtr>
-	  <mtd><x:apply-templates select="*[1]"/></mtd>
-	  <x:choose><!--dpc-->
-	    <x:when  test="self::m:piece">
-	      <mtd columnalign="left"><mtext>&#160; if &#160;</mtext></mtd>
-	      <mtd><x:apply-templates select="*[2]"/></mtd>
-	    </x:when>
-	    <x:otherwise>
-	      <mtd colspan="2" columnalign="left"><mtext>&#160; otherwise</mtext></mtd>
-	    </x:otherwise>
-	  </x:choose>
-	</mtr>
+        <mtr>
+          <mtd><x:apply-templates select="*[1]"/></mtd>
+          <x:choose><!--dpc-->
+            <x:when  test="self::m:piece">
+              <mtd columnalign="left"><mtext>&#160; if &#160;</mtext></mtd>
+              <mtd><x:apply-templates select="*[2]"/></mtd>
+            </x:when>
+            <x:otherwise>
+              <mtd colspan="2" columnalign="left"><mtext>&#160; otherwise</mtext></mtd>
+            </x:otherwise>
+          </x:choose>
+        </mtr>
       </x:for-each>
     </mtable>
   </mrow>
@@ -383,7 +383,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 
 <!-- 4.4.3.2 factorial -->
 <x:template match="m:apply[*[1][self::m:factorial]]
-				|m:apply[*[1][self::m:csymbol='factorial']]">
+                                |m:apply[*[1][self::m:csymbol='factorial']]">
 <mrow>
 <x:apply-templates select="*[2]">
   <x:with-param name="p" select="7"/>
@@ -395,7 +395,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 
 <!-- 4.4.3.3 divide -->
 <x:template match="m:apply[*[1][self::m:divide]]
-				|m:apply[*[1][self::m:csymbol='divide']]">
+                                |m:apply[*[1][self::m:csymbol='divide']]">
   <x:param name="p" select="0"/>
 <x:call-template name="binary">
   <x:with-param name="mo"><mo>/</mo></x:with-param>
@@ -407,7 +407,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 
 <!-- 4.4.3.4 max  min-->
 <x:template match="m:apply[*[1][self::m:max]]
-				|m:apply[*[1][self::m:csymbol='max']]">
+                                |m:apply[*[1][self::m:csymbol='max']]">
 <mrow>
   <mi>max</mi>
   <x:call-template name="set"/>
@@ -423,7 +423,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 
 <!-- 4.4.3.5  minus-->
 <x:template match="m:apply[*[1][self::m:minus] and count(*)=2]
-				|m:apply[*[1][self::m:csymbol='unary_minus']]">
+                                |m:apply[*[1][self::m:csymbol='unary_minus']]">
 <mrow>
   <mo>&#8722;<!--minus--></mo>
   <x:apply-templates select="*[2]">
@@ -433,7 +433,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 </x:template>
 
 <x:template match="m:apply[*[1][self::m:minus] and count(*)&gt;2]
-				|m:apply[*[1][self::m:csymbol='minus']]">
+                                |m:apply[*[1][self::m:csymbol='minus']]">
   <x:param name="p" select="0"/>
 <x:call-template name="binary">
   <x:with-param name="mo"><mo>&#8722;<!--minus--></mo></x:with-param>
@@ -445,15 +445,15 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 <!-- 4.4.3.6  plus-->
 <!-- put out - on leading term (mathjax report)-->
 <x:template match="m:apply[*[1][self::m:plus]]
-				|m:apply[*[1][self::m:csymbol='plus']]">
+                                |m:apply[*[1][self::m:csymbol='plus']]">
   <x:param name="p" select="0"/>
   <mrow>
   <x:if test="$p &gt; 2"><mo>(</mo></x:if>
   <x:for-each select="*[position()&gt;1]">
    <x:choose>
     <x:when test="self::m:apply[*[1][self::m:times] and
-		    *[2][self::m:apply/*[1][self::m:minus] or self::m:cn[not(m:sep) and
-		    (number(.) &lt; 0)]]]">
+                    *[2][self::m:apply/*[1][self::m:minus] or self::m:cn[not(m:sep) and
+                    (number(.) &lt; 0)]]]">
      <mo>&#8722;<!--minus--></mo>
     </x:when>
     <x:when test="position()!=1">
@@ -496,7 +496,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 
 <!-- 4.4.3.7 power -->
 <x:template match="m:apply[*[1][self::m:power]]
-				|m:apply[*[1][self::m:csymbol='power']]">
+                                |m:apply[*[1][self::m:csymbol='power']]">
 <msup>
 <x:apply-templates select="*[2]">
   <x:with-param name="p" select="5"/>
@@ -520,8 +520,8 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 
 <!-- 4.4.3.9  times-->
 <x:template match="m:apply[*[1][self::m:times]]
-				|m:apply[*[1][self::m:csymbol='times']]"
-	      name="times">
+                                |m:apply[*[1][self::m:csymbol='times']]"
+              name="times">
   <x:param name="p" select="0"/>
   <x:param name="first" select="1"/>
   <mrow>
@@ -574,8 +574,8 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 
 <!-- 4.4.3.12 and -->
 <x:template match="m:apply[*[1][self::m:and]]
-				|m:reln[*[1][self::m:and]]
-				|m:apply[*[1][self::m:csymbol='and']]">
+                                |m:reln[*[1][self::m:and]]
+                                |m:apply[*[1][self::m:csymbol='and']]">
 <x:param name="p" select="0"/>
 <x:call-template name="infix">
  <x:with-param name="this-p" select="2"/>
@@ -624,8 +624,8 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 
 <!-- 4.4.3.16 implies -->
 <x:template match="m:apply[*[1][self::m:implies]]
-				|m:reln[*[1][self::m:implies]]
-				|m:apply[*[1][self::m:csymbol='implies']]">
+                                |m:reln[*[1][self::m:implies]]
+                                |m:apply[*[1][self::m:csymbol='implies']]">
   <x:param name="p" select="0"/>
 <x:call-template name="binary">
   <x:with-param name="mo"><mo>&#8658;<!-- Rightarrow --></mo></x:with-param>
@@ -670,12 +670,12 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
      <x:when test="m:domainofapplication">
        <mrow>
        <mrow>
-	 <x:for-each select="m:bvar">
-	   <x:apply-templates/>
-	   <x:if test="position()!=last()">
-	     <mo>,</mo>
-	   </x:if>
-	 </x:for-each>
+         <x:for-each select="m:bvar">
+           <x:apply-templates/>
+           <x:if test="position()!=last()">
+             <mo>,</mo>
+           </x:if>
+         </x:for-each>
        </mrow>
        <mo>&#8712;<!-- in --></mo>
        <x:apply-templates select="m:domainofapplication/*"/>
@@ -756,8 +756,8 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 
 <!-- 4.4.4.1 eq -->
 <x:template match="m:apply[*[1][self::m:eq]]
-				|m:reln[*[1][self::m:eq]]
-				|m:apply[*[1][self::m:csymbol='eq']]">
+                                |m:reln[*[1][self::m:eq]]
+                                |m:apply[*[1][self::m:csymbol='eq']]">
 <x:param name="p" select="0"/>
 <x:call-template name="infix">
  <x:with-param name="this-p" select="1"/>
@@ -779,8 +779,8 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 
 <!-- 4.4.4.3 eq -->
 <x:template match="m:apply[*[1][self::m:gt]]
-				|m:reln[*[1][self::m:gt]]
-				|m:apply[*[1][self::m:csymbol='gt']]">
+                                |m:reln[*[1][self::m:gt]]
+                                |m:apply[*[1][self::m:csymbol='gt']]">
 <x:param name="p" select="0"/>
 <x:call-template name="infix">
  <x:with-param name="this-p" select="1"/>
@@ -791,8 +791,8 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 
 <!-- 4.4.4.4 lt -->
 <x:template match="m:apply[*[1][self::m:lt]]
-				|m:reln[*[1][self::m:lt]]
-				|m:apply[*[1][self::m:csymbol='lt']]">
+                                |m:reln[*[1][self::m:lt]]
+                                |m:apply[*[1][self::m:csymbol='lt']]">
 <x:param name="p" select="0"/>
 <x:call-template name="infix">
  <x:with-param name="this-p" select="1"/>
@@ -803,7 +803,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 
 <!-- 4.4.4.5 geq -->
 <x:template match="m:apply[*[1][self::m:geq]]
-				|m:apply[*[1][self::m:csymbol='geq']]">
+                                |m:apply[*[1][self::m:csymbol='geq']]">
 <x:param name="p" select="0"/>
 <x:call-template name="infix">
  <x:with-param name="this-p" select="1"/>
@@ -886,7 +886,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 
 <!-- 4.4.5.2 diff -->
 <x:template match="m:apply[*[1][self::m:diff] and not(m:bvar)]|
-				m:apply[*[1][self::m:csymbol='diff']]" priority="2">
+                                m:apply[*[1][self::m:csymbol='diff']]" priority="2">
  <msup>
  <mrow><x:apply-templates select="*[2]"/></mrow>
  <mo>&#8242;<!--prime--></mo>
@@ -930,41 +930,41 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
   <mfrac>
     <mrow>
       <x:choose><!--dpc-->
-	<x:when test="not(m:bvar/m:degree) and not(m:bvar[2])">
-	  <mo>&#8706;<!-- partial --></mo>
-	</x:when>
-	<x:otherwise>
-	  <msup><mo>&#8706;<!-- partial --></mo>
-	  <mrow>
-	    <x:choose>
-	      <x:when test="m:degree">
-		<x:apply-templates select="m:degree/node()"/>
-	      </x:when>
-	      <x:when test="m:bvar/m:degree[string(number(.))='NaN']">
-		<x:for-each select="m:bvar/m:degree">
-		  <x:apply-templates select="node()"/>
-		  <x:if test="position()&lt;last()"><mo>+</mo></x:if>
-		</x:for-each>
-		<x:if test="count(m:bvar[not(m:degree)])&gt;0">
-		  <mo>+</mo><mn><x:value-of select="count(m:bvar[not(m:degree)])"/></mn>
-		</x:if>
-	      </x:when>
-	      <x:otherwise>
-		<mn><x:value-of select="number(sum(m:bvar/m:degree))+count(m:bvar[not(m:degree)])"/></mn>
-	      </x:otherwise>
-	    </x:choose>
-	  </mrow>
-	  </msup>
-	</x:otherwise>
+        <x:when test="not(m:bvar/m:degree) and not(m:bvar[2])">
+          <mo>&#8706;<!-- partial --></mo>
+        </x:when>
+        <x:otherwise>
+          <msup><mo>&#8706;<!-- partial --></mo>
+          <mrow>
+            <x:choose>
+              <x:when test="m:degree">
+                <x:apply-templates select="m:degree/node()"/>
+              </x:when>
+              <x:when test="m:bvar/m:degree[string(number(.))='NaN']">
+                <x:for-each select="m:bvar/m:degree">
+                  <x:apply-templates select="node()"/>
+                  <x:if test="position()&lt;last()"><mo>+</mo></x:if>
+                </x:for-each>
+                <x:if test="count(m:bvar[not(m:degree)])&gt;0">
+                  <mo>+</mo><mn><x:value-of select="count(m:bvar[not(m:degree)])"/></mn>
+                </x:if>
+              </x:when>
+              <x:otherwise>
+                <mn><x:value-of select="number(sum(m:bvar/m:degree))+count(m:bvar[not(m:degree)])"/></mn>
+              </x:otherwise>
+            </x:choose>
+          </mrow>
+          </msup>
+        </x:otherwise>
       </x:choose>
     <x:apply-templates  select="*[last()]"/></mrow>
     <mrow>
       <x:for-each select="m:bvar">
-	<mrow>
-	  <mo>&#8706;<!-- partial --></mo><msup><x:apply-templates select="node()"/>
-	  <mrow><x:apply-templates select="m:degree/node()"/></mrow>
-	</msup>
-	</mrow>
+        <mrow>
+          <mo>&#8706;<!-- partial --></mo><msup><x:apply-templates select="node()"/>
+          <mrow><x:apply-templates select="m:degree/node()"/></mrow>
+        </msup>
+        </mrow>
       </x:for-each>
     </mrow>
   </mfrac>
@@ -1114,8 +1114,8 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 </x:template>
 
 <x:template match="m:apply[*[1][self::m:union]][m:bvar]
-				|m:apply[*[1][self::m:csymbol='union']][m:bvar]"
-	      priority="2"
+                                |m:apply[*[1][self::m:csymbol='union']][m:bvar]"
+              priority="2"
 >
   <x:call-template name="sum">
     <x:with-param name="mo"><mo>&#x22C3;</mo></x:with-param>
@@ -1135,8 +1135,8 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 
 
 <x:template match="m:apply[*[1][self::m:intersect]][m:bvar]
-				|m:apply[*[1][self::m:csymbol='intersect']][m:bvar]"
-	      priority="2"
+                                |m:apply[*[1][self::m:csymbol='intersect']][m:bvar]"
+              priority="2"
 >
   <x:call-template name="sum">
     <x:with-param name="mo"><mo>&#x22C2;</mo></x:with-param>
@@ -1234,7 +1234,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 
 <!-- 4.4.6.13 cartesianproduct -->
 <x:template match="m:apply[*[1][self::m:cartesianproduct or self::m:vectorproduct]]
-				|m:apply[*[1][self::m:csymbol[.='cartesian_product' or . = 'vectorproduct']]]">
+                                |m:apply[*[1][self::m:csymbol[.='cartesian_product' or . = 'vectorproduct']]]">
 <x:param name="p" select="0"/>
 <x:call-template name="infix">
  <x:with-param name="this-p" select="2"/>
@@ -1323,9 +1323,9 @@ priority="2">
  <x:apply-templates select="m:bind/m:bvar/*"/>
     <mo>
       <x:choose>
-	<x:when test="*[3]='above'">&#8600;<!--searrow--></x:when>
-	<x:when test="*[3]='below'">&#8599;<!--nearrow--></x:when>
-	<x:otherwise>&#8594;<!--rightarrow--></x:otherwise>
+        <x:when test="*[3]='above'">&#8600;<!--searrow--></x:when>
+        <x:when test="*[3]='below'">&#8599;<!--nearrow--></x:when>
+        <x:otherwise>&#8594;<!--rightarrow--></x:otherwise>
       </x:choose>
     </mo>
  <x:apply-templates select="*[2]"/>    
@@ -1368,10 +1368,10 @@ priority="2">
     <x:apply-templates select="*[3]"/>
     <mo>
       <x:choose>
-	<x:when test="*[1][self::above]">&#8600;<!--searrow--></x:when>
-	<x:when test="*[1][self::below]">&#8599;<!--nearrow--></x:when>
-	<x:when test="*[1][self::two-sided]">&#8594;<!--rightarrow--></x:when>
-	<x:otherwise>&#8594;<!--rightarrow--></x:otherwise>
+        <x:when test="*[1][self::above]">&#8600;<!--searrow--></x:when>
+        <x:when test="*[1][self::below]">&#8599;<!--nearrow--></x:when>
+        <x:when test="*[1][self::two-sided]">&#8594;<!--rightarrow--></x:when>
+        <x:otherwise>&#8594;<!--rightarrow--></x:otherwise>
       </x:choose>
     </mo>
     <x:apply-templates select="*[4]"/>
@@ -1402,9 +1402,9 @@ priority="2">
   <mrow>
     <mi><x:value-of select="local-name(*[1])"/></mi>
     <mo>&#8289;<!--function application--></mo>
-    <x:apply-templates select="*[2]">
-      <x:with-param name="p" select="7"/>
-    </x:apply-templates>
+    <x:if test="m:apply"><mo>(</mo></x:if>
+    <x:apply-templates select="*[2]"/>
+    <x:if test="m:apply"><mo>)</mo></x:if>
   </mrow>
 </x:template>
 
@@ -1511,17 +1511,17 @@ priority="2">
     <mo>&#9001;<!--langle--></mo>
     <msup>
       <x:variable name="data" 
-		    select="*[not(position()=1)]
-			    [not(self::m:degree or self::m:momentabout)]"/>
+                    select="*[not(position()=1)]
+                            [not(self::m:degree or self::m:momentabout)]"/>
       <x:choose>
-	<x:when test="$data[2]">
-	  <mfenced>
-	    <x:apply-templates select="$data"/>
-	  </mfenced>
-	</x:when>
-	<x:otherwise>
-	  <x:apply-templates select="$data"/>
-	</x:otherwise>
+        <x:when test="$data[2]">
+          <mfenced>
+            <x:apply-templates select="$data"/>
+          </mfenced>
+        </x:when>
+        <x:otherwise>
+          <x:apply-templates select="$data"/>
+        </x:otherwise>
       </x:choose>
       <mrow><x:apply-templates select="m:degree/node()"/></mrow>
     </msup>
@@ -1534,12 +1534,12 @@ priority="2">
   <mrow>
     <mo>&#9001;<!--langle--></mo>
     <msup>
-	  <x:apply-templates select="*[4]"/>
-	  <x:apply-templates select="*[2]"/>
+          <x:apply-templates select="*[4]"/>
+          <x:apply-templates select="*[2]"/>
     </msup>
     <mo>&#9002;<!--rangle--></mo>
   </mrow>
-  <x:apply-templates select="*[3]"/>	  
+  <x:apply-templates select="*[3]"/>         
 </msub>
 </x:template>
 
@@ -1551,20 +1551,20 @@ priority="2">
     <mrow>
       <mo>&#9001;<!--langle--></mo>
       <msup>
-	<x:variable name="data" 
-		      select="*[not(position()=1)]
-			      [not(self::m:degree or self::m:momentabout)]"/>
-	<x:choose>
-	  <x:when test="$data[2]">
-	    <mfenced>
-	      <x:apply-templates select="$data"/>
-	    </mfenced>
-	  </x:when>
-	  <x:otherwise>
-	    <x:apply-templates select="$data"/>
-	  </x:otherwise>
-	</x:choose>
-	<mrow><x:apply-templates select="m:degree/node()"/></mrow>
+        <x:variable name="data" 
+                      select="*[not(position()=1)]
+                              [not(self::m:degree or self::m:momentabout)]"/>
+        <x:choose>
+          <x:when test="$data[2]">
+            <mfenced>
+              <x:apply-templates select="$data"/>
+            </mfenced>
+          </x:when>
+          <x:otherwise>
+            <x:apply-templates select="$data"/>
+          </x:otherwise>
+        </x:choose>
+        <mrow><x:apply-templates select="m:degree/node()"/></mrow>
       </msup>
       <mo>&#9002;<!--rangle--></mo>
     </mrow>
@@ -1641,22 +1641,22 @@ priority="2">
     <msub>
       <mi>m</mi>
       <mrow>
-	<x:for-each select="m:bvar">
-	  <x:apply-templates/>
-	  <x:if test="position()!=last()"><mo>,</mo></x:if>
-	</x:for-each>
+        <x:for-each select="m:bvar">
+          <x:apply-templates/>
+          <x:if test="position()!=last()"><mo>,</mo></x:if>
+        </x:for-each>
       </mrow>
     </msub>
     <mo>|</mo>
     <mrow>
       <msub>
-	<mi>m</mi>
-	<mrow>
-	  <x:for-each select="m:bvar">
-	    <x:apply-templates/>
-	    <x:if test="position()!=last()"><mo>,</mo></x:if>
-	  </x:for-each>
-	</mrow>
+        <mi>m</mi>
+        <mrow>
+          <x:for-each select="m:bvar">
+            <x:apply-templates/>
+            <x:if test="position()!=last()"><mo>,</mo></x:if>
+          </x:for-each>
+        </mrow>
       </msub>
       <mo>=</mo>
       <x:apply-templates select="*[last()]"/>
@@ -1878,7 +1878,7 @@ match="m:apply[*[1][self::m:determinant]][*[2][self::m:matrix]]" priority="2">
       <munder>
        <x:copy-of select="$mo"/>
        <mrow>
-	<x:apply-templates select="m:domainofapplication/*"/>
+        <x:apply-templates select="m:domainofapplication/*"/>
        </mrow>
       </munder>
      </x:when>
@@ -1954,9 +1954,9 @@ match="m:apply[*[1][self::m:determinant]][*[2][self::m:matrix]]" priority="2">
 <x:template match="m:cs">
   <ms>
    <x:value-of select="
-			 translate(.,
-			 '&#9;&#10;&#13;&#32;',
-			 '&#160;&#160;&#160;&#160;')"/>
+                         translate(.,
+                         '&#9;&#10;&#13;&#32;',
+                         '&#160;&#160;&#160;&#160;')"/>
  </ms>
 </x:template>
 
