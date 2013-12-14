@@ -1,7 +1,10 @@
 # Make a greasemonkey/user script from the XSLT.
 # May be used/modified under W3C, MIT, MPL 1.1 or MPL 2.0 Licences.
 
-print "// ==UserScript==
+open (GM, ">ctop/ctop.user.js");
+open (MJ, ">mj.js");
+
+print GM "// ==UserScript==
 // \@name          ctop
 // \@namespace     http://w3c.org/Math
 // \@description   ctop
@@ -16,6 +19,7 @@ open (CTP,"ctop.xsl") || die ("ctop  not readable!!\n") ;
 $ss="";
 
 while($line = <CTP>) {
+$line =~ s/^[ \t]+//;
 $line =~ s/ *[\r\n]+/ /;
 $line =~ s/<!--[^-]*-->//;
 $line =~ s/> */>/g;
@@ -36,7 +40,11 @@ $ss .= $line unless ($line =~ /<\/x:stylesheet>/);
 
 $ss =~ s/[^>]*>//;
 
-print $ss;
+print GM $ss;
+
+print MJ "'<x:stylesheet version=\"1.0\" xmlns:x=\"http://www.w3.org/1999/XSL/Transform\" xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:m=\"http://www.w3.org/1998/Math/MathML\" xmlns:e=\"http://exslt.org/strings\"  xmlns:c=\"http://exslt.org/common\" exclude-result-prefixes=\"m e c\"> ";
+print MJ $ss;
+print MJ "</x:stylesheet>'";
 
 open (MML2,"mml3mml2.xsl") || die ("mml3mml2  not readable!!\n") ;
 
@@ -59,10 +67,10 @@ $ss .= $line unless ($line =~ /<\/x:stylesheet>/);
 
 $ss =~ s/[^>]*>//;
 
-print $ss;
+print GM $ss;
 
 
-print "</x:stylesheet>', \"text/xml\");
+print GM "</x:stylesheet>', \"text/xml\");
 
 window.addEventListener(\"load\", function(e) {
 
