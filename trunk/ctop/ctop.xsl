@@ -495,6 +495,11 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 <!-- 4.4.3.7 power -->
 <xsl:template mode="c2p" match="m:apply[*[1][self::m:power]]
                                 |m:apply[*[1][self::m:csymbol='power']]">
+<xsl:param name="p" select="0"/>
+<xsl:choose>
+ <xsl:when test="$p&gt;=5">
+<m:mrow>
+<m:mo>(</m:mo>
 <m:msup>
 <xsl:apply-templates mode="c2p" select="*[2]">
   <xsl:with-param name="p" select="5"/>
@@ -503,6 +508,20 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
   <xsl:with-param name="p" select="5"/>
 </xsl:apply-templates>
 </m:msup>
+<m:mo>)</m:mo>
+</m:mrow>
+ </xsl:when>
+<xsl:otherwise>
+<m:msup>
+<xsl:apply-templates mode="c2p" select="*[2]">
+  <xsl:with-param name="p" select="5"/>
+</xsl:apply-templates>
+<xsl:apply-templates mode="c2p" select="*[3]">
+  <xsl:with-param name="p" select="5"/>
+</xsl:apply-templates>
+</m:msup>
+</xsl:otherwise>
+</xsl:choose>
 </xsl:template>
 
 <!-- 4.4.3.8 remainder -->
