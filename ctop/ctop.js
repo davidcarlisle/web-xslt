@@ -1,5 +1,10 @@
-var mm = document.getElementsByTagName('math');
+var mmlns = "http://www.w3.org/1998/Math/MathML";
+var ctopT= [];
+var ctopTapply = [];
+
+
 function ctop (){
+    var mm = document.getElementsByTagName('math');
     for (var i = 0; i< mm.length;i++){
 	ctopAT (mm[i],0); 
     }
@@ -16,17 +21,12 @@ function ctopAT(n,p) {
 	}
     }
 }
-var mmlns = "http://www.w3.org/1998/Math/MathML";
-var ctopT= [];
+
 
 ctopT["ci"] = function(n,p) {
     ctopToken(n,'mi');
 }
 
-// need to handle sep
-ctopT["cn"] = function(n,p) {
-    ctopToken(n,'mn');
-}
 
 
 function ctopToken(n,s) {
@@ -45,11 +45,13 @@ function ctopToken(n,s) {
 		mrow.appendChild(m);
 	    }else{
   		mrow.appendChild(n.childNodes[j])
-		ctopAT(mrow.childNodes[j]);
+		ctopAT(mrow.childNodes[j],0);
 	    }
 	}
     }
 }
+
+
 
 ctopT["apply"] = function(n,p) {
     var f=null;
@@ -92,7 +94,7 @@ ctopT["apply"] = function(n,p) {
 
 ctopT["reln"] = ctopT["apply"];
 
-var ctopTapply = [];
+
 
 
 
@@ -109,7 +111,6 @@ function ctopB(n,tp,p,m,a) {
 	mf.appendChild(mo);
     }
     
-    
     var z= a[0].cloneNode(true);
     mf.appendChild(z)
     ctopAT(z,p);
@@ -120,7 +121,7 @@ function ctopB(n,tp,p,m,a) {
     var z= a[1].cloneNode(true);
     mf.appendChild(z)
     ctopAT(z,p);
-
+    
     if(tp>p || (tp==p && m=="-")) {
 	var mo=ctopfa.cloneNode(true);
 	mo.textContent=")";
@@ -179,6 +180,113 @@ ctopTapply["tendsto"] = function(n,f,a,p)  {
     }
     var m = (t=='above')? '\u2198' :
         (t=='below')? '\u2198' : '\u2192' ;
-    ctopB(n,2,p,m,a)}
+    ctopB(n,2,p,m,a);
+}
 
 
+
+
+ctopTapply["complex-cartesian"] = function(n,f,a,p)  {
+    var mf = document.createElementNS(mmlns,'mrow');
+    var z= a[0].cloneNode(true);
+    mf.appendChild(z)
+    ctopAT(z,0);
+    var mo=ctopfa.cloneNode(true);
+    mo.textContent="+";
+    mf.appendChild(mo);
+    var z= a[1].cloneNode(true);
+    mf.appendChild(z)
+    ctopAT(z,0);
+    var mo=ctopfa.cloneNode(true);
+    mo.textContent="\u2062";
+	mf.appendChild(mo);
+    var mi = document.createElementNS(mmlns,'mi');
+    mi.textContent="i";
+    mf.appendChild(mi);
+    n.parentNode.replaceChild(mf,n);
+}
+ctopTapply["complex-polar"] = function(n,f,a,p)  {
+    var mf = document.createElementNS(mmlns,'mrow');
+    var z= a[0].cloneNode(true);
+    mf.appendChild(z)
+    ctopAT(z,0);
+    var mo=ctopfa.cloneNode(true);
+    mo.textContent="\u2062";
+    mf.appendChild(mo);
+    var s = document.createElementNS(mmlns,'msup');
+    var mi = document.createElementNS(mmlns,'mi');
+    mi.textContent="e";
+    s.appendChild(mi);
+    var z= a[1].cloneNode(true);
+    s.appendChild(z)
+    ctopAT(z,0);
+    mf.appendChild(s);
+    n.parentNode.replaceChild(mf,n);
+}
+
+
+ctopTapply["integer"] = function(n,f,a,p)  {
+    n.parentNode.replaceChild(a[0],n);
+    ctopAT(a[0]);
+}
+
+ctopTapply["based-integer"] = function(n,f,a,p)  {
+    var s = document.createElementNS(mmlns,'msub');
+    var z= a[1].cloneNode(true);
+    s.appendChild(z)
+    ctopAT(z,p);
+    var z= a[0].cloneNode(true);
+    s.appendChild(z)
+    ctopAT(z,p);
+    n.parentNode.replaceChild(s,n);
+}
+
+ctopTapply["rational"] = function(n,f,a,p)  {
+    var s = document.createElementNS(mmlns,'mfrac');
+    var z= a[0].cloneNode(true);
+    s.appendChild(z)
+    ctopAT(z,p);
+    var z= a[1].cloneNode(true);
+    s.appendChild(z)
+    ctopAT(z,p);
+    n.parentNode.replaceChild(s,n);
+}
+
+
+ctopT["cn"] = function(n,p) {
+    var t=n.getAttribute("type");
+    var b=n.getAttribute("base");
+    if(t||b) {
+	var ap = document.createElementNS(mmlns,'apply');
+	var mrow = document.createElementNS(mmlns,'mrow');
+	var c;
+	if( b) {
+	    t='based-integer';
+	    c = document.createElementNS(mmlns,t);
+	    ap.appendChild(c);
+	    mn = document.createElementNS(mmlns,'mn');
+	    mn.textContent=b;
+	    ap.appendChild(mn);
+	} else {
+	    c = document.createElementNS(mmlns,t);
+	    ap.appendChild(c);
+	}
+	for(var j=0;j<n.childNodes.length; j++ ) {
+	    if (n.childNodes[j].nodeType==3) {
+		var m=document.createElementNS(mmlns,'cn');
+		m.textContent=n.childNodes[j].textContent;
+		mrow.appendChild(m);
+	    }else if (n.childNodes[j].localName=='sep'){
+		ap.appendChild(mrow);
+		mrow = document.createElementNS(mmlns,'mrow');
+	    } else {
+  		mrow.appendChild(n.childNodes[j])
+	    }
+	}
+	ap.appendChild(mrow);
+	n.parentNode.replaceChild(ap,n);
+	ctopAT(ap,0);
+    } else {   
+	ctopToken(n,'mn');
+    }
+}
