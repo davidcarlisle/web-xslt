@@ -27,6 +27,10 @@ ctopT["ci"] = function(n,p) {
     ctopToken(n,'mi');
 }
 
+ctopT["csymbol"] = function(n,p) {
+    ctopToken(n,'mi');
+}
+
 
 
 function ctopToken(n,s) {
@@ -164,7 +168,7 @@ ctopTapply["minus"] = function(n,f,a,p)  {ctopB(n,2,p,"-",a)}
 ctopTapply["rem"] = function(n,f,a,p)  {ctopB(n,3,p,"mod",a)}
 ctopTapply["implies"] = function(n,f,a,p)  {ctopB(n,3,p,"\u21D2",a)}
 ctopTapply["factorof"] = function(n,f,a,p)  {ctopB(n,3,p,"\u21D2",a)}
-ctopTapply["in"] = function(n,f,a,p)  {ctopB(n,3,p,"\u22D8",a)}
+ctopTapply["in"] = function(n,f,a,p)  {ctopB(n,3,p,"\u2208",a)}
 ctopTapply["notin"] = function(n,f,a,p)  {ctopB(n,3,p,"\u2209",a)}
 ctopTapply["notsubset"] = function(n,f,a,p)  {ctopB(n,2,p,"\u2288",a)}
 ctopTapply["notprsubset"] = function(n,f,a,p)  {ctopB(n,2,p,"\u2284",a)}
@@ -182,7 +186,6 @@ ctopTapply["tendsto"] = function(n,f,a,p)  {
         (t=='below')? '\u2198' : '\u2192' ;
     ctopB(n,2,p,m,a);
 }
-
 
 
 
@@ -215,11 +218,17 @@ ctopTapply["complex-polar"] = function(n,f,a,p)  {
     mf.appendChild(mo);
     var s = document.createElementNS(mmlns,'msup');
     var mi = document.createElementNS(mmlns,'mi');
+    var mr = document.createElementNS(mmlns,'mrow');
     mi.textContent="e";
     s.appendChild(mi);
     var z= a[1].cloneNode(true);
-    s.appendChild(z)
+    mr.appendChild(z)
     ctopAT(z,0);
+    mr.appendChild(mo.cloneNode(true))
+    mi=mi.cloneNode(mi);
+    mi.textContent="i";
+    mr.appendChild(mi);
+    s.appendChild(mr);
     mf.appendChild(s);
     n.parentNode.replaceChild(mf,n);
 }
@@ -290,3 +299,26 @@ ctopT["cn"] = function(n,p) {
 	ctopToken(n,'mn');
     }
 }
+
+
+function ctopMI (n,s){
+    m = document.createElementNS(mmlns,'mi');
+    m.textContent=s;
+    n.parentNode.replaceChild(m,n);
+}
+
+ctopT["naturalnumbers"] = function(n,p) {ctopMI(n,"\u2115")}
+ctopT["integers"] = function(n,p) {ctopMI(n,"\u2115")}
+ctopT["reals"] = function(n,p) {ctopMI(n,"\u211D")}
+ctopT["rationals"] = function(n,p) {ctopMI(n,"\u211A")}
+ctopT["complexes"] = function(n,p) {ctopMI(n,"\u2102")}
+ctopT["primes"] = function(n,p) {ctopMI(n,"\u2119")}
+ctopT["exponentiale"] = function(n,p) {ctopMI(n,"e")}
+ctopT["imaginaryi"] = function(n,p) {ctopMI(n,"i")}
+ctopT["notanumber"] = function(n,p) {ctopMI(n,"NaN")}
+ctopT["eulergamma"] = function(n,p) {ctopMI(n,"\u0263")}
+ctopT["gamma"] = function(n,p) {ctopMI(n,"\u0263")}
+ctopT["pi"] = function(n,p) {ctopMI(n,"\u03C0")}
+ctopT["infinity"] = function(n,p) {ctopMI(n,"\u221E")}
+ctopT["true"] = function(n,p) {ctopMI(n,"true")}
+ctopT["false"] = function(n,p) {ctopMI(n,"false")}
