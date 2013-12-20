@@ -135,31 +135,6 @@ function ctopB(n,tp,p,m,a) {
 }
 
 
-ctopTapply["plus"] = function(n,f,a,p)  {
-    var mf = document.createElementNS(mmlns,'mrow');
-    if(p>2) {
-        var mo=ctopfa.cloneNode(true);
-	mo.textContent="(";
-	mf.appendChild(mo);
-    }
-    for(var j=0;j<a.length; j++ ) {
-	var z= a[j].cloneNode(true);
-	if(j>0) {
-            var mo=ctopfa.cloneNode(true);
-	    mo.textContent="+";
-	    mf.appendChild(mo);
-	}
-  	mf.appendChild(z)
-	ctopAT(z,p);
-    }
-    if(p>2) {
-        var mo=ctopfa.cloneNode(true);
-	mo.textContent=")";
-	mf.appendChild(mo);
-    }
-    n.parentNode.replaceChild(mf,n);
-}
-
 
 
 
@@ -322,3 +297,57 @@ ctopT["pi"] = function(n,p) {ctopMI(n,"\u03C0")}
 ctopT["infinity"] = function(n,p) {ctopMI(n,"\u221E")}
 ctopT["true"] = function(n,p) {ctopMI(n,"true")}
 ctopT["false"] = function(n,p) {ctopMI(n,"false")}
+
+
+
+
+
+ctopI = function(n,f,a,p,tp,s)  {
+    var mf = document.createElementNS(mmlns,'mrow');
+    if(p>tp) {
+        var mo=ctopfa.cloneNode(true);
+	mo.textContent="(";
+	mf.appendChild(mo);
+    }
+    for(var j=0;j<a.length; j++ ) {
+	var z= a[j].cloneNode(true);
+	if(j>0) {
+            var mo=ctopfa.cloneNode(true);
+	    mo.textContent=s;
+	    mf.appendChild(mo);
+	}
+  	mf.appendChild(z)
+	ctopAT(z,tp);
+    }
+    if(p>tp) {
+        var mo=ctopfa.cloneNode(true);
+	mo.textContent=")";
+	mf.appendChild(mo);
+    }
+    n.parentNode.replaceChild(mf,n);
+}
+
+ctopTapply["plus"] = function(n,f,a,p) {ctopI(n,f,a,p,2,"+")}
+ctopTapply["eq"] = function(n,f,a,p) {ctopI(n,f,a,p,1,"=")}
+ctopTapply["compose"] = function(n,f,a,p) {ctopI(n,f,a,p,1,"\u2218")}
+ctopTapply["left_compose"] = function(n,f,a,p) {ctopI(n,f,a,p,1,"\u2218")}
+ctopTapply["and"] = function(n,f,a,p) {ctopI(n,f,a,p,2,"\u2227")}
+ctopTapply["or"] = function(n,f,a,p) {ctopI(n,f,a,p,3,"\u2228")}
+ctopTapply["xor"] = function(n,f,a,p) {ctopI(n,f,a,p,3,"xor")}
+ctopTapply["neq"] = function(n,f,a,p) {ctopI(n,f,a,p,1,"\u2260")}
+ctopTapply["gt"] = function(n,f,a,p) {ctopI(n,f,a,p,1,"<")}
+ctopTapply["lt"] = function(n,f,a,p) {ctopI(n,f,a,p,1,">")}
+ctopTapply["geq"] = function(n,f,a,p) {ctopI(n,f,a,p,1,"\u2265")}
+ctopTapply["leq"] = function(n,f,a,p) {ctopI(n,f,a,p,1,"\u2264")}
+ctopTapply["equivalent"] = function(n,f,a,p) {ctopI(n,f,a,p,1,"\u2261")}
+ctopTapply["approx"] = function(n,f,a,p) {ctopI(n,f,a,p,1,"\u2243")}
+ctopTapply["union"] = function(n,f,a,p) {ctopI(n,f,a,p,2,"\u222A")}
+ctopTapply["intersect"] = function(n,f,a,p) {ctopI(n,f,a,p,3,"\u2229")}
+ctopTapply["subset"] = function(n,f,a,p) {ctopI(n,f,a,p,2,"\u2286")}
+ctopTapply["prsubset"] = function(n,f,a,p) {ctopI(n,f,a,p,2,"\u2282")}
+ctopTapply["cartesianproduct"] = function(n,f,a,p) {ctopI(n,f,a,p,2,"\u00D7")}
+ctopTapply["cartesian_product"] = function(n,f,a,p) {ctopI(n,f,a,p,2,"\u00D7")}
+ctopTapply["vectorproduct"] = function(n,f,a,p) {ctopI(n,f,a,p,2,"\u00D7")}
+ctopTapply["scalarproduct"] = function(n,f,a,p) {ctopI(n,f,a,p,2,".")}
+ctopTapply["outerproduct"] = function(n,f,a,p) {ctopI(n,f,a,p,2,"\u2297")}
+
