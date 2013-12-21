@@ -124,7 +124,7 @@ function ctopB(n,tp,p,m,a) {
 	mo.textContent="(";
 	mf.appendChild(mo);
     }
-    if(a.length>2){
+    if(a.length>1){
 	var z= a[0].cloneNode(true);
 	mf.appendChild(z)
 	ctopAT(z,p);
@@ -134,7 +134,7 @@ function ctopB(n,tp,p,m,a) {
     mo.textContent=m;
     mf.appendChild(mo);
 
-    if(a.length>1){
+    if(a.length>0){
 	var z= a[(a.length==1)?0:1].cloneNode(true);
 	mf.appendChild(z)
 	ctopAT(z,p);
