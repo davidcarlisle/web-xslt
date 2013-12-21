@@ -14,6 +14,8 @@ function ctopAT(n,p) {
     if (n.nodeType==1) {
 	if(ctopT[n.localName]) {
 	    ctopT[n.localName](n,p);
+	} else if (n.childNodes.length==0) {
+	    ctopMI(n,n.localName);
 	} else {
 	    for(var j=0;j<n.childNodes.length; j++ ) {
 		ctopAT(n.childNodes[j],p);
@@ -81,14 +83,7 @@ ctopT["apply"] = function(n,p) {
 	    mi.textContent=nm;
 	    mrow.appendChild(mi);
 	    mrow.appendChild(ctopfa.cloneNode(true));
-	    var mf = document.createElementNS(mmlns,'mfenced');
-	    for(var j=0;j<a.length; j++ ) {
-		var z= a[j].cloneNode(true);
-  		mf.appendChild(z)
-		ctopAT(z,0);
-	    }
-	    mrow.appendChild(mf);
-	    
+	    mrow.appendChild(ctopMF(a,'(',')'));
 	}
     } else {
 	var mrow=document.createElementNS(mmlns,'mrow');
@@ -98,7 +93,17 @@ ctopT["apply"] = function(n,p) {
 
 ctopT["reln"] = ctopT["apply"];
 
-
+function ctopMF(a,o,c) {
+    var mf = document.createElementNS(mmlns,'mfenced');
+    mf.setAttribute('open',o);
+    mf.setAttribute('close',c);
+    for(var j=0;j<a.length; j++ ) {
+	var z= a[j].cloneNode(true);
+  	mf.appendChild(z)
+	ctopAT(z,0);
+    }
+    return mf;
+}
 
 
 
@@ -351,3 +356,14 @@ ctopTapply["vectorproduct"] = function(n,f,a,p) {ctopI(n,f,a,p,2,"\u00D7")}
 ctopTapply["scalarproduct"] = function(n,f,a,p) {ctopI(n,f,a,p,2,".")}
 ctopTapply["outerproduct"] = function(n,f,a,p) {ctopI(n,f,a,p,2,"\u2297")}
 
+
+ctopT["set"] = function(n,p) {ctopS(n,'{','}')};
+ctopT["list"] = function(n,p) {ctopS(n,'(',')')};
+
+
+function ctopS (n,o,c){
+    n.parentNode.replaceChild(ctopMF(n.children,o,c),n);
+}
+
+
+				   
