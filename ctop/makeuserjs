@@ -1,7 +1,7 @@
 # Make a greasemonkey/user script from the XSLT.
 # May be used/modified under W3C, MIT, MPL 1.1 or MPL 2.0 Licences.
 
-open (GM, ">ctop/ctop.user.js");
+open (GM, ">ctop.user.js");
 open (MJ, ">mj.js");
 
 print GM "// ==UserScript==

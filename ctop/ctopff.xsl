@@ -357,7 +357,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
               <mtd><x:apply-templates select="*[2]"/></mtd>
             </x:when>
             <x:otherwise>
-              <mtd colspan="2" columnalign="left"><mtext>&#160; otherwise</mtext></mtd>
+              <mtd columnspan="2" columnalign="left"><mtext>&#160; otherwise</mtext></mtd>
             </x:otherwise>
           </x:choose>
         </mtr>
@@ -796,7 +796,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 </x:call-template>
 </x:template>
 
-<!-- 4.4.4.3 eq -->
+<!-- 4.4.4.3 gt -->
 <x:template match="m:apply[*[1][self::m:gt]]
                                 |m:reln[*[1][self::m:gt]]
                                 |m:apply[*[1][self::m:csymbol='gt']]">
@@ -831,7 +831,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 </x:call-template>
 </x:template>
 
-<!-- 4.4.4.6 geq -->
+<!-- 4.4.4.6 leq -->
 <x:template match="m:apply[*[1][self::m:leq]]
                        |m:apply[*[1][self::m:csymbol='leq']]">
 <x:param name="p" select="0"/>

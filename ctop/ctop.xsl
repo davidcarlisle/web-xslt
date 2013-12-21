@@ -355,7 +355,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
               <m:mtd><xsl:apply-templates mode="c2p" select="*[2]"/></m:mtd>
             </xsl:when>
             <xsl:otherwise>
-              <m:mtd colspan="2" columnalign="left"><m:mtext>&#160; otherwise</m:mtext></m:mtd>
+              <m:mtd columnspan="2" columnalign="left"><m:mtext>&#160; otherwise</m:mtext></m:mtd>
             </xsl:otherwise>
           </xsl:choose>
         </m:mtr>
@@ -794,7 +794,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 </xsl:call-template>
 </xsl:template>
 
-<!-- 4.4.4.3 eq -->
+<!-- 4.4.4.3 gt -->
 <xsl:template mode="c2p" match="m:apply[*[1][self::m:gt]]
                                 |m:reln[*[1][self::m:gt]]
                                 |m:apply[*[1][self::m:csymbol='gt']]">
@@ -829,7 +829,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 </xsl:call-template>
 </xsl:template>
 
-<!-- 4.4.4.6 geq -->
+<!-- 4.4.4.6 leq -->
 <xsl:template mode="c2p" match="m:apply[*[1][self::m:leq]]
                        |m:apply[*[1][self::m:csymbol='leq']]">
 <xsl:param name="p" select="0"/>

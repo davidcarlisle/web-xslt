@@ -7,6 +7,39 @@
 <body>
 <hr/>
 <math>
+<piecewise>
+  <piece>
+    <apply><minus/><ci>x</ci></apply>
+    <apply><lt/><ci>x</ci><cn>0</cn></apply>
+  </piece>
+  <piece>
+    <cn>0</cn>
+    <apply><eq/><ci>x</ci><cn>0</cn></apply>
+  </piece>
+  <piece>
+    <ci>x</ci>
+    <apply><gt/><ci>x</ci><cn>0</cn></apply>
+  </piece>
+</piecewise>
+</math>
+<hr/>
+<math>
+<piecewise>
+  <piece>
+    <cn>0</cn>
+    <apply><lt/><ci>x</ci><cn>0</cn></apply>
+  </piece>
+  <piece>
+    <cn>1</cn>
+    <apply><gt/><ci>x</ci><cn>1</cn></apply>
+  </piece>
+  <otherwise>
+    <ci>x</ci>
+  </otherwise>
+</piecewise>
+</math>
+<hr/>
+<math>
 <apply><eq/>
 <list>
   <ci>a</ci><ci>b</ci><ci>c</ci>
