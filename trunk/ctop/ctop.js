@@ -124,17 +124,21 @@ function ctopB(n,tp,p,m,a) {
 	mo.textContent="(";
 	mf.appendChild(mo);
     }
-    
-    var z= a[0].cloneNode(true);
-    mf.appendChild(z)
-    ctopAT(z,p);
+    if(a.length>2){
+	var z= a[0].cloneNode(true);
+	mf.appendChild(z)
+	ctopAT(z,p);
+    }
     
     var mo=ctopfa.cloneNode(true);
     mo.textContent=m;
     mf.appendChild(mo);
-    var z= a[1].cloneNode(true);
-    mf.appendChild(z)
-    ctopAT(z,p);
+
+    if(a.length>1){
+	var z= a[(a.length==1)?0:1].cloneNode(true);
+	mf.appendChild(z)
+	ctopAT(z,p);
+    }
     
     if(tp>p || (tp==p && m=="-")) {
 	var mo=ctopfa.cloneNode(true);
@@ -375,3 +379,51 @@ function ctopS (n,a,o,c){
 
 
 				   
+
+ctopT["piecewise"] = function(n,p)  {
+    var mr = document.createElementNS(mmlns,'mrow');
+    var mo=ctopfa.cloneNode(true);
+    mo.textContent="{";
+    mr.appendChild(mo);
+    var mt = document.createElementNS(mmlns,'mtable');
+    mr.appendChild(mt);
+    for(var i=0;i<n.children.length;i++){
+	var z= n.children[i].cloneNode(true);
+	mt.appendChild(z)
+	ctopAT(z,0);
+    }
+    n.parentNode.replaceChild(mr,n);
+}
+
+ctopT["piece"] = function(n,p) {
+    var mtr = document.createElementNS(mmlns,'mtr');
+    for(i=0;i<n.children.length;i++){
+	var mtd = document.createElementNS(mmlns,'mtd');
+	mtr.appendChild(mtd);
+	var z= n.children[i].cloneNode(true);
+	mtd.appendChild(z)
+	ctopAT(z,0);
+	if(i==0){
+	var mtd = document.createElementNS(mmlns,'mtd');
+	    mtd.textContent="\u00A0if\u00A0";
+	    mtr.appendChild(mtd);
+	}
+    }
+    n.parentNode.replaceChild(mtr,n);
+};
+
+ctopT["otherwise"] = function(n,p) {
+    var mtr = document.createElementNS(mmlns,'mtr');
+    if(n.children.length>0){
+	var mtd = document.createElementNS(mmlns,'mtd');
+	mtr.appendChild(mtd);
+	var z= n.children[0].cloneNode(true);
+	mtd.appendChild(z)
+	ctopAT(z,0);
+	var mtd = document.createElementNS(mmlns,'mtd');
+	mtd.setAttribute('columnspan','2');
+	mtd.textContent="\u00A0otherwise";
+	mtr.appendChild(mtd);
+    }
+    n.parentNode.replaceChild(mtr,n);
+};
