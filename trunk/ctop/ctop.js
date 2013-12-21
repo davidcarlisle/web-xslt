@@ -30,9 +30,14 @@ ctopT["ci"] = function(n,p) {
 }
 
 ctopT["csymbol"] = function(n,p) {
-    ctopToken(n,'mi');
+    if(ctopG[n.textContent]){
+	ctopMI(n,ctopG[n.textContent]);
+    } else {
+	ctopToken(n,'mi');
+    }
 }
-
+var ctopG=[];
+ctopG['gamma']='\u03B3';
 
 
 function ctopToken(n,s) {
@@ -296,10 +301,11 @@ ctopT["primes"] = function(n,p) {ctopMI(n,"\u2119")}
 ctopT["exponentiale"] = function(n,p) {ctopMI(n,"e")}
 ctopT["imaginaryi"] = function(n,p) {ctopMI(n,"i")}
 ctopT["notanumber"] = function(n,p) {ctopMI(n,"NaN")}
-ctopT["eulergamma"] = function(n,p) {ctopMI(n,"\u0263")}
+ctopT["eulergamma"] = function(n,p) {ctopMI(n,"\u03B3")}
 ctopT["gamma"] = function(n,p) {ctopMI(n,"\u0263")}
 ctopT["pi"] = function(n,p) {ctopMI(n,"\u03C0")}
 ctopT["infinity"] = function(n,p) {ctopMI(n,"\u221E")}
+ctopT["emptyset"] = function(n,p) {ctopMI(n,"\u2205")}
 ctopT["true"] = function(n,p) {ctopMI(n,"true")}
 ctopT["false"] = function(n,p) {ctopMI(n,"false")}
 
@@ -357,12 +363,14 @@ ctopTapply["scalarproduct"] = function(n,f,a,p) {ctopI(n,f,a,p,2,".")}
 ctopTapply["outerproduct"] = function(n,f,a,p) {ctopI(n,f,a,p,2,"\u2297")}
 
 
-ctopT["set"] = function(n,p) {ctopS(n,'{','}')};
-ctopT["list"] = function(n,p) {ctopS(n,'(',')')};
+ctopT["set"] = function(n,p) {ctopS(n,n.children,'{','}')};
+ctopTapply["set"] = function(n,f,a,p) {ctopS(n,a,'{','}')};
+ctopT["list"] = function(n,p) {ctopS(n,n.children,'(',')')};
+ctopTapply["list"] = function(n,f,a,p) {ctopS(n,a,'(',')')};
 
 
-function ctopS (n,o,c){
-    n.parentNode.replaceChild(ctopMF(n.children,o,c),n);
+function ctopS (n,a,o,c){
+    n.parentNode.replaceChild(ctopMF(a,o,c),n);
 }
 
 
