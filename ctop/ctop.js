@@ -473,7 +473,6 @@ ctopT["matrix"] = function(n,p) {
 	mo=ctopfa.cloneNode(true);
 	mo.textContent="=";
 	mr.appendChild(mo);
-
 	for(var i=0;i<a.length;i++){
 	    if(i!=0){
 		mo=ctopfa.cloneNode(true);
@@ -483,11 +482,9 @@ ctopT["matrix"] = function(n,p) {
 	    mr.appendChild(a[i]);
             ctopAT(a[i],0);
 	}
-
 	mo=ctopfa.cloneNode(true);				 
 	mo.textContent=";";
 	mr.appendChild(mo);
-
 	for(var i=0;i<q.length;i++){
 	    if(i!=0){
 		mo=ctopfa.cloneNode(true);
@@ -497,19 +494,34 @@ ctopT["matrix"] = function(n,p) {
 	    mr.appendChild(q[i]);
             ctopAT(q[i],0);
 	}
-
-	
 	mo=ctopfa.cloneNode(true);
 	mo.textContent="]";
 	mr.appendChild(mo);
       	n.parentNode.replaceChild(mr,n);
     } else {
-    var mt = document.createElementNS(mmlns,'mtable');
-	n.parentNode.replaceChild(mt,n);
+	var mf = document.createElementNS(mmlns,'mfenced');
+	var mt = document.createElementNS(mmlns,'mtable');
+	for(var i=0;i<a.length;i++){
+	    mt.appendChild(a[i]);
+	    ctopAT(a[i]);
+	}
+      	mf.appendChild(mt);
+      	n.parentNode.replaceChild(mf,n);
     }
 }
 	  
 
+ctopT["matrixrow"] = function(n,p){
+    var mtr = document.createElementNS(mmlns,'mtr');
+    while(n.children.length){
+	var mtd = document.createElementNS(mmlns,'mtd');
+	var z=n.children[0];
+	mtd.appendChild(z);
+	ctopAT(z);
+	mtr.appendChild(mtd);
+    }
+    n.parentNode.replaceChild(mtr,n);
+}
 
 
 ctopTapply["power"] = function(n,f,a,p)  {
@@ -532,4 +544,25 @@ ctopT["condition"] = function(n,p)  {
 	ctopAT(z,0);
     }
     n.parentNode.replaceChild(mr,n);
+}
+
+
+ctopTapply["selector"] = function(n,f,a,p){
+    var ms = document.createElementNS(mmlns,'msub');
+    var z=(a)? a[0]: document.createElementNS(mmlns,'mrow');
+    ms.appendChild(z);
+    ctopAT(z);
+    var mr2 = document.createElementNS(mmlns,'mrow');
+    for(var i=1;i<a.length;i++){
+	if(i!=1){
+	    mo=ctopfa.cloneNode(true);
+	    mo.textContent=",";
+	    mr2.appendChild(mo);
+	}	
+	var z=n.children[i];
+	mr2.appendChild(z);
+	ctopAT(z,0);
+    }
+    ms.appendChild(mr2);
+    n.parentNode.replaceChild(ms,n);
 }
