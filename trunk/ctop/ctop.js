@@ -297,7 +297,7 @@ function ctopMI (n,s){
 }
 
 ctopT["naturalnumbers"] = function(n,p) {ctopMI(n,"\u2115")}
-ctopT["integers"] = function(n,p) {ctopMI(n,"\u2115")}
+ctopT["integers"] = function(n,p) {ctopMI(n,"\u2124")}
 ctopT["reals"] = function(n,p) {ctopMI(n,"\u211D")}
 ctopT["rationals"] = function(n,p) {ctopMI(n,"\u211A")}
 ctopT["complexes"] = function(n,p) {ctopMI(n,"\u2102")}
