@@ -66,13 +66,18 @@ function ctopToken(n,s) {
 
 ctopT["apply"] = function(n,p) {
     var f=null;
-    var a=[];
+    var a=[],b=[],q=[];
     for(var j=0;j<n.childNodes.length; j++ ) {
 	if(n.childNodes[j].nodeType==1) {
-	    if(f==null){
-		f=n.childNodes[j];		
+	    var nd=nm=n.childNodes[j], nm=nd.localName;
+	    if(nm=='bvar'){
+		b[b.length]=nd;
+	    } else if(nm=='condition'||nm=='logbase'||nm=='domainofapplication') {
+		q[q.length]=nd;
+	    } else if(f==null){
+		f=nd;		
 	    } else {
-		a[a.length]=n.childNodes[j];
+		a[a.length]=nd;
 	    }
 	}
     }
@@ -80,7 +85,7 @@ ctopT["apply"] = function(n,p) {
 	var nm = f.localName;
 	nm=(nm=="csymbol") ? f.textContent : nm;
 	if(ctopTapply[nm]) {
-	    ctopTapply[nm](n,f,a,p);
+	    ctopTapply[nm](n,f,a,b,q,p);
 	} else {
 	    var mrow=document.createElementNS(mmlns,'mrow');
 	    n.parentNode.replaceChild(mrow,n);
@@ -153,17 +158,17 @@ function ctopB(n,tp,p,m,a) {
 
 
 
-ctopTapply["divide"] = function(n,f,a,p)  {ctopB(n,3,p,"/",a)}
-ctopTapply["minus"] = function(n,f,a,p)  {ctopB(n,2,p,"-",a)}
-ctopTapply["rem"] = function(n,f,a,p)  {ctopB(n,3,p,"mod",a)}
-ctopTapply["implies"] = function(n,f,a,p)  {ctopB(n,3,p,"\u21D2",a)}
-ctopTapply["factorof"] = function(n,f,a,p)  {ctopB(n,3,p,"\u21D2",a)}
-ctopTapply["in"] = function(n,f,a,p)  {ctopB(n,3,p,"\u2208",a)}
-ctopTapply["notin"] = function(n,f,a,p)  {ctopB(n,3,p,"\u2209",a)}
-ctopTapply["notsubset"] = function(n,f,a,p)  {ctopB(n,2,p,"\u2288",a)}
-ctopTapply["notprsubset"] = function(n,f,a,p)  {ctopB(n,2,p,"\u2284",a)}
-ctopTapply["setdiff"] = function(n,f,a,p)  {ctopB(n,2,p,"\u2216",a)}
-ctopTapply["tendsto"] = function(n,f,a,p)  {
+ctopTapply["divide"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"/",a)}
+ctopTapply["minus"] = function(n,f,a,b,q,p)  {ctopB(n,2,p,"-",a)}
+ctopTapply["rem"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"mod",a)}
+ctopTapply["implies"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"\u21D2",a)}
+ctopTapply["factorof"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"\u21D2",a)}
+ctopTapply["in"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"\u2208",a)}
+ctopTapply["notin"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"\u2209",a)}
+ctopTapply["notsubset"] = function(n,f,a,b,q,p)  {ctopB(n,2,p,"\u2288",a)}
+ctopTapply["notprsubset"] = function(n,f,a,b,q,p)  {ctopB(n,2,p,"\u2284",a)}
+ctopTapply["setdiff"] = function(n,f,a,b,q,p)  {ctopB(n,2,p,"\u2216",a)}
+ctopTapply["tendsto"] = function(n,f,a,b,q,p)  {
     var t;
     if(f.localName=='tendsto') {
 	t=f.getAttribute('type');
@@ -179,7 +184,7 @@ ctopTapply["tendsto"] = function(n,f,a,p)  {
 
 
 
-ctopTapply["complex-cartesian"] = function(n,f,a,p)  {
+ctopTapply["complex-cartesian"] = function(n,f,a,b,q,p)  {
     var mf = document.createElementNS(mmlns,'mrow');
     var z= a[0].cloneNode(true);
     mf.appendChild(z)
@@ -198,7 +203,7 @@ ctopTapply["complex-cartesian"] = function(n,f,a,p)  {
     mf.appendChild(mi);
     n.parentNode.replaceChild(mf,n);
 }
-ctopTapply["complex-polar"] = function(n,f,a,p)  {
+ctopTapply["complex-polar"] = function(n,f,a,b,q,p)  {
     var mf = document.createElementNS(mmlns,'mrow');
     var z= a[0].cloneNode(true);
     mf.appendChild(z)
@@ -224,12 +229,12 @@ ctopTapply["complex-polar"] = function(n,f,a,p)  {
 }
 
 
-ctopTapply["integer"] = function(n,f,a,p)  {
+ctopTapply["integer"] = function(n,f,a,b,q,p)  {
     n.parentNode.replaceChild(a[0],n);
     ctopAT(a[0]);
 }
 
-ctopTapply["based-integer"] = function(n,f,a,p)  {
+ctopTapply["based-integer"] = function(n,f,a,b,q,p)  {
     var s = document.createElementNS(mmlns,'msub');
     var z= a[1].cloneNode(true);
     s.appendChild(z)
@@ -240,7 +245,7 @@ ctopTapply["based-integer"] = function(n,f,a,p)  {
     n.parentNode.replaceChild(s,n);
 }
 
-ctopTapply["rational"] = function(n,f,a,p)  {
+ctopTapply["rational"] = function(n,f,a,b,q,p)  {
     var s = document.createElementNS(mmlns,'mfrac');
     var z= a[0].cloneNode(true);
     s.appendChild(z)
@@ -343,35 +348,35 @@ ctopI = function(n,f,a,p,tp,s)  {
     n.parentNode.replaceChild(mf,n);
 }
 
-ctopTapply["plus"] = function(n,f,a,p) {ctopI(n,f,a,p,2,"+")}
-ctopTapply["eq"] = function(n,f,a,p) {ctopI(n,f,a,p,1,"=")}
-ctopTapply["compose"] = function(n,f,a,p) {ctopI(n,f,a,p,1,"\u2218")}
-ctopTapply["left_compose"] = function(n,f,a,p) {ctopI(n,f,a,p,1,"\u2218")}
-ctopTapply["and"] = function(n,f,a,p) {ctopI(n,f,a,p,2,"\u2227")}
-ctopTapply["or"] = function(n,f,a,p) {ctopI(n,f,a,p,3,"\u2228")}
-ctopTapply["xor"] = function(n,f,a,p) {ctopI(n,f,a,p,3,"xor")}
-ctopTapply["neq"] = function(n,f,a,p) {ctopI(n,f,a,p,1,"\u2260")}
-ctopTapply["gt"] = function(n,f,a,p) {ctopI(n,f,a,p,1,"<")}
-ctopTapply["lt"] = function(n,f,a,p) {ctopI(n,f,a,p,1,">")}
-ctopTapply["geq"] = function(n,f,a,p) {ctopI(n,f,a,p,1,"\u2265")}
-ctopTapply["leq"] = function(n,f,a,p) {ctopI(n,f,a,p,1,"\u2264")}
-ctopTapply["equivalent"] = function(n,f,a,p) {ctopI(n,f,a,p,1,"\u2261")}
-ctopTapply["approx"] = function(n,f,a,p) {ctopI(n,f,a,p,1,"\u2243")}
-ctopTapply["union"] = function(n,f,a,p) {ctopI(n,f,a,p,2,"\u222A")}
-ctopTapply["intersect"] = function(n,f,a,p) {ctopI(n,f,a,p,3,"\u2229")}
-ctopTapply["subset"] = function(n,f,a,p) {ctopI(n,f,a,p,2,"\u2286")}
-ctopTapply["prsubset"] = function(n,f,a,p) {ctopI(n,f,a,p,2,"\u2282")}
-ctopTapply["cartesianproduct"] = function(n,f,a,p) {ctopI(n,f,a,p,2,"\u00D7")}
-ctopTapply["cartesian_product"] = function(n,f,a,p) {ctopI(n,f,a,p,2,"\u00D7")}
-ctopTapply["vectorproduct"] = function(n,f,a,p) {ctopI(n,f,a,p,2,"\u00D7")}
-ctopTapply["scalarproduct"] = function(n,f,a,p) {ctopI(n,f,a,p,2,".")}
-ctopTapply["outerproduct"] = function(n,f,a,p) {ctopI(n,f,a,p,2,"\u2297")}
+ctopTapply["plus"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,2,"+")}
+ctopTapply["eq"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,"=")}
+ctopTapply["compose"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,"\u2218")}
+ctopTapply["left_compose"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,"\u2218")}
+ctopTapply["and"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,2,"\u2227")}
+ctopTapply["or"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,3,"\u2228")}
+ctopTapply["xor"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,3,"xor")}
+ctopTapply["neq"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,"\u2260")}
+ctopTapply["gt"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,"<")}
+ctopTapply["lt"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,">")}
+ctopTapply["geq"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,"\u2265")}
+ctopTapply["leq"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,"\u2264")}
+ctopTapply["equivalent"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,"\u2261")}
+ctopTapply["approx"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,"\u2243")}
+ctopTapply["union"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,2,"\u222A")}
+ctopTapply["intersect"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,3,"\u2229")}
+ctopTapply["subset"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,2,"\u2286")}
+ctopTapply["prsubset"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,2,"\u2282")}
+ctopTapply["cartesianproduct"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,2,"\u00D7")}
+ctopTapply["cartesian_product"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,2,"\u00D7")}
+ctopTapply["vectorproduct"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,2,"\u00D7")}
+ctopTapply["scalarproduct"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,2,".")}
+ctopTapply["outerproduct"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,2,"\u2297")}
 
 
 ctopT["set"] = function(n,p) {ctopS(n,n.children,'{','}')};
-ctopTapply["set"] = function(n,f,a,p) {ctopS(n,a,'{','}')};
+ctopTapply["set"] = function(n,f,a,b,q,p) {ctopS(n,a,'{','}')};
 ctopT["list"] = function(n,p) {ctopS(n,n.children,'(',')')};
-ctopTapply["list"] = function(n,f,a,p) {ctopS(n,a,'(',')')};
+ctopTapply["list"] = function(n,f,a,b,q,p) {ctopS(n,a,'(',')')};
 ctopT["interval"] = function(n,p) {ctopS(n,n.children,'[',']')};
 
 function ctopS (n,a,o,c){
@@ -524,7 +529,7 @@ ctopT["matrixrow"] = function(n,p){
 }
 
 
-ctopTapply["power"] = function(n,f,a,p)  {
+ctopTapply["power"] = function(n,f,a,b,q,p)  {
     var s = document.createElementNS(mmlns,'msup');
     var z= a[0].cloneNode(true);
     s.appendChild(z)
@@ -547,7 +552,7 @@ ctopT["condition"] = function(n,p)  {
 }
 
 
-ctopTapply["selector"] = function(n,f,a,p){
+ctopTapply["selector"] = function(n,f,a,b,q,p){
     var ms = document.createElementNS(mmlns,'msub');
     var z=(a)? a[0]: document.createElementNS(mmlns,'mrow');
     ms.appendChild(z);
@@ -566,3 +571,29 @@ ctopTapply["selector"] = function(n,f,a,p){
     ms.appendChild(mr2);
     n.parentNode.replaceChild(ms,n);
 }
+
+
+
+ctopTapply["log"] = function(n,f,a,b,q,p)  {
+    var mr = document.createElementNS(mmlns,'mrow');
+    var mi = document.createElementNS(mmlns,'mi');
+    mi.textContent='log';
+    if(q.length &&q[0].localName=='logbase'){
+	var ms = document.createElementNS(mmlns,'msub');
+	ms.appendChild(mi);
+	var z=q[0].children[0];
+	ms.appendChild(z);
+	ctopAT(z,0);
+	mr.appendChild(ms);
+    } else {
+	mr.appendChild(mi);
+    }
+    var z=a[0];
+    mr.appendChild(z);
+    ctopAT(z,7);
+    n.parentNode.replaceChild(mr,n);
+}
+
+
+
+
