@@ -97,6 +97,7 @@ ctopT["apply"] = function(n,p) {
 }
 
 ctopT["reln"] = ctopT["apply"];
+ctopT["bind"] = ctopT["apply"];
 
 function ctopMF(a,o,c) {
     var mf = document.createElementNS(mmlns,'mfenced');
@@ -371,7 +372,7 @@ ctopT["set"] = function(n,p) {ctopS(n,n.children,'{','}')};
 ctopTapply["set"] = function(n,f,a,p) {ctopS(n,a,'{','}')};
 ctopT["list"] = function(n,p) {ctopS(n,n.children,'(',')')};
 ctopTapply["list"] = function(n,f,a,p) {ctopS(n,a,'(',')')};
-
+ctopT["interval"] = function(n,p) {ctopS(n,n.children,'[',']')};
 
 function ctopS (n,a,o,c){
     n.parentNode.replaceChild(ctopMF(a,o,c),n);
@@ -427,3 +428,108 @@ ctopT["otherwise"] = function(n,p) {
     }
     n.parentNode.replaceChild(mtr,n);
 };
+
+ctopT["matrix"] = function(n,p) {
+    var a=[],b=[],q=[];
+    for(var j=0;j<n.childNodes.length; j++ ) {
+	var c=n.childNodes[j]
+	if(c.nodeType==1) {
+	    if(c.localName=='condition' || c.localName=='domainofapplication' ) {
+		q[q.length]=c;
+	    } else if(c.localName=='bvar') {
+		b[b.length]=c;
+	    } else {
+		a[a.length]=c;
+	    }
+	}
+    }
+    if(b.length||q.length){
+	var mr = document.createElementNS(mmlns,'mrow');
+	var mo=ctopfa.cloneNode(true);
+	mo.textContent="[";
+	mr.appendChild(mo);
+	var ms = document.createElementNS(mmlns,'msub');
+	mi = document.createElementNS(mmlns,'mi');
+	mi.textContent='m';
+	ms.appendChild(mi);
+	var mr2 = document.createElementNS(mmlns,'mrow');
+	for(var i=0;i<b.length;i++){
+	    if(i!=0){
+		mo=ctopfa.cloneNode(true);
+		mo.textContent=",";
+		mr2.appendChild(mo);
+	    }	
+	    var z=b[i].childNodes[0];
+	    mr2.appendChild(z);
+            ctopAT(z,0);
+	}
+	ms.appendChild(mr2);
+	var ms2=ms.cloneNode(true);
+	mr.appendChild(ms);
+	mo=ctopfa.cloneNode(true);
+	mo.textContent="|";
+	mr.appendChild(mo);
+	mr.appendChild(ms2);
+	mo=ctopfa.cloneNode(true);
+	mo.textContent="=";
+	mr.appendChild(mo);
+
+	for(var i=0;i<a.length;i++){
+	    if(i!=0){
+		mo=ctopfa.cloneNode(true);
+		mo.textContent=",";
+		mr.appendChild(mo);
+	    }	
+	    mr.appendChild(a[i]);
+            ctopAT(a[i],0);
+	}
+
+	mo=ctopfa.cloneNode(true);				 
+	mo.textContent=";";
+	mr.appendChild(mo);
+
+	for(var i=0;i<q.length;i++){
+	    if(i!=0){
+		mo=ctopfa.cloneNode(true);
+		mo.textContent=",";
+		mr.appendChild(mo);
+	    }	
+	    mr.appendChild(q[i]);
+            ctopAT(q[i],0);
+	}
+
+	
+	mo=ctopfa.cloneNode(true);
+	mo.textContent="]";
+	mr.appendChild(mo);
+      	n.parentNode.replaceChild(mr,n);
+    } else {
+    var mt = document.createElementNS(mmlns,'mtable');
+	n.parentNode.replaceChild(mt,n);
+    }
+}
+	  
+
+
+
+ctopTapply["power"] = function(n,f,a,p)  {
+    var s = document.createElementNS(mmlns,'msup');
+    var z= a[0].cloneNode(true);
+    s.appendChild(z)
+    ctopAT(z,p);
+    var z= a[1].cloneNode(true);
+    s.appendChild(z)
+    ctopAT(z,p);
+    n.parentNode.replaceChild(s,n);
+}
+
+
+ctopT["condition"] = function(n,p)  {
+    var mr = document.createElementNS(mmlns,'mrow');
+    for(var i=0;i<n.children.length;i++){
+	var z= n.children[i];
+	mr.appendChild(z)
+	ctopAT(z,0);
+    }
+    n.parentNode.replaceChild(mr,n);
+}

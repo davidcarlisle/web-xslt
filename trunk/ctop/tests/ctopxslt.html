@@ -2,9 +2,46 @@
 <html>
 <head>
 <title>xslt</title>
+<script>
+var time1=performance.now();
+</script>
 <script src="../doctop.js"></script>
+<script>
+var time2=performance.now();
+</script>
 </head>
 <body>
+<p id="time"></p>
+<hr/>
+<math>
+<matrix>
+  <bvar><ci type="integer">i</ci></bvar>
+  <bvar><ci type="integer">j</ci></bvar>
+  <condition>
+    <apply><and/>
+      <apply><in/>
+        <ci>i</ci>
+        <interval><ci>1</ci><ci>5</ci></interval>
+      </apply>
+      <apply><in/>
+        <ci>j</ci>
+        <interval><ci>5</ci><ci>9</ci></interval>
+      </apply>
+    </apply>
+  </condition>
+  <apply><power/><ci>i</ci><ci>j</ci></apply>
+</matrix>
+</math>
+<hr/>
+<math>
+<bind><forall/>
+  <bvar><ci>x</ci></bvar>
+  <apply><eq/>
+    <apply><minus/><ci>x</ci><ci>x</ci></apply>
+    <cn>0</cn>
+  </apply>
+</bind>
+</math>
 <hr/>
 <math>
 <piecewise>
@@ -37,6 +74,22 @@
     <ci>x</ci>
   </otherwise>
 </piecewise>
+</math>
+<hr/>
+<math>
+<apply><csymbol cd="piece1">piecewise</csymbol>
+  <apply><csymbol cd="piece1">piece</csymbol>
+    <cn>0</cn>
+    <apply><csymbol cd="relation1">lt</csymbol><ci>x</ci><cn>0</cn></apply>  
+  </apply>   
+  <apply><csymbol cd="piece1">piece</csymbol>
+    <cn>1</cn>
+    <apply><csymbol cd="relation1">gt</csymbol><ci>x</ci><cn>1</cn></apply>  
+  </apply>   
+  <apply><csymbol cd="piece1">otherwise</csymbol>
+    <ci>x</ci>
+  </apply>   
+</apply>
 </math>
 <hr/>
 <math>
@@ -138,7 +191,12 @@
 <apply><csymbol>tendsto</csymbol><csymbol>above</csymbol><ci>x</ci><ci>a</ci></apply>
 </math>
 <script>
+var time3=performance.now();
 doctop(1);
+var time4=performance.now();
+document.getElementById("time").innerHTML= 
+"Loading time: " + Math.round(time2 - time1) + 
+"ms<br/>Transformation time: "  + Math.round(time4 - time3) + "ms";
 </script>
 </body>
 </html>
