@@ -77,6 +77,7 @@ ctopT["apply"] = function(n,p) {
 	    if(nm=='bvar'){
 		b[b.length]=nd;
 	    } else if(nm=='condition'||
+		      nm=='degree'||
 		      nm=='logbase'||
 		      nm=='lowlimit'||
 		      nm=='uplimit'||
@@ -174,7 +175,7 @@ function ctopB(n,tp,p,m,a) {
 
 ctopTapply["divide"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"/",a)}
 ctopTapply["minus"] = function(n,f,a,b,q,p)  {ctopB(n,2,p,"-",a)}
-ctopTapply["rem"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"mod",a)}
+ctopTapply["remainder"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"mod",a)}
 ctopTapply["implies"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"\u21D2",a)}
 ctopTapply["factorof"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"\u21D2",a)}
 ctopTapply["in"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"\u2208",a)}
@@ -796,3 +797,84 @@ function ctopBd(n,f,a,b,q,p,s)  {
 ctopTapply["forall"] = function (n,f,a,b,q,p){ctopBd(n,f,a,b,q,p,'\u2200')};
 ctopTapply["exists"] = function (n,f,a,b,q,p){ctopBd(n,f,a,b,q,p,'\u2203')};
 ctopTapply["lambda"] = function (n,f,a,b,q,p){ctopBd(n,f,a,b,q,p,'\u03BB')};
+
+
+ctopTapply["inverse"] = function(n,f,a,b,q,p)  {
+    var s = ctopE('msup');
+    var z= (a.length)? a[0]:ctopE('mrow');
+    s.appendChild(z)
+    ctopAT(z,p);
+    var mf=ctopE('mfenced');
+    var mn=ctopE('mn');
+    mn.textContent='-1';
+    mf.appendChild(mn);
+    s.appendChild(mf);
+    n.parentNode.replaceChild(s,n);
+}
+
+
+ctopT["ident"] = function(n,p) {ctopMI(n,"id")}
+
+ctopT["domainofapplication"] = function(n,p) {
+    var me=ctopE('merror');
+    var mt=ctopE('mtext');
+    mt.textContent='unexpected domainofapplication';
+    me.appendChild(mt);
+    n.parentNode.replaceChild(me,n);
+}
+
+
+
+ctopTapply["quotient"] = function(n,f,a,b,q,p)  {
+    var mr=ctopE('mrow');
+    var mo=ctopE(mo);
+    mo.textContent='\u230A';
+    mr.appendChild(mo)
+    var z= a[0].cloneNode(true);
+    ctopAT(z,0);
+    mo=ctopE(mo);
+    mo.textContent='/';
+    mr.appendChild(mo)
+    var z= a[1].cloneNode(true);
+    s.appendChild(z)
+    ctopAT(z,0);
+    mo=ctopE(mo);
+    mo.textContent='\u230B';
+    mr.appendChild(mo)
+    n.parentNode.replaceChild(mr,n);
+}
+
+
+ctopTapply["factorial"] = function(n,f,a,b,q,p)  {
+    var mr=ctopE('mrow');
+    var mo=ctopE(mo);
+    mo.textContent='!';
+    mr.appendChild(mo);
+    var z= a[0];
+    mr.appendChild(z);
+    ctopAT(z,0);
+    mr.appendChild(mo)
+    n.parentNode.replaceChild(mr,n);
+}
+
+
+ctopTapply["root"] = function(n,f,a,b,q,p)  {
+    var mr;
+    if(q.length==0 || (q[0].localName=='degree' && q[0].textContent=='2')){
+	mr=ctopE('msqrt');
+	for(var i=0;i<a.length;i++){
+	    mr.appendChild(a[i]);
+	    ctopAT(a[i]);
+	}
+    } else {
+	mr=ctopE('mroot');
+	mr.appendChild(a[0]);
+	ctopAT(a[0]);
+	var z=q[0].childNodes[0];
+	mr.appendChild(z);
+	ctopAT(z);
+    }
+    n.parentNode.replaceChild(mr,n);
+}
+
+
