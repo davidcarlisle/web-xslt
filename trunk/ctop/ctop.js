@@ -676,10 +676,12 @@ ctopTapply["int"] = function(n,f,a,b,q,p)  {
 
 
 
-ctopTapply["sum"] = function(n,f,a,b,q,p)  {
+
+
+function ctopO(n,f,a,b,q,p,s)  {
     var mr = ctopE('mrow');
     var mo = ctopE('mo');
-    mo.textContent='\u2211';
+    mo.textContent=s;
     var mss=ctopE('munderover');
     mss.appendChild(mo);
     var mr1 = ctopE('mrow');
@@ -705,7 +707,7 @@ ctopTapply["sum"] = function(n,f,a,b,q,p)  {
 	    while(q[i].children.length){
 		var z=q[i].children[0];
 		mr1.appendChild(z);
-	    ctopAT(z);
+		ctopAT(z);
 	    }
 	} else if (q[i].localName=='interval' && q[i].children.length==2) {
 	    for(var j=0; j<b.length;j++){
@@ -746,3 +748,51 @@ ctopTapply["sum"] = function(n,f,a,b,q,p)  {
     }
     n.parentNode.replaceChild(mr,n);
 }
+
+
+ctopTapply["sum"] = function (n,f,a,b,q,p){ctopO(n,f,a,b,q,p,'\u2211')};
+
+ctopTapply["product"] = function (n,f,a,b,q,p){ctopO(n,f,a,b,q,p,'\u220F')};
+
+
+function ctopBd(n,f,a,b,q,p,s)  {
+    var mr = ctopE('mrow');
+    var mo = ctopE('mo');
+    mo.textContent=s;
+    mr.appendChild(mo);
+    var cnd=0;
+    for(var i=0; i<q.length;i++){
+	if(q[i].localName=='condition')	{
+	    cnd=1;
+	    while(q[i].children.length){
+		var z=q[i].children[0];
+		mr.appendChild(z);
+		ctopAT(z);
+	    }
+	}
+    }
+    if(cnd==0){
+	for(var j=0; j<b.length;j++){
+	    var z=b[j];
+	    if(z.children.length){
+		mr.appendChild(z.children[0]);
+		ctopAT(z);
+	    }
+	}
+    }
+    if(b.length||c.length){
+	mo=ctopfa.cloneNode(true);
+	mo.textContent=".";
+	mr.appendChild(mo);
+    }
+    for(var i=0; i<a.length;i++){
+	var z=a[i];
+	mr.appendChild(z);
+	ctopAT(z,0);
+    }
+    n.parentNode.replaceChild(mr,n);
+}
+
+ctopTapply["forall"] = function (n,f,a,b,q,p){ctopBd(n,f,a,b,q,p,'\u2200')};
+ctopTapply["exists"] = function (n,f,a,b,q,p){ctopBd(n,f,a,b,q,p,'\u2203')};
+ctopTapply["lambda"] = function (n,f,a,b,q,p){ctopBd(n,f,a,b,q,p,'\u03BB')};
