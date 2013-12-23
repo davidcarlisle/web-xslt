@@ -98,9 +98,14 @@ ctopT["apply"] = function(n,p) {
 	} else {
 	    var mrow=ctopE('mrow');
 	    n.parentNode.replaceChild(mrow,n);
-	    var mi=ctopE('mi');
-	    mi.textContent=nm;
-	    mrow.appendChild(mi);
+	    if(f.childNodes.length){
+		mrow.appendChild(f);
+		ctopAT(f,0);
+	    } else {
+		var mi=ctopE('mi');
+		mi.textContent=nm;
+		mrow.appendChild(mi);
+	    }
 	    mrow.appendChild(ctopfa.cloneNode(true));
 	    mrow.appendChild(ctopMF(a,'(',')'));
 	}
@@ -628,9 +633,9 @@ ctopTapply["int"] = function(n,f,a,b,q,p)  {
 		ctopAT(z);
 	    }
 	} else if (q[i].localName=='interval' && q[i].children.length==2) {
-		var z=q[i].children[0];
-		mr1.appendChild(z);
-		ctopAT(z);
+	    var z=q[i].children[0];
+	    mr1.appendChild(z);
+	    ctopAT(z);
 	}
     }
     mss.appendChild(mr1);
@@ -671,3 +676,73 @@ ctopTapply["int"] = function(n,f,a,b,q,p)  {
 
 
 
+ctopTapply["sum"] = function(n,f,a,b,q,p)  {
+    var mr = ctopE('mrow');
+    var mo = ctopE('mo');
+    mo.textContent='\u2211';
+    var mss=ctopE('munderover');
+    mss.appendChild(mo);
+    var mr1 = ctopE('mrow');
+    for(var i=0; i<q.length;i++){
+	if(q[i].localName=='lowlimit'||
+	   q[i].localName=='condition'||
+	   q[i].localName=='domainofapplication')
+	{
+	    if(q[i].localName=='lowlimit'){
+		for(var j=0; j<b.length;j++){
+		    var z=b[j];
+		    if(z.children.length){
+			mr1.appendChild(z.children[0]);
+			ctopAT(z);
+		    }
+		}
+		if(b.length){
+		    mo=ctopfa.cloneNode(true);
+		    mo.textContent="=";
+		    mr1.appendChild(mo);
+		}
+	    }
+	    while(q[i].children.length){
+		var z=q[i].children[0];
+		mr1.appendChild(z);
+	    ctopAT(z);
+	    }
+	} else if (q[i].localName=='interval' && q[i].children.length==2) {
+	    for(var j=0; j<b.length;j++){
+		var z=b[j];
+		if(z.children.length){
+		    mr1.appendChild(z.children[0]);
+		    ctopAT(z);
+		}
+	    }
+	    if(b.length){
+		mo=ctopfa.cloneNode(true);
+		mo.textContent="=";
+		mr1.appendChild(mo);
+	    }
+	    var z=q[i].children[0];
+	    mr1.appendChild(z);
+	    ctopAT(z);
+	}
+    }
+    mss.appendChild(mr1);
+    var mr2 = ctopE('mrow');
+    for(var i=0; i<q.length;i++){
+	if(q[i].localName=='uplimit' ||q[i].localName=='interval' )
+	{
+	    while(q[i].children.length){
+		var z=q[i].children[0];
+		mr2.appendChild(z);
+		ctopAT(z,0);
+	    }
+	}
+    }
+    mss.appendChild(mr2);
+    mr.appendChild(mss);
+    for(var i=0; i<a.length;i++){
+	var z=a[i];
+	mr.appendChild(z);
+	ctopAT(z,0);
+    }
+    n.parentNode.replaceChild(mr,n);
+}

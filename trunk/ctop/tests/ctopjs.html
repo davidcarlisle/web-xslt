@@ -13,7 +13,31 @@ var time2=performance.now();
 <body>
 <p id="time"></p>
 <hr/>
-<math>
+<math display="block">
+<apply><sum/>
+  <bvar><ci>x</ci></bvar>
+  <lowlimit><ci>a</ci></lowlimit>
+  <uplimit><ci>b</ci></uplimit>
+  <apply><ci>f</ci><ci>x</ci></apply>
+</apply>
+<mo>&#x27f6;</mo>
+<apply><sum/>
+  <bvar><ci>x</ci></bvar>
+  <condition>
+    <apply><in/><ci>x</ci><ci type="set">B</ci></apply>
+  </condition>
+  <apply><ci type="function">f</ci><ci>x</ci></apply>
+</apply>
+<mo>&#x27f6;</mo>
+<apply><sum/>
+  <domainofapplication>
+    <ci type="set">B</ci>
+  </domainofapplication>
+  <ci type="function">f</ci>
+</apply>
+</math>
+<hr/>
+<math display="block">
 <apply><eq/>
   <apply><int/><sin/></apply>
   <cos/>
@@ -37,7 +61,7 @@ var time2=performance.now();
 </apply>
 </math>
 <hr/>
-<math>
+<math display="block">
 <interval><cn>0</cn><cn>1</cn></interval>
 <mo>&#x27f6;</mo>
 <interval closure="open"><cn>0</cn><cn>1</cn></interval>
@@ -49,14 +73,14 @@ var time2=performance.now();
 <interval closure="closed-open"><cn>0</cn><cn>1</cn></interval>
 </math>
 <hr/>
-<math>
+<math display="block">
 <apply><log/>
   <logbase><cn>3</cn></logbase>
   <ci>x</ci>
 </apply>
 </math>
 <hr/>
-<math>
+<math display="block">
 <apply><eq/>
   <apply><selector/>
     <matrix>
@@ -71,7 +95,7 @@ var time2=performance.now();
 </apply>
 </math>
 <hr/>
-<math>
+<math display="block">
 <matrix>
   <bvar><ci type="integer">i</ci></bvar>
   <bvar><ci type="integer">j</ci></bvar>
@@ -91,7 +115,7 @@ var time2=performance.now();
 </matrix>
 </math>
 <hr/>
-<math>
+<math display="block">
 <bind><forall/>
   <bvar><ci>x</ci></bvar>
   <apply><eq/>
@@ -101,7 +125,7 @@ var time2=performance.now();
 </bind>
 </math>
 <hr/>
-<math>
+<math display="block">
 <piecewise>
   <piece>
     <apply><minus/><ci>x</ci></apply>
@@ -118,7 +142,7 @@ var time2=performance.now();
 </piecewise>
 </math>
 <hr/>
-<math>
+<math display="block">
 <piecewise>
   <piece>
     <cn>0</cn>
@@ -134,7 +158,7 @@ var time2=performance.now();
 </piecewise>
 </math>
 <hr/>
-<math>
+<math display="block">
 <apply><csymbol cd="piece1">piecewise</csymbol>
   <apply><csymbol cd="piece1">piece</csymbol>
     <cn>0</cn>
@@ -150,7 +174,7 @@ var time2=performance.now();
 </apply>
 </math>
 <hr/>
-<math>
+<math display="block">
 <apply><eq/>
 <list>
   <ci>a</ci><ci>b</ci><ci>c</ci>
@@ -166,15 +190,15 @@ var time2=performance.now();
 </apply>
 </math>
 <hr/>
-<math>
+<math display="block">
 <apply><compose/><log/><log/><log/><log/></apply>
 </math>
 <hr/>
-<math>
+<math display="block">
 <apply><leq/><mn>1</mn><mn>2</mn><mn>3</mn><mn>4</mn><mn>5</mn><mn>6</mn><mn>7</mn><mn>8</mn><mn>9</mn></apply>
 </math>
 <hr/>
-<math>
+<math display="block">
 <apply><eq/>
 <mi>a</mi>
 <mi>n</mi>
@@ -182,7 +206,7 @@ var time2=performance.now();
 </apply>
 </math>
 <hr/>
-<math>
+<math display="block">
 <apply><in/>
   <cn type="integer">1729</cn>
   <naturalnumbers/>
@@ -194,7 +218,7 @@ var time2=performance.now();
 <mo>,</mo><primes/>
 </math>
 <hr/>
-<math>
+<math display="block">
 <exponentiale/>
 <mo>,</mo><imaginaryi/>
 <mo>,</mo><notanumber/>
@@ -206,7 +230,7 @@ var time2=performance.now();
 <mo>,</mo><emptyset/>
 </math>
 <hr/>
-<math>
+<math display="block">
 <cn base="16">7FE0</cn>
 <mo>,</mo>
 <cn type="complex-cartesian">17<sep/>29</cn>
@@ -221,29 +245,29 @@ var time2=performance.now();
 </apply>
 </math>
 <hr/>
-<math>
+<math display="block">
 <apply><plus/><ci>a</ci><cn>1</cn><ci>b</ci></apply>
 <mo>,</mo>
 <apply><plus/><ci>x<mfrac><mi>1</mi><mi>2</mi></mfrac></ci><cn>1</cn><ci>b</ci></apply>
 </math>
 <hr/>
-<math>
+<math display="block">
 <apply><plus/><csymbol>a</csymbol><cn>1</cn><csymbol>b</csymbol></apply>
 <mo>,</mo>
 <apply><plus/><csymbol>x<mfrac><mi>1</mi><mi>2</mi></mfrac></csymbol><cn>1</cn><csymbol>b</csymbol></apply>
 </math>
 <hr/>
-<math>
+<math display="block">
 <apply><implies/>
    <apply><implies/><ci>A</ci><ci>B</ci></apply><ci>C</ci></apply>
 </math>
 <hr/>
-<math>
+<math display="block">
 <reln><implies/>
    <reln><implies/><ci>A</ci><ci>B</ci></reln><ci>C</ci></reln>
 </math>
 <hr/>
-<math>
+<math display="block">
 <apply><tendsto type="above"/><ci>x</ci><ci>a</ci></apply>
 <mo>,</mo>
 <apply><csymbol>tendsto</csymbol><csymbol>above</csymbol><ci>x</ci><ci>a</ci></apply>
