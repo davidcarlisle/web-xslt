@@ -933,7 +933,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 
 
 <!-- 4.4.5.3 partialdiff -->
-<x:template match="m:apply[*[1][self::m:partialdiff] and m:list and m:ci and count(*)=3]" priority="2">
+<x:template match="m:apply[*[1][self::m:partialdiff] and m:list and not(m:bvar) and count(*)=3]" priority="2">
 <mrow>
  <msub><mi>D</mi><mrow>
 <x:for-each select="m:list[1]/*">
@@ -943,6 +943,73 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 </mrow></msub>
  <mrow><x:apply-templates select="*[3]"/></mrow>
 </mrow>
+</x:template>
+
+<x:template match="m:apply[*[1][self::m:partialdiff] and m:list and m:lambda]" priority="3">
+  <mfrac>
+    <mrow>
+      <x:choose>
+        <x:when test="count(m:list/*)=1">
+          <mo>&#8706;<!-- partial --></mo>
+        </x:when>
+        <x:otherwise>
+          <msup><mo>&#8706;<!-- partial --></mo>
+          <mrow>
+            <x:choose>
+              <x:when test="m:degree">
+                <x:apply-templates select="m:degree/node()"/>
+              </x:when>
+              <x:otherwise>
+                <mn><x:value-of select="count(m:list/*)"/></mn>
+              </x:otherwise>
+            </x:choose>
+          </mrow>
+          </msup>
+        </x:otherwise>
+      </x:choose>
+    <x:apply-templates  select="m:lambda/*[last()]"/></mrow>
+    <mrow>
+     <x:call-template name="pddx"/>
+    </mrow>
+  </mfrac>
+</x:template>
+
+<x:template name="pddx">
+  <x:param name="n" select="1"/>
+  <x:param name="b" select="m:lambda/m:bvar"/>
+  <x:param name="l" select="m:list/*"/>
+  <x:choose>
+    <x:when 
+       test="number($l[1])=number($l[2])">
+     <x:call-template name="pddx">
+     <x:with-param name="n" select="$n+1"/>
+     <x:with-param name="b" select="$b"/>
+     <x:with-param name="l" select="$l[position()!=1]"/>
+     </x:call-template>
+    </x:when>
+   <x:otherwise>
+     <mrow>
+     <mi>&#x2202;</mi>
+     <x:choose>
+       <x:when test="$n=1">
+         <x:apply-templates select="$b[position()=$l[1]]/*"/>
+       </x:when>
+       <x:otherwise>
+         <msup>
+           <x:apply-templates select="$b[position()=$l[1]]/*"/>
+           <mn><x:value-of select="$n"/></mn>
+         </msup>
+       </x:otherwise>
+     </x:choose>
+     </mrow>
+     <x:if test="$l[2]">
+      <x:call-template name="pddx">
+       <x:with-param name="b" select="$b"/>
+       <x:with-param name="l" select="$l[position()!=1]"/>
+      </x:call-template>
+     </x:if>
+   </x:otherwise>
+  </x:choose>
 </x:template>
 
 <x:template match="m:apply[*[1][self::m:partialdiff]]" priority="1">

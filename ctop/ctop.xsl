@@ -931,7 +931,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 
 
 <!-- 4.4.5.3 partialdiff -->
-<xsl:template mode="c2p" match="m:apply[*[1][self::m:partialdiff] and m:list and m:ci and count(*)=3]" priority="2">
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:partialdiff] and m:list and not(m:bvar) and count(*)=3]" priority="2">
 <m:mrow>
  <m:msub><m:mi>D</m:mi><m:mrow>
 <xsl:for-each select="m:list[1]/*">
@@ -943,10 +943,77 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 </m:mrow>
 </xsl:template>
 
+<xsl:template mode="c2p" match="m:apply[*[1][self::m:partialdiff] and m:list and m:lambda]" priority="3">
+  <m:mfrac>
+    <m:mrow>
+      <xsl:choose>
+        <xsl:when test="count(m:list/*)=1">
+          <m:mo>&#8706;<!-- partial --></m:mo>
+        </xsl:when>
+        <xsl:otherwise>
+          <m:msup><m:mo>&#8706;<!-- partial --></m:mo>
+          <m:mrow>
+            <xsl:choose>
+              <xsl:when test="m:degree">
+                <xsl:apply-templates mode="c2p" select="m:degree/node()"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <m:mn><xsl:value-of select="count(m:list/*)"/></m:mn>
+              </xsl:otherwise>
+            </xsl:choose>
+          </m:mrow>
+          </m:msup>
+        </xsl:otherwise>
+      </xsl:choose>
+    <xsl:apply-templates mode="c2p"  select="m:lambda/*[last()]"/></m:mrow>
+    <m:mrow>
+     <xsl:call-template name="pddx"/>
+    </m:mrow>
+  </m:mfrac>
+</xsl:template>
+
+<xsl:template name="pddx">
+  <xsl:param name="n" select="1"/>
+  <xsl:param name="b" select="m:lambda/m:bvar"/>
+  <xsl:param name="l" select="m:list/*"/>
+  <xsl:choose>
+    <xsl:when 
+       test="number($l[1])=number($l[2])">
+     <xsl:call-template name="pddx">
+     <xsl:with-param name="n" select="$n+1"/>
+     <xsl:with-param name="b" select="$b"/>
+     <xsl:with-param name="l" select="$l[position()!=1]"/>
+     </xsl:call-template>
+    </xsl:when>
+   <xsl:otherwise>
+     <m:mrow>
+     <m:mo>&#8706;<!-- partial --></m:mo>
+     <xsl:choose>
+       <xsl:when test="$n=1">
+         <xsl:apply-templates select="$b[position()=$l[1]]/*"/>
+       </xsl:when>
+       <xsl:otherwise>
+         <m:msup>
+           <xsl:apply-templates select="$b[position()=$l[1]]/*"/>
+           <m:mn><xsl:value-of select="$n"/></m:mn>
+         </m:msup>
+       </xsl:otherwise>
+     </xsl:choose>
+     </m:mrow>
+     <xsl:if test="$l[2]">
+      <xsl:call-template name="pddx">
+       <xsl:with-param name="b" select="$b"/>
+       <xsl:with-param name="l" select="$l[position()!=1]"/>
+      </xsl:call-template>
+     </xsl:if>
+   </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template mode="c2p" match="m:apply[*[1][self::m:partialdiff]]" priority="1">
   <m:mfrac>
     <m:mrow>
-      <xsl:choose><!--dpc-->
+      <xsl:choose>
         <xsl:when test="not(m:bvar/m:degree) and not(m:bvar[2])">
           <m:mo>&#8706;<!-- partial --></m:mo>
         </xsl:when>

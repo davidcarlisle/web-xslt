@@ -14,6 +14,94 @@ var time2=performance.now();
 <p id="time"></p>
 <hr/>
 <math display="block">
+<apply><partialdiff/>
+  <list><cn>1</cn><cn>1</cn><cn>3</cn></list>
+  <ci type="function">f</ci>
+</apply>
+<mo>&#x27f6;</mo>
+<apply><partialdiff/>
+  <list><cn>1</cn><cn>1</cn><cn>3</cn></list>
+  <lambda>
+   <bvar><ci>x</ci></bvar>
+   <bvar><ci>y</ci></bvar>
+   <bvar><ci>z</ci></bvar>
+   <apply><ci>f</ci><ci>x</ci><ci>y</ci><ci>z</ci></apply>
+  </lambda>
+</apply>
+<mo>&#x27f6;</mo>
+<apply><partialdiff/>
+  <bvar><ci>x</ci></bvar>
+  <bvar><ci>y</ci></bvar>
+  <apply><ci type="function">f</ci><ci>x</ci><ci>y</ci></apply>
+</apply>
+<mo>&#x27f6;</mo>
+<apply><partialdiff/>
+  <bvar><ci>x</ci><degree><ci>m</ci></degree></bvar>
+  <bvar><ci>y</ci><degree><ci>n</ci></degree></bvar>
+  <degree><ci>k</ci></degree>
+  <apply><ci type="function">f</ci>
+    <ci>x</ci>
+    <ci>y</ci>
+  </apply>
+</apply>
+<mo>&#x27f6;</mo>
+<apply><partialdiff/>
+  <bvar><ci>x</ci></bvar>
+  <bvar><ci>y</ci><degree><ci>n</ci></degree></bvar>
+  <apply><ci type="function">f</ci>
+    <ci>x</ci>
+    <ci>y</ci>
+  </apply>
+</apply>
+</math>
+<hr/>
+<math display="block">
+<apply><diff/><ci>f</ci></apply>
+<mo>&#x27f6;</mo>
+ <apply><diff/>
+    <bvar><ci>x</ci></bvar>
+    <apply><sin/><ci>x</ci></apply>
+  </apply>
+<mo>&#x27f6;</mo>
+<apply><diff/>
+  <bvar><ci>x</ci><degree><cn>2</cn></degree></bvar>
+  <apply><power/><ci>x</ci><cn>4</cn></apply>
+</apply>
+</math>
+<hr/>
+<math display="block">
+<apply><root/>
+  <ci>a</ci>
+</apply>
+<mo>&#x27f6;</mo>
+<apply><root/>
+  <degree><ci type="integer">n</ci></degree>
+  <ci>a</ci>
+</apply>
+<mo>&#x27f6;</mo>
+<apply><root/>
+  <degree><cn>2</cn></degree>
+  <ci>a</ci>
+</apply>
+</math>
+<hr/>
+<math display="block">
+<apply><inverse/><ci> f </ci></apply>
+<mo>&#x27f6;</mo>
+<apply><eq/><apply><factorial/><cn>4</cn></apply><cn>24</cn></apply>
+</math>
+<hr/>
+<math display="block">
+<bind><forall/>
+  <bvar><ci>x</ci></bvar>
+  <apply><eq/>
+    <apply><minus/><ci>x</ci><ci>x</ci></apply>
+    <cn>0</cn>
+  </apply>
+</bind>
+</math>
+<hr/>
+<math display="block">
 <apply><product/>
   <bvar><ci>x</ci></bvar>
   <lowlimit><ci>a</ci></lowlimit>
@@ -137,16 +225,6 @@ var time2=performance.now();
   </condition>
   <apply><power/><ci>i</ci><ci>j</ci></apply>
 </matrix>
-</math>
-<hr/>
-<math display="block">
-<bind><forall/>
-  <bvar><ci>x</ci></bvar>
-  <apply><eq/>
-    <apply><minus/><ci>x</ci><ci>x</ci></apply>
-    <cn>0</cn>
-  </apply>
-</bind>
 </math>
 <hr/>
 <math display="block">
