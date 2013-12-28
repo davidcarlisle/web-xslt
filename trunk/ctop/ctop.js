@@ -33,6 +33,9 @@ ctopT["ci"] = function(n,p) {
     ctopToken(n,'mi');
 }
 
+ctopT["cs"] = function(n,p) {
+    ctopToken(n,'ms');
+}
 ctopT["csymbol"] = function(n,p) {
     if(ctopG[n.textContent]){
 	ctopMI(n,ctopG[n.textContent]);
@@ -832,6 +835,17 @@ ctopT["ident"] = function(n,p) {ctopMI(n,"id")}
 ctopT["domainofapplication"] = function(n,p) {
     var me=ctopE('merror');
     ctopAppendTok(me,'mtext','unexpected domainofapplication');
+    n.parentNode.replaceChild(me,n);
+}
+
+
+ctopT["cerror"] = function(n,p) {
+    var me=ctopE('merror');
+    var c=ctopChildren(n);
+    for(var i=0;i<c.length;i++){
+	me.appendChild(c[i]);
+	ctopAT(c[i],0);
+    }
     n.parentNode.replaceChild(me,n);
 }
 
