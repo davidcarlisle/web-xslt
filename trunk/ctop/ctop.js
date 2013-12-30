@@ -1,6 +1,6 @@
 
-var ctopT= [];
-var ctopTapply = [];
+var ctopT= {};
+var ctopTapply = {};
 
 
 function ctop (){
@@ -21,8 +21,12 @@ function ctopAT(n,p) {
 	} else if (n.childNodes.length==0) {
 	    ctopMI(n,n.localName);
 	} else {
+	    var c=[];
 	    for(var j=0;j<n.childNodes.length; j++ ) {
-		ctopAT(n.childNodes[j],p);
+		c[j]=n.childNodes[j];
+	    }
+	    for(var j=0;j<c.length; j++ ) {
+		ctopAT(c[j],p);
 	    }
 	}
     }
@@ -43,7 +47,7 @@ ctopT["csymbol"] = function(n,p) {
 	ctopToken(n,'mi');
     }
 }
-var ctopG=[];
+var ctopG={};
 ctopG['gamma']='\u03B3';
 
 
@@ -124,13 +128,10 @@ function ctopMF(a,o,c) {
     var mf = ctopE('mfenced');
     mf.setAttribute('open',o);
     mf.setAttribute('close',c);
-// IE???
-    if(a){
     for(var j=0;j<a.length; j++ ) {
 	var z= a[j].cloneNode(true);
   	mf.appendChild(z)
 	ctopAT(z,0);
-    }
     }
     return mf;
 }
@@ -301,7 +302,7 @@ ctopT["cn"] = function(n,p) {
 		ap.appendChild(mrow);
 		mrow = ctopE('mrow');
 	    } else {
-  		mrow.appendChild(n.childNodes[j])
+  		mrow.appendChild(n.childNodes[j].cloneNode(true));
 	    }
 	}
 	ap.appendChild(mrow);
@@ -410,7 +411,6 @@ ctopT["interval"] = function(n,p) {
 function ctopS (n,a,o,c){
     n.parentNode.replaceChild(ctopMF(a,o,c),n);
 }
-
 
 				   
 
@@ -838,6 +838,15 @@ ctopT["domainofapplication"] = function(n,p) {
     n.parentNode.replaceChild(me,n);
 }
 
+ctopT["share"] = function(n,p) {
+    var mi=ctopE('mi');
+    mi.setAttribute('href',n.getAttribute('href'));
+    mi.textContent="share" + n.getAttribute('href');
+    n.parentNode.replaceChild(mi,n);
+}
+
+
+
 
 ctopT["cerror"] = function(n,p) {
     var me=ctopE('merror');
@@ -1077,3 +1086,4 @@ ctopTapply["partialdiff"] = function(n,f,a,b,q,p)  {
 	n.parentNode.replaceChild(m,n);
     }
 }
+
