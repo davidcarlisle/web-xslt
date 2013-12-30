@@ -451,7 +451,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
    <xsl:choose>
     <xsl:when test="self::m:apply[*[1][self::m:times] and
                     *[2][self::m:apply/*[1][self::m:minus] or self::m:cn[not(m:sep) and
-                    (number(.) &lt; 0)]]]">
+                    (number(.) &lt; 0)]]] or self::m:cn[not(m:sep) and (number(.) &lt; 0)]">
      <m:mo>&#8722;<!--minus--></m:mo>
     </xsl:when>
     <xsl:when test="position()!=1">
@@ -459,6 +459,9 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
     </xsl:when>
    </xsl:choose>
     <xsl:choose>
+     <xsl:when test="self::m:cn[not(m:sep) and (number(.) &lt; 0)]">
+      <m:mn><xsl:value-of select="-(.)"/></m:mn>
+     </xsl:when>
       <xsl:when test="self::m:apply[*[1][self::m:times] and
       *[2][self::m:cn[not(m:sep) and (number(.) &lt;0)]]]">
      <m:mrow>
