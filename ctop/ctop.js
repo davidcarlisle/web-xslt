@@ -863,12 +863,17 @@ ctopT["cerror"] = function(n,p) {
 ctopTapply["quotient"] = function(n,f,a,b,q,p)  {
     var mr=ctopE('mrow');
     ctopAppendTok(mr,'mo','\u230A');
-    var z= a[0].cloneNode(true);
-    ctopAT(z,0);
-    ctopAppendTok(mr,'mo','/');
-    var z= a[1].cloneNode(true);
-    s.appendChild(z)
-    ctopAT(z,0);
+    if(a.length) {
+	var z= a[0].cloneNode(true);
+	mr.appendChild(z)
+	ctopAT(z,0);
+	ctopAppendTok(mr,'mo','/');
+	if(a.length>1){
+	    var z= a[1].cloneNode(true);
+	    mr.appendChild(z)
+	    ctopAT(z,0);
+	}
+    }
     ctopAppendTok(mr,'mo','\u230B');
     n.parentNode.replaceChild(mr,n);
 }
