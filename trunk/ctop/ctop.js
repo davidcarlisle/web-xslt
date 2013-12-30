@@ -346,6 +346,32 @@ ctopT["false"] = function(n,p) {ctopMI(n,"false")}
 
 
 
+
+ctopTapply["times"] = function(n,f,a,b,q,p) {
+    var mf = ctopE('mrow');
+    if(p>3) {
+        var mo=ctopfa.cloneNode(true);
+	mo.textContent="(";
+	mf.appendChild(mo);
+    }
+    for(var j=0;j<a.length; j++ ) {
+	var z= a[j].cloneNode(true);
+	if(j>0) {
+            var mo=ctopfa.cloneNode(true);
+	    
+	    mo.textContent=(a[j].localName=='cn') ? "\u00D7" :"\u2062";
+	    mf.appendChild(mo);
+	}
+  	mf.appendChild(z)
+	ctopAT(z,3);
+    }
+    if(p>3) {
+        var mo=ctopfa.cloneNode(true);
+	mo.textContent=")";
+	mf.appendChild(mo);
+    }
+    n.parentNode.replaceChild(mf,n);
+}
 ctopI = function(n,f,a,p,tp,s)  {
     var mf = ctopE('mrow');
     if(p>tp) {
@@ -735,19 +761,19 @@ function ctopO(n,f,a,b,q,p,s)  {
 			ctopAT(z,0);
 		    }
 		}
+		if(b.length){
+		    mo=ctopfa.cloneNode(true);
+		    mo.textContent="=";
+		    mr1.appendChild(mo);
+		}
+		var z=ctopChildren(q[i])[0];
+		mr1.appendChild(z);
+		ctopAT(z,0);
 	    }
-	    if(b.length){
-		mo=ctopfa.cloneNode(true);
-		mo.textContent="=";
-		mr1.appendChild(mo);
-	    }
-	    var z=ctopChildren(q[i])[0];
-	    mr1.appendChild(z);
-	    ctopAT(z,0);
 	}
     }
     mss.appendChild(mr1);
-    var mr2 = ctopE('mrow');
+    var mr2 = ctopE('mjrow');
     for(var i=0; i<q.length;i++){
 	if(q[i].localName=='uplimit' ||q[i].localName=='interval' )
 	{

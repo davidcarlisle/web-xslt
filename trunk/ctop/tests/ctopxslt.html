@@ -14,6 +14,80 @@ var time2=performance.now();
 <p id="time"></p>
 <hr/>
 <math display="block">
+<apply><times/><cn>1</cn><cn>2</cn><cn>3</cn></apply>
+<mo>&#x27f6;</mo>
+<apply><times/><ci>x</ci><ci>y</ci><ci>z</ci></apply>
+<mo>&#x27f6;</mo>
+<apply><times/><cn>2</cn><ci>x</ci></apply>
+</math>
+<hr/>
+<math display="block">
+<apply><product/>
+  <bvar><ci>i</ci></bvar>
+  <lowlimit><cn>0</cn></lowlimit>
+  <uplimit><cn>100</cn></uplimit>
+  <apply><power/><ci>x</ci><ci>i</ci></apply>
+</apply>
+</math>
+<hr/>
+<math display="block">
+<apply><quotient/><ci>a</ci><ci>b</ci></apply>
+</math>
+<hr/>
+<math display="block">
+<apply><csymbol cd="set1">map</csymbol>
+  <bind><csymbol cd="fns1">lambda</csymbol>
+    <bvar><ci>x</ci></bvar>
+    <apply><csymbol cd="arith1">times</csymbol>
+      <cn>2</cn>
+      <ci>x</ci>
+    </apply>
+  </bind>
+  <csymbol cd="setname1">Z</csymbol>
+</apply>
+</math>
+<hr/>
+<math display="block">
+<set>
+  <bvar><ci>x</ci></bvar> 
+  <domainofapplication><integers/></domainofapplication>
+  <apply><times/><cn>2</cn><ci>x</ci></apply>
+</set>
+</math>
+<hr/>
+<math display="block">
+<cn type="complex-polar"> 2 <sep></sep> 3.1415 </cn>
+<mo>&#x27f6;</mo>
+<cn type="rational" base="b">n<sep/>d</cn>
+<mo>&#x27f6;</mo>
+<cn type="rational"><mi>P</mi><sep/><mi>Q</mi></cn>
+</math>
+<hr/>
+<math display="block">
+ <apply><ci>f</ci>
+ <apply id="t1"><ci>f</ci>
+ <apply id="t11"><ci>f</ci>
+ <ci>a</ci>
+ <ci>a</ci>
+ </apply>
+ <share href="#t11"/>
+ </apply>
+ <share href="#t1"/>
+ </apply>
+</math>
+<hr/>
+<math display="block">
+  <cs>A</cs>
+</math>
+<hr/>
+<math display="block">
+<cerror>
+  <csymbol cd="aritherror">DivisionByZero</csymbol>
+  <apply><csymbol cd="arith1">divide</csymbol><ci>x</ci><cn>0</cn></apply>
+</cerror>
+</math>
+<hr/>
+<math display="block">
 <apply><partialdiff/>
   <list><cn>1</cn><cn>1</cn><cn>3</cn></list>
   <ci type="function">f</ci>
