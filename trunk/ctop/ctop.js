@@ -177,6 +177,7 @@ function ctopB(n,tp,p,m,a) {
 
 
 
+ctopTapply["rem"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"mod",a)}
 
 ctopTapply["divide"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"/",a)}
 ctopTapply["remainder"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"mod",a)}
@@ -979,7 +980,7 @@ ctopTapply["factorial"] = function(n,f,a,b,q,p)  {
 
 ctopTapply["root"] = function(n,f,a,b,q,p)  {
     var mr;
-    if(q.length==0 || (q[0].localName=='degree' && q[0].textContent=='2')){
+    if(f.localName=='root' && (q.length==0 || (q[0].localName=='degree' && q[0].textContent=='2'))){
 	mr=ctopE('msqrt');
 	for(var i=0;i<a.length;i++){
 	    mr.appendChild(a[i]);
@@ -989,7 +990,7 @@ ctopTapply["root"] = function(n,f,a,b,q,p)  {
 	mr=ctopE('mroot');
 	mr.appendChild(a[0]);
 	ctopAT(a[0],0);
-	var z=q[0].childNodes[0];
+	var z=(f.localName=='root') ? q[0].childNodes[0] : a[1];
 	mr.appendChild(z);
 	ctopAT(z,0);
     }
