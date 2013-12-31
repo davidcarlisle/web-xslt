@@ -840,11 +840,11 @@ ctopTapply["product"] = function (n,f,a,b,q,p){ctopO(n,f,a,b,q,p,'\u220F')};
 function ctopBd(n,f,a,b,q,p,s)  {
     var mr = ctopE('mrow');
     ctopAppendTok(mr,'mo',s);
-    var cnd=0;
+    var cnd=0,qc=[];
     for(var i=0; i<q.length;i++){
 	if(q[i].localName=='condition')	{
 	    cnd=1;
-	    var qc=ctopChildren(q[i]);
+	    qc=ctopChildren(q[i]);
 	    for(var j=0;j<qc.length;j++){
 		var z=qc[j];
 		mr.appendChild(z);
@@ -862,7 +862,7 @@ function ctopBd(n,f,a,b,q,p,s)  {
 	    }
 	}
     }
-    if(b.length||c.length){
+    if(b.length||qc.length){
 	mo=ctopfa.cloneNode(true);
 	mo.textContent=".";
 	mr.appendChild(mo);
@@ -878,6 +878,32 @@ function ctopBd(n,f,a,b,q,p,s)  {
 ctopTapply["forall"] = function (n,f,a,b,q,p){ctopBd(n,f,a,b,q,p,'\u2200')};
 ctopTapply["exists"] = function (n,f,a,b,q,p){ctopBd(n,f,a,b,q,p,'\u2203')};
 ctopTapply["lambda"] = function (n,f,a,b,q,p){ctopBd(n,f,a,b,q,p,'\u03BB')};
+
+ctopT["lambda"] = function (n,p) {
+    var f=ctopE('lambda');
+    var a=[],b=[],q=[];
+    for(var j=0;j<n.childNodes.length; j++ ) {
+	if(n.childNodes[j].nodeType==1) {
+	    var nd=nm=n.childNodes[j], nm=nd.localName;
+	    if(nm=='bvar'){
+		b[b.length]=nd;
+	    } else if(nm=='condition'||
+		      nm=='degree'||
+		      nm=='logbase'||
+		      nm=='lowlimit'||
+		      nm=='uplimit'||
+		      nm=='interval'||
+		      nm=='domainofapplication') {
+		q[q.length]=nd;
+	    } else if(f==null){
+		f=nd;		
+	    } else {
+		a[a.length]=nd;
+	    }
+	}
+    }
+    ctopTapply["lambda"](n,f,a,b,q,p);
+}
 
 
 ctopTapply["inverse"] = function(n,f,a,b,q,p)  {
