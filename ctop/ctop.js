@@ -145,7 +145,7 @@ ctopfa.textContent='\u2061';
 
 function ctopB(n,tp,p,m,a) {
     var mf = ctopE('mrow');
-    if(tp>p || (tp==p && m=="-")) {
+    if(tp<p || (tp==p && m=="-")) {
         var mo=ctopfa.cloneNode(true);
 	mo.textContent="(";
 	mf.appendChild(mo);
@@ -166,7 +166,7 @@ function ctopB(n,tp,p,m,a) {
 	ctopAT(z,p);
     }
     
-    if(tp>p || (tp==p && m=="-")) {
+    if(tp<p || (tp==p && m=="-")) {
 	var mo=ctopfa.cloneNode(true);
 	mo.textContent=")";
 	mf.appendChild(mo);
@@ -179,7 +179,6 @@ function ctopB(n,tp,p,m,a) {
 
 
 ctopTapply["divide"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"/",a)}
-ctopTapply["minus"] = function(n,f,a,b,q,p)  {ctopB(n,2,p,"-",a)}
 ctopTapply["remainder"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"mod",a)}
 ctopTapply["implies"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"\u21D2",a)}
 ctopTapply["factorof"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"\u21D2",a)}
@@ -201,6 +200,16 @@ ctopTapply["tendsto"] = function(n,f,a,b,q,p)  {
         (t=='below')? '\u2198' : '\u2192' ;
     ctopB(n,2,p,m,a);
 }
+
+
+ctopTapply["minus"] = function(n,f,a,b,q,p)  {
+    if(a.length==1) {
+	ctopB(n,5,p,"-",a);
+    } else {
+	ctopB(n,2,p,"-",a);
+    }
+}
+
 
 
 
@@ -350,54 +359,77 @@ ctopT["false"] = function(n,p) {ctopMI(n,"false")}
 ctopTapply["times"] = function(n,f,a,b,q,p) {
     var mf = ctopE('mrow');
     if(p>3) {
-        var mo=ctopfa.cloneNode(true);
-	mo.textContent="(";
-	mf.appendChild(mo);
+	ctopAppendTok(mf,'mo','(');
     }
     for(var j=0;j<a.length; j++ ) {
 	var z= a[j].cloneNode(true);
 	if(j>0) {
-            var mo=ctopfa.cloneNode(true);
-	    
-	    mo.textContent=(a[j].localName=='cn') ? "\u00D7" :"\u2062";
-	    mf.appendChild(mo);
+	    ctopAppendTok(mf,'mo',(a[j].localName=='cn') ? "\u00D7" :"\u2062");
 	}
   	mf.appendChild(z)
 	ctopAT(z,3);
     }
     if(p>3) {
-        var mo=ctopfa.cloneNode(true);
-	mo.textContent=")";
-	mf.appendChild(mo);
+	ctopAppendTok(mf,'mo',')');
     }
     n.parentNode.replaceChild(mf,n);
 }
+
+
+ctopTapply["plus"] = function(n,f,a,b,q,p) {
+    var mf = ctopE('mrow');
+    if(p>2) {
+	ctopAppendTok(mf,'mo','(');
+    }
+    for(var j=0;j<a.length; j++ ) {
+	var z= a[j].cloneNode(true);
+	var c=ctopChildren(z);
+	if(j>0) {
+	    if(a[j].localName=='cn' && !(c.length) && Number(a[j].textContent) <0) {
+		ctopAppendTok(mf,'mo','\u2212');
+		ctopAppendTok(mf,'mn', -1 * Number(a[j].textContent));
+	    } else if(a[j].localName=='apply' && c.length==2 && c[0].localName=='minus') {
+		ctopAppendTok(mf,'mo','\u2212');
+		z=c[1];
+  		mf.appendChild(z)
+		ctopAT(z,3);
+
+	    } else{
+		ctopAppendTok(mf,'mo','+');
+  		mf.appendChild(z)
+		ctopAT(z,3);
+	    }
+	} else {
+  	    mf.appendChild(z)
+	    ctopAT(z,3);	}
+    }
+    if(p>2) {
+	ctopAppendTok(mf,'mo',')');
+    }
+    n.parentNode.replaceChild(mf,n);
+}
+
+
 ctopI = function(n,f,a,p,tp,s)  {
     var mf = ctopE('mrow');
     if(p>tp) {
-        var mo=ctopfa.cloneNode(true);
-	mo.textContent="(";
-	mf.appendChild(mo);
+	ctopAppendTok(mf,'mo','(');
     }
     for(var j=0;j<a.length; j++ ) {
 	var z= a[j].cloneNode(true);
 	if(j>0) {
-            var mo=ctopfa.cloneNode(true);
-	    mo.textContent=s;
-	    mf.appendChild(mo);
+	    ctopAppendTok(mf,'mo',s);
 	}
   	mf.appendChild(z)
 	ctopAT(z,tp);
     }
     if(p>tp) {
-        var mo=ctopfa.cloneNode(true);
-	mo.textContent=")";
-	mf.appendChild(mo);
+	ctopAppendTok(mf,'mo',')');
     }
     n.parentNode.replaceChild(mf,n);
 }
 
-ctopTapply["plus"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,2,"+")}
+
 ctopTapply["eq"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,"=")}
 ctopTapply["compose"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,"\u2218")}
 ctopTapply["left_compose"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,"\u2218")}
