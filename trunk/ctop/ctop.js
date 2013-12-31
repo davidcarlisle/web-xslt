@@ -1144,7 +1144,6 @@ ctopTapply["partialdiff"] = function(n,f,a,b,q,p)  {
 			}
 		    }
 		} else if(z.length==1) {
-		    
 		    mr.appendChild(z[0].cloneNode(true));
 		    ctopAT(z[0],0);
 		}
@@ -1154,3 +1153,46 @@ ctopTapply["partialdiff"] = function(n,f,a,b,q,p)  {
     }
 }
 
+
+
+ctopT["piecewise"] = function(n,p)  {
+    var mr = ctopE('mrow');
+    ctopAppendTok(mr,'mo','{');
+    var mt = ctopE('mtable');
+    mr.appendChild(mt);
+    var c=ctopChildren(n);
+    for(var i=0;i<c.length;i++){
+	var z= c[i].cloneNode(true);
+	mt.appendChild(z)
+	ctopAT(z,0);
+    }
+    n.parentNode.replaceChild(mr,n);
+}
+
+ctopT["semantics"] = function(n,p)  {
+    var mr = ctopE('mrow');
+    var c=ctopChildren(n);
+    if(c.length){
+	var z =c[0];
+	for(var i=0;i<c.length;i++){
+            if(c[i].localName=='annotation-xml' && c[i].getAttribute('encoding')=='MathML-Presentation'){
+		z=c[i];
+		break;
+	    }
+	}
+	mr.appendChild(z);
+	ctopAT(z,0);
+    }
+    n.parentNode.replaceChild(mr,n);
+}
+
+ctopT["annotation-xml"] = function(n,p)  {
+    var mr = ctopE('mrow');
+    var c=ctopChildren(n);
+    for(var i=0;i<c.length;i++){
+	mr.appendChild(c[i]);
+	ctopAT(c[i],0);
+    }
+    n.parentNode.replaceChild(mr,n);
+}
+    
