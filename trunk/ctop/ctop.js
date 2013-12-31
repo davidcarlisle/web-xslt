@@ -393,7 +393,11 @@ ctopTapply["plus"] = function(n,f,a,b,q,p) {
 		z=c[1];
   		mf.appendChild(z)
 		ctopAT(z,3);
-
+	    } else if(a[j].localName=='apply' && c.length>2 && c[0].localName=='times' && c[1].localName=='cn' &&( Number(c[1].textContent) < 0)) {
+		ctopAppendTok(mf,'mo','\u2212');
+		c[1].textContent=-(Number(c[1].textContent));
+  		mf.appendChild(z)
+		ctopAT(z,3);
 	    } else{
 		ctopAppendTok(mf,'mo','+');
   		mf.appendChild(z)
