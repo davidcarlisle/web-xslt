@@ -476,46 +476,53 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
   <x:if test="$p &gt; 2"><mo>(</mo></x:if>
   <x:for-each select="*[position()&gt;1]">
    <x:choose>
-    <x:when test="self::m:apply[*[1][self::m:times] and
-                    *[2][self::m:apply/*[1][self::m:minus] or self::m:cn[not(m:sep) and
-                    (number(.) &lt; 0)]]] or self::m:cn[not(m:sep) and (number(.) &lt; 0)]">
+    <x:when test="self::m:apply[*[1][self::m:times] and *[2][self::m:apply/*[1][self::m:minus] or 
+		                  self::m:cn[not(m:sep) and (number(.) &lt; 0)]]] or
+	            self::m:apply[count(*)=2 and *[1][self::m:minus]] or
+		    self::m:cn[not(m:sep) and (number(.) &lt; 0)]">
      <mo>&#8722;<!--minus--></mo>
     </x:when>
     <x:when test="position()!=1">
-      <mo>+</mo>
+     <mo>+</mo>
     </x:when>
    </x:choose>
-    <x:choose>
-     <x:when test="self::m:cn[not(m:sep) and (number(.) &lt; 0)]">
-      <mn><x:value-of select="-(.)"/></mn>
-     </x:when>
-      <x:when test="self::m:apply[*[1][self::m:times] and
-      *[2][self::m:cn[not(m:sep) and (number(.) &lt;0)]]]">
+   <x:choose>
+    <x:when test="self::m:cn[not(m:sep) and (number(.) &lt; 0)]">
+     <mn><x:value-of select="-(.)"/></mn>
+    </x:when>
+    <x:when test=" self::m:apply[count(*)=2 and *[1][self::m:minus]]">
+     <x:apply-templates select="*[2]">
+      <x:with-param name="first" select="2"/>
+      <x:with-param name="p" select="2"/>
+     </x:apply-templates>
+    </x:when>
+    <x:when test="self::m:apply[*[1][self::m:times] and
+		    *[2][self::m:cn[not(m:sep) and (number(.) &lt;0)]]]">
      <mrow>
-     <mn><x:value-of select="-(*[2])"/></mn>
+      <mn><x:value-of select="-(*[2])"/></mn>
       <mo>&#8290;<!--invisible times--></mo>
-     <x:apply-templates select=".">
-     <x:with-param name="first" select="2"/>
-     <x:with-param name="p" select="2"/>
-   </x:apply-templates>
+      <x:apply-templates select=".">
+       <x:with-param name="first" select="2"/>
+       <x:with-param name="p" select="2"/>
+      </x:apply-templates>
      </mrow>
-      </x:when>
-      <x:when test="self::m:apply[*[1][self::m:times] and
-      *[2][self::m:apply/*[1][self::m:minus]]]">
+    </x:when>
+    <x:when test="self::m:apply[*[1][self::m:times] and
+		    *[2][self::m:apply/*[1][self::m:minus]]]">
      <mrow>
-     <x:apply-templates select="./*[2]/*[2]"/>
-     <x:apply-templates select=".">
-     <x:with-param name="first" select="2"/>
-     <x:with-param name="p" select="2"/>
-   </x:apply-templates>
+      <x:apply-templates select="./*[2]/*[2]"/>
+      <x:apply-templates select=".">
+       <x:with-param name="first" select="2"/>
+       <x:with-param name="p" select="2"/>
+      </x:apply-templates>
      </mrow>
-      </x:when>
-      <x:otherwise>
+    </x:when>
+    <x:otherwise>
      <x:apply-templates select=".">
-     <x:with-param name="p" select="2"/>
-   </x:apply-templates>
-   </x:otherwise>
-    </x:choose>
+      <x:with-param name="p" select="2"/>
+     </x:apply-templates>
+    </x:otherwise>
+   </x:choose>
   </x:for-each>
   <x:if test="$p &gt; 2"><mo>)</mo></x:if>
   </mrow>

@@ -699,8 +699,8 @@ ctopTapply["int"] = function(n,f,a,b,q,p)  {
 	   q[i].localName=='condition'||
 	   q[i].localName=='domainofapplication')
 	{
-    var qc=ctopChildren(q[i]);
-    for(var j=0;j<qc.length;j++){
+	    var qc=ctopChildren(q[i]);
+	    for(var j=0;j<qc.length;j++){
 		var z=qc[j];
 		mr1.appendChild(z);
 		ctopAT(z,0);
@@ -708,10 +708,10 @@ ctopTapply["int"] = function(n,f,a,b,q,p)  {
 	} else {
 	    var qc=ctopChildren(q[i]);
 	    if (q[i].localName=='interval' && qc.length==2) {
-	    var z=qc[0];
-	    mr1.appendChild(z);
-	    ctopAT(z,0);
-}
+		var z=qc[0];
+		mr1.appendChild(z);
+		ctopAT(z,0);
+	    }
 	}
     }
     mss.appendChild(mr1);
@@ -747,10 +747,6 @@ ctopTapply["int"] = function(n,f,a,b,q,p)  {
     }
     n.parentNode.replaceChild(mr,n);
 }
-
-
-
-
 
 
 
@@ -969,8 +965,6 @@ ctopT["share"] = function(n,p) {
 }
 
 
-
-
 ctopT["cerror"] = function(n,p) {
     var me=ctopE('merror');
     var c=ctopChildren(n);
@@ -980,7 +974,6 @@ ctopT["cerror"] = function(n,p) {
     }
     n.parentNode.replaceChild(me,n);
 }
-
 
 
 ctopTapply["quotient"] = function(n,f,a,b,q,p)  {
@@ -1256,4 +1249,4 @@ ctopT["annotation-xml"] = function(n,p)  {
     }
     n.parentNode.replaceChild(mr,n);
 }
-    
+
