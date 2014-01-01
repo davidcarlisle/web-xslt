@@ -265,12 +265,37 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
                                 |m:bind[*[1][self::m:csymbol='lambda']]"><!--dpc-->
  <m:mrow>
   <m:mi>&#955;<!--lambda--></m:mi>
- <m:mrow><xsl:apply-templates mode="c2p" select="m:bvar/*"/></m:mrow>
- <m:mo>.</m:mo>
- <m:mfenced>
+  <m:mrow>
+   <xsl:choose>
+    <xsl:when test="m:condition">
+     <xsl:apply-templates mode="c2p" select="m:condition/*"/>
+    </xsl:when>
+    <xsl:otherwise>
+     <xsl:apply-templates mode="c2p" select="m:bvar/*"/>
+    </xsl:otherwise>
+   </xsl:choose>
+   <xsl:if test="m:domainofapplication">
+    <mo>&#x2208;</mo>
+    <xsl:apply-templates mode="c2p" select="m:domainofapplication/*"/>
+   </xsl:if>
+  </m:mrow>
+  <m:mo>.</m:mo>
+  <m:mfenced>
+   <xsl:apply-templates mode="c2p" select="*[last()]"/>
+  </m:mfenced>
+ </m:mrow>
+</xsl:template>
+
+<xsl:template mode="c2p" match="m:lambda[not(m:bvar)]" priority="2">
+ <m:mrow>
   <xsl:apply-templates mode="c2p" select="*[last()]"/>
- </m:mfenced>
-</m:mrow>
+  <m:msub>
+   <m:mo>|</m:mo>
+   <m:mrow>
+    <xsl:apply-templates mode="c2p" select="m:condition|m:interval|m:domainofapplication/*"/>
+   </m:mrow>
+  </m:msub>
+ </m:mrow>
 </xsl:template>
 
 

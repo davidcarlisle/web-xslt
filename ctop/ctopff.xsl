@@ -267,12 +267,37 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
                                 |m:bind[*[1][self::m:csymbol='lambda']]"><!--dpc-->
  <mrow>
   <mi>&#955;<!--lambda--></mi>
- <mrow><x:apply-templates select="m:bvar/*"/></mrow>
- <mo>.</mo>
- <mfenced>
+  <mrow>
+   <x:choose>
+    <x:when test="m:condition">
+     <x:apply-templates select="m:condition/*"/>
+    </x:when>
+    <x:otherwise>
+     <x:apply-templates select="m:bvar/*"/>
+    </x:otherwise>
+   </x:choose>
+   <x:if test="m:domainofapplication">
+    <mo>&#x2208;</mo>
+    <x:apply-templates select="m:domainofapplication/*"/>
+   </x:if>
+  </mrow>
+  <mo>.</mo>
+  <mfenced>
+   <x:apply-templates select="*[last()]"/>
+  </mfenced>
+ </mrow>
+</x:template>
+
+<x:template match="m:lambda[not(m:bvar)]" priority="2">
+ <mrow>
   <x:apply-templates select="*[last()]"/>
- </mfenced>
-</mrow>
+  <msub>
+   <mo>|</mo>
+   <mrow>
+    <x:apply-templates select="m:condition|m:interval|m:domainofapplication/*"/>
+   </mrow>
+  </msub>
+ </mrow>
 </x:template>
 
 
@@ -453,7 +478,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
    <x:choose>
     <x:when test="self::m:apply[*[1][self::m:times] and
                     *[2][self::m:apply/*[1][self::m:minus] or self::m:cn[not(m:sep) and
-                    (number(.) &lt; 0)]]]">
+                    (number(.) &lt; 0)]]] or self::m:cn[not(m:sep) and (number(.) &lt; 0)]">
      <mo>&#8722;<!--minus--></mo>
     </x:when>
     <x:when test="position()!=1">
@@ -461,6 +486,9 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
     </x:when>
    </x:choose>
     <x:choose>
+     <x:when test="self::m:cn[not(m:sep) and (number(.) &lt; 0)]">
+      <mn><x:value-of select="-(.)"/></mn>
+     </x:when>
       <x:when test="self::m:apply[*[1][self::m:times] and
       *[2][self::m:cn[not(m:sep) and (number(.) &lt;0)]]]">
      <mrow>
@@ -989,7 +1017,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
     </x:when>
    <x:otherwise>
      <mrow>
-     <mi>&#x2202;</mi>
+     <mo>&#8706;<!-- partial --></mo>
      <x:choose>
        <x:when test="$n=1">
          <x:apply-templates select="$b[position()=$l[1]]/*"/>
@@ -1015,7 +1043,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 <x:template match="m:apply[*[1][self::m:partialdiff]]" priority="1">
   <mfrac>
     <mrow>
-      <x:choose><!--dpc-->
+      <x:choose>
         <x:when test="not(m:bvar/m:degree) and not(m:bvar[2])">
           <mo>&#8706;<!-- partial --></mo>
         </x:when>

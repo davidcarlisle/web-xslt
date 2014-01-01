@@ -863,6 +863,17 @@ function ctopBd(n,f,a,b,q,p,s)  {
 	    }
 	}
     }
+    for(var i=0; i<q.length;i++){
+	if(q[i].localName!='condition')	{
+            ctopAppendTok(mr,'mo','\u2208');
+	    qc=ctopChildren(q[i]);
+	    for(var j=0;j<qc.length;j++){
+		var z=qc[j];
+		mr.appendChild(z);
+		ctopAT(z,0);
+	    }
+	}
+    }
     if(b.length||qc.length){
 	mo=ctopfa.cloneNode(true);
 	mo.textContent=".";
@@ -903,7 +914,30 @@ ctopT["lambda"] = function (n,p) {
 	    }
 	}
     }
-    ctopTapply["lambda"](n,f,a,b,q,p);
+    if(b.length){
+	ctopTapply["lambda"](n,f,a,b,q,p);
+    } else {
+	var mr=ctopE('mrow');
+	for(var i=0;i<a.length;i++){
+	    mr.appendChild(a[i]);
+	    ctopAT(a[i],0);
+	}
+	if(q.length){
+	    var ms=ctopE('msub');
+	    ctopAppendTok(ms,'mo','|');
+	    var mr2=ctopE('mrow');
+	    for(var i=0;i<q.length;i++){
+		var c=ctopChildren(q[i]);
+		for(var j=0;j<c.length;j++){
+		    mr2.appendChild(c[j]);
+		    ctopAT(c[j],0);
+		}
+	    }
+	    ms.appendChild(mr2);
+	    mr.appendChild(ms);
+	}
+    n.parentNode.replaceChild(mr,n);
+    }
 }
 
 
