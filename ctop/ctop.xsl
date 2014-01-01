@@ -474,46 +474,53 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
   <xsl:if test="$p &gt; 2"><m:mo>(</m:mo></xsl:if>
   <xsl:for-each select="*[position()&gt;1]">
    <xsl:choose>
-    <xsl:when test="self::m:apply[*[1][self::m:times] and
-                    *[2][self::m:apply/*[1][self::m:minus] or self::m:cn[not(m:sep) and
-                    (number(.) &lt; 0)]]] or self::m:cn[not(m:sep) and (number(.) &lt; 0)]">
+    <xsl:when test="self::m:apply[*[1][self::m:times] and *[2][self::m:apply/*[1][self::m:minus] or 
+		                  self::m:cn[not(m:sep) and (number(.) &lt; 0)]]] or
+	            self::m:apply[count(*)=2 and *[1][self::m:minus]] or
+		    self::m:cn[not(m:sep) and (number(.) &lt; 0)]">
      <m:mo>&#8722;<!--minus--></m:mo>
     </xsl:when>
     <xsl:when test="position()!=1">
-      <m:mo>+</m:mo>
+     <m:mo>+</m:mo>
     </xsl:when>
    </xsl:choose>
-    <xsl:choose>
-     <xsl:when test="self::m:cn[not(m:sep) and (number(.) &lt; 0)]">
-      <m:mn><xsl:value-of select="-(.)"/></m:mn>
-     </xsl:when>
-      <xsl:when test="self::m:apply[*[1][self::m:times] and
-      *[2][self::m:cn[not(m:sep) and (number(.) &lt;0)]]]">
+   <xsl:choose>
+    <xsl:when test="self::m:cn[not(m:sep) and (number(.) &lt; 0)]">
+     <m:mn><xsl:value-of select="-(.)"/></m:mn>
+    </xsl:when>
+    <xsl:when test=" self::m:apply[count(*)=2 and *[1][self::m:minus]]">
+     <xsl:apply-templates mode="c2p" select="*[2]">
+      <xsl:with-param name="first" select="2"/>
+      <xsl:with-param name="p" select="2"/>
+     </xsl:apply-templates>
+    </xsl:when>
+    <xsl:when test="self::m:apply[*[1][self::m:times] and
+		    *[2][self::m:cn[not(m:sep) and (number(.) &lt;0)]]]">
      <m:mrow>
-     <m:mn><xsl:value-of select="-(*[2])"/></m:mn>
+      <m:mn><xsl:value-of select="-(*[2])"/></m:mn>
       <m:mo>&#8290;<!--invisible times--></m:mo>
-     <xsl:apply-templates mode="c2p" select=".">
-     <xsl:with-param name="first" select="2"/>
-     <xsl:with-param name="p" select="2"/>
-   </xsl:apply-templates>
+      <xsl:apply-templates mode="c2p" select=".">
+       <xsl:with-param name="first" select="2"/>
+       <xsl:with-param name="p" select="2"/>
+      </xsl:apply-templates>
      </m:mrow>
-      </xsl:when>
-      <xsl:when test="self::m:apply[*[1][self::m:times] and
-      *[2][self::m:apply/*[1][self::m:minus]]]">
+    </xsl:when>
+    <xsl:when test="self::m:apply[*[1][self::m:times] and
+		    *[2][self::m:apply/*[1][self::m:minus]]]">
      <m:mrow>
-     <xsl:apply-templates mode="c2p" select="./*[2]/*[2]"/>
-     <xsl:apply-templates mode="c2p" select=".">
-     <xsl:with-param name="first" select="2"/>
-     <xsl:with-param name="p" select="2"/>
-   </xsl:apply-templates>
+      <xsl:apply-templates mode="c2p" select="./*[2]/*[2]"/>
+      <xsl:apply-templates mode="c2p" select=".">
+       <xsl:with-param name="first" select="2"/>
+       <xsl:with-param name="p" select="2"/>
+      </xsl:apply-templates>
      </m:mrow>
-      </xsl:when>
-      <xsl:otherwise>
+    </xsl:when>
+    <xsl:otherwise>
      <xsl:apply-templates mode="c2p" select=".">
-     <xsl:with-param name="p" select="2"/>
-   </xsl:apply-templates>
-   </xsl:otherwise>
-    </xsl:choose>
+      <xsl:with-param name="p" select="2"/>
+     </xsl:apply-templates>
+    </xsl:otherwise>
+   </xsl:choose>
   </xsl:for-each>
   <xsl:if test="$p &gt; 2"><m:mo>)</m:mo></xsl:if>
   </m:mrow>
