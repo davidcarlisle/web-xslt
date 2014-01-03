@@ -73,7 +73,6 @@ function ctopToken(nn,n,s) {
 	ctopAppendTok(nn,s,n.textContent);
     } else {
 	var mrow=ctopE('mrow');
-	nn.appendChild(mrow);
 	for(var j=0;j<n.childNodes.length; j++ ) {
 	    if (n.childNodes[j].nodeType==3) {
 		ctopAppendTok(nn,s,n.childNodes[j].textContent);
@@ -81,9 +80,9 @@ function ctopToken(nn,n,s) {
 		ctopAT(mrow,n.childNodes[j],0);
 	    }
 	}
+	nn.appendChild(mrow);
     }
 }
-
 
 
 ctopT["apply"] = function(nn,n,p) {
@@ -91,7 +90,7 @@ ctopT["apply"] = function(nn,n,p) {
     var a=[],b=[],q=[];
     for(var j=0;j<n.childNodes.length; j++ ) {
 	if(n.childNodes[j].nodeType==1) {
-	    var nd=nm=n.childNodes[j], nm=nd.localName;
+	    var nd=n.childNodes[j], nm=nd.localName;
 	    if(nm=='bvar'){
 		b[b.length]=nd;
 	    } else if(nm=='condition'||
@@ -116,17 +115,17 @@ ctopT["apply"] = function(nn,n,p) {
 	    ctopTapply[nm](nn,n,f,a,b,q,p);
 	} else {
 	    var mrow=ctopE('mrow');
-	    nn.appendChild(mrow);
 	    if(f.childNodes.length){
 		ctopAT(mrow,f,0);
 	    } else {
 		ctopAppendTok(mrow,'mi',nm);
 	    }
-	    mrow.appendChild(ctopfa.cloneNode(true));
+	    ctopAppendTok(mrow,'mo','\u2061');
 	    mrow.appendChild(ctopMF(a,'(',')'));
+	    nn.appendChild(mrow);
 	}
     } else {
-	nn.appendchild(ctopE('mrow'));
+	nn.appendChild(ctopE('mrow'));
     }
 }
 
@@ -144,36 +143,21 @@ function ctopMF(a,o,c) {
 }
 
 
-
-var ctopfa=ctopE('mo');
-ctopfa.textContent='\u2061';
-
-
-
 function ctopB(nn,n,tp,p,m,a) {
     var mf = ctopE('mrow');
     if(tp<p || (tp==p && m=="-")) {
-        var mo=ctopfa.cloneNode(true);
-	mo.textContent="(";
-	mf.appendChild(mo);
+	ctopAppendTok(mf,'mo','(');
     }
     if(a.length>1){
 	ctopAT(mf,a[0],p);
     }
-    
-    var mo=ctopfa.cloneNode(true);
-    mo.textContent=m;
-    mf.appendChild(mo);
-
+    ctopAppendTok(mf,'mo',m);
     if(a.length>0){
 	var z= a[(a.length==1)?0:1];
 	ctopAT(mf,z,p);
-    }
-    
+    }    
     if(tp<p || (tp==p && m=="-")) {
-	var mo=ctopfa.cloneNode(true);
-	mo.textContent=")";
-	mf.appendChild(mo);
+	ctopAppendTok(mf,'mo',')');
     }
     nn.appendChild(mf);
 }
