@@ -6,7 +6,11 @@ var ctopTapply = {};
 function ctop (){
     var mm = document.getElementsByTagName('math');
     for (var i = 0; i< mm.length;i++){
-	ctopAT (mm[i],0); 
+	var nn=mm[i].cloneNode(false);
+	for(var j=0;j<mm[i].childNodes.length; j++ ) {
+	    ctopAT(nn,mm[i].childNodes[j],0);
+	}
+	mm[i].parentNode.replaceChild(nn,mm[i]); 
     }
 }
 
@@ -14,60 +18,67 @@ function ctopE (e) {
 return document.createElementNS("http://www.w3.org/1998/Math/MathML",e);
 }
 
-function ctopAT(n,p) {
+
+// .children causes problems in IE and is a pain
+// as it's a live list
+function ctopChildren(n) {
+    var c=[];
+    for(var j=0;j<n.childNodes.length; j++ ) {
+	if(n.childNodes[j].nodeType==1) {
+	    c[c.length]=n.childNodes[j];
+	}
+    }
+    return c;
+}
+
+function ctopAT(nn,n,p) {
     if (n.nodeType==1) {
 	if(ctopT[n.localName]) {
-	    ctopT[n.localName](n,p);
+	    ctopT[n.localName](nn,n,p);
 	} else if (n.childNodes.length==0) {
-	    ctopMI(n,n.localName);
+	    ctopAppendTok(nn,'mi',n.localName);
 	} else {
-	    var c=[];
+            var nnn=n.cloneNode(false);
+	    nn.appendChild(nnn);
 	    for(var j=0;j<n.childNodes.length; j++ ) {
-		c[j]=n.childNodes[j];
-	    }
-	    for(var j=0;j<c.length; j++ ) {
-		ctopAT(c[j],p);
+		ctopAT(nnn,n.childNodes[j],p);
 	    }
 	}
+    } else if (n.nodeType==3) {
+	nn.appendChild(n.cloneNode(false));
     }
 }
 
 
-ctopT["ci"] = function(n,p) {
-    ctopToken(n,'mi');
+ctopT["ci"] = function(nn,n,p) {
+    ctopToken(nn,n,'mi');
 }
 
-ctopT["cs"] = function(n,p) {
-    ctopToken(n,'ms');
+ctopT["cs"] = function(nn,n,p) {
+    ctopToken(nn,n,'ms');
 }
-ctopT["csymbol"] = function(n,p) {
+ctopT["csymbol"] = function(nn,n,p) {
     if(ctopG[n.textContent]){
-	ctopMI(n,ctopG[n.textContent]);
+	ctopAppendTok(nn,ctopG[n.textContent]);
     } else {
-	ctopToken(n,'mi');
+	ctopToken(nn,n,'mi');
     }
 }
 var ctopG={};
 ctopG['gamma']='\u03B3';
 
 
-function ctopToken(n,s) {
-    var np=n.parentNode;
+function ctopToken(nn,n,s) {
     if(n.childNodes.length==1 && n.childNodes[0].nodeType==3) {
-	var m=ctopE(s);
-	m.textContent=n.textContent;
-	np.replaceChild(m,n);
+	ctopAppendTok(nn,s,n.textContent);
     } else {
 	var mrow=ctopE('mrow');
-	np.replaceChild(mrow,n);
+	nn.appendChild(mrow);
 	for(var j=0;j<n.childNodes.length; j++ ) {
 	    if (n.childNodes[j].nodeType==3) {
-		var m=ctopE(s);
-		m.textContent=n.childNodes[j].textContent;
-		mrow.appendChild(m);
+		ctopAppendTok(nn,s,n.childNodes[j].textContent);
 	    }else{
-  		mrow.appendChild(n.childNodes[j])
-		ctopAT(mrow.childNodes[j],0);
+		ctopAT(mrow,n.childNodes[j],0);
 	    }
 	}
     }
@@ -75,7 +86,7 @@ function ctopToken(n,s) {
 
 
 
-ctopT["apply"] = function(n,p) {
+ctopT["apply"] = function(nn,n,p) {
     var f=null;
     var a=[],b=[],q=[];
     for(var j=0;j<n.childNodes.length; j++ ) {
@@ -88,7 +99,7 @@ ctopT["apply"] = function(n,p) {
 		      nm=='logbase'||
 		      nm=='lowlimit'||
 		      nm=='uplimit'||
-		      nm=='interval'||
+		      (nm=='interval' && !(a.length))||
 		      nm=='domainofapplication') {
 		q[q.length]=nd;
 	    } else if(f==null){
@@ -102,13 +113,12 @@ ctopT["apply"] = function(n,p) {
 	var nm = f.localName;
 	nm=(nm=="csymbol") ? f.textContent : nm;
 	if(ctopTapply[nm]) {
-	    ctopTapply[nm](n,f,a,b,q,p);
+	    ctopTapply[nm](nn,n,f,a,b,q,p);
 	} else {
 	    var mrow=ctopE('mrow');
-	    n.parentNode.replaceChild(mrow,n);
+	    nn.appendChild(mrow);
 	    if(f.childNodes.length){
-		mrow.appendChild(f);
-		ctopAT(f,0);
+		ctopAT(mrow,f,0);
 	    } else {
 		ctopAppendTok(mrow,'mi',nm);
 	    }
@@ -116,8 +126,7 @@ ctopT["apply"] = function(n,p) {
 	    mrow.appendChild(ctopMF(a,'(',')'));
 	}
     } else {
-	var mrow=ctopE('mrow');
-	n.parentNode.replaceChild(mrow,n);
+	nn.appendchild(ctopE('mrow'));
     }
 }
 
@@ -129,9 +138,7 @@ function ctopMF(a,o,c) {
     mf.setAttribute('open',o);
     mf.setAttribute('close',c);
     for(var j=0;j<a.length; j++ ) {
-	var z= a[j].cloneNode(true);
-  	mf.appendChild(z)
-	ctopAT(z,0);
+	ctopAT(mf,a[j],0);
     }
     return mf;
 }
@@ -143,7 +150,7 @@ ctopfa.textContent='\u2061';
 
 
 
-function ctopB(n,tp,p,m,a) {
+function ctopB(nn,n,tp,p,m,a) {
     var mf = ctopE('mrow');
     if(tp<p || (tp==p && m=="-")) {
         var mo=ctopfa.cloneNode(true);
@@ -151,9 +158,7 @@ function ctopB(n,tp,p,m,a) {
 	mf.appendChild(mo);
     }
     if(a.length>1){
-	var z= a[0].cloneNode(true);
-	mf.appendChild(z)
-	ctopAT(z,p);
+	ctopAT(mf,a[0],p);
     }
     
     var mo=ctopfa.cloneNode(true);
@@ -161,9 +166,8 @@ function ctopB(n,tp,p,m,a) {
     mf.appendChild(mo);
 
     if(a.length>0){
-	var z= a[(a.length==1)?0:1].cloneNode(true);
-	mf.appendChild(z)
-	ctopAT(z,p);
+	var z= a[(a.length==1)?0:1];
+	ctopAT(mf,z,p);
     }
     
     if(tp<p || (tp==p && m=="-")) {
@@ -171,24 +175,24 @@ function ctopB(n,tp,p,m,a) {
 	mo.textContent=")";
 	mf.appendChild(mo);
     }
-    n.parentNode.replaceChild(mf,n);
+    nn.appendChild(mf);
 }
 
 
 
 
-ctopTapply["rem"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"mod",a)}
+ctopTapply["rem"] = function(nn,n,f,a,b,q,p)  {ctopB(nn,n,3,p,"mod",a)}
 
-ctopTapply["divide"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"/",a)}
-ctopTapply["remainder"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"mod",a)}
-ctopTapply["implies"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"\u21D2",a)}
-ctopTapply["factorof"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"\u21D2",a)}
-ctopTapply["in"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"\u2208",a)}
-ctopTapply["notin"] = function(n,f,a,b,q,p)  {ctopB(n,3,p,"\u2209",a)}
-ctopTapply["notsubset"] = function(n,f,a,b,q,p)  {ctopB(n,2,p,"\u2288",a)}
-ctopTapply["notprsubset"] = function(n,f,a,b,q,p)  {ctopB(n,2,p,"\u2284",a)}
-ctopTapply["setdiff"] = function(n,f,a,b,q,p)  {ctopB(n,2,p,"\u2216",a)}
-ctopTapply["tendsto"] = function(n,f,a,b,q,p)  {
+ctopTapply["divide"] = function(nn,n,f,a,b,q,p)  {ctopB(nn,n,3,p,"/",a)}
+ctopTapply["remainder"] = function(nn,n,f,a,b,q,p)  {ctopB(nn,n,3,p,"mod",a)}
+ctopTapply["implies"] = function(nn,n,f,a,b,q,p)  {ctopB(nn,n,3,p,"\u21D2",a)}
+ctopTapply["factorof"] = function(nn,n,f,a,b,q,p)  {ctopB(nn,n,3,p,"\u21D2",a)}
+ctopTapply["in"] = function(nn,n,f,a,b,q,p)  {ctopB(nn,n,3,p,"\u2208",a)}
+ctopTapply["notin"] = function(nn,n,f,a,b,q,p)  {ctopB(nn,n,3,p,"\u2209",a)}
+ctopTapply["notsubset"] = function(nn,n,f,a,b,q,p)  {ctopB(nn,n,2,p,"\u2288",a)}
+ctopTapply["notprsubset"] = function(nn,n,f,a,b,q,p)  {ctopB(nn,n,2,p,"\u2284",a)}
+ctopTapply["setdiff"] = function(nn,n,f,a,b,q,p)  {ctopB(nn,n,2,p,"\u2216",a)}
+ctopTapply["tendsto"] = function(nn,n,f,a,b,q,p)  {
     var t;
     if(f.localName=='tendsto') {
 	t=f.getAttribute('type');
@@ -199,93 +203,68 @@ ctopTapply["tendsto"] = function(n,f,a,b,q,p)  {
     }
     var m = (t=='above')? '\u2198' :
         (t=='below')? '\u2198' : '\u2192' ;
-    ctopB(n,2,p,m,a);
+    ctopB(nn,n,2,p,m,a);
 }
 
 
-ctopTapply["minus"] = function(n,f,a,b,q,p)  {
+ctopTapply["minus"] = function(nn,n,f,a,b,q,p)  {
     if(a.length==1) {
-	ctopB(n,5,p,"-",a);
+	ctopB(nn,n,5,p,"-",a);
     } else {
-	ctopB(n,2,p,"-",a);
+	ctopB(nn,n,2,p,"-",a);
     }
 }
 
 
 
 
-ctopTapply["complex-cartesian"] = function(n,f,a,b,q,p)  {
+ctopTapply["complex-cartesian"] = function(nn,n,f,a,b,q,p)  {
     var mf = ctopE('mrow');
-    var z= a[0].cloneNode(true);
-    mf.appendChild(z)
-    ctopAT(z,0);
-    var mo=ctopfa.cloneNode(true);
-    mo.textContent="+";
-    mf.appendChild(mo);
-    var z= a[1].cloneNode(true);
-    mf.appendChild(z)
-    ctopAT(z,0);
-    var mo=ctopfa.cloneNode(true);
-    mo.textContent="\u2062";
-    mf.appendChild(mo);
+    ctopAT(mf,a[0],0);
+    ctopAppendTok(mf,'mo','+');
+    ctopAT(mf,a[1],0);
+    ctopAppendTok(mf,'mo','\u2062');
     ctopAppendTok(mf,'mi','i');
-    n.parentNode.replaceChild(mf,n);
+    nn.appendChild(mf);
 }
-ctopTapply["complex-polar"] = function(n,f,a,b,q,p)  {
+
+
+ctopTapply["complex-polar"] = function(nn,n,f,a,b,q,p)  {
     var mf = ctopE('mrow');
-    var z= a[0].cloneNode(true);
-    mf.appendChild(z)
-    ctopAT(z,0);
-    var mo=ctopfa.cloneNode(true);
-    mo.textContent="\u2062";
-    mf.appendChild(mo);
+    ctopAT(mf,a[0],0);
+    ctopAppendTok(mf,'mo','\u2062');
     var s = ctopE('msup');
-    var mi = ctopE('mi');
+    ctopAppendTok(s,'mi','e');
     var mr = ctopE('mrow');
-    mi.textContent="e";
-    s.appendChild(mi);
-    var z= a[1].cloneNode(true);
-    mr.appendChild(z)
-    ctopAT(z,0);
-    mr.appendChild(mo.cloneNode(true))
-    mi=mi.cloneNode(mi);
-    mi.textContent="i";
-    mr.appendChild(mi);
+    ctopAT(mr,a[1],0);
+    ctopAppendTok(mr,'mo','\u2062');
+    ctopAppendTok(mr,'mi','i');
     s.appendChild(mr);
     mf.appendChild(s);
-    n.parentNode.replaceChild(mf,n);
+    nn.appendChild(mf);
 }
 
 
-ctopTapply["integer"] = function(n,f,a,b,q,p)  {
-    n.parentNode.replaceChild(a[0],n);
-    ctopAT(a[0],0);
+ctopTapply["integer"] = function(nn,n,f,a,b,q,p)  {
+    ctopAT(nn,a[0],0);
 }
 
-ctopTapply["based-integer"] = function(n,f,a,b,q,p)  {
+ctopTapply["based-integer"] = function(nn,n,f,a,b,q,p)  {
     var s = ctopE('msub');
-    var z= a[1].cloneNode(true);
-    s.appendChild(z)
-    ctopAT(z,p);
-    var z= a[0].cloneNode(true);
-    s.appendChild(z)
-    ctopAT(z,p);
-    n.parentNode.replaceChild(s,n);
+    ctopAT(s,a[1],0);
+    ctopAT(s,a[0],0);
+    nn.appendChild(s);
 }
 
-ctopTapply["rational"] = function(n,f,a,b,q,p)  {
+ctopTapply["rational"] = function(nn,n,f,a,b,q,p)  {
     var s = ctopE('mfrac');
-    var z= a[0].cloneNode(true);
-    s.appendChild(z)
-    ctopAT(z,p);
-    var z= a[1].cloneNode(true);
-    s.appendChild(z)
-    ctopAT(z,p);
-    n.parentNode.replaceChild(s,n);
+    ctopAT(s,a[0],0);
+    ctopAT(s,a[1],0);
+    nn.appendChild(s);
 }
 
 
-ctopT["cn"] = function(n,p) {
+ctopT["cn"] = function(nn,n,p) {
     var t=n.getAttribute("type");
     var b=n.getAttribute("base");
     if(t||b) {
@@ -296,18 +275,14 @@ ctopT["cn"] = function(n,p) {
 	    t='based-integer';
 	    c = ctopE(t);
 	    ap.appendChild(c);
-	    mn = ctopE('mn');
-	    mn.textContent=b;
-	    ap.appendChild(mn);
+            ctopAppendTok(ap,'mn',b);
 	} else {
 	    c = ctopE(t);
 	    ap.appendChild(c);
 	}
 	for(var j=0;j<n.childNodes.length; j++ ) {
 	    if (n.childNodes[j].nodeType==3) {
-		var m=ctopE('cn');
-		m.textContent=n.childNodes[j].textContent;
-		mrow.appendChild(m);
+		ctopAppendTok(mrow,'cn',n.childNodes[j].textContent);
 	    }else if (n.childNodes[j].localName=='sep'){
 		ap.appendChild(mrow);
 		mrow = ctopE('mrow');
@@ -316,217 +291,198 @@ ctopT["cn"] = function(n,p) {
 	    }
 	}
 	ap.appendChild(mrow);
-	n.parentNode.replaceChild(ap,n);
-	ctopAT(ap,0);
+	ctopAT(nn,ap,0);
     } else {   
-	ctopToken(n,'mn');
+	ctopToken(nn,n,'mn');
     }
 }
 
 
-function ctopMI (n,s){
-    m = ctopE('mi');
-    m.textContent=s;
-    n.parentNode.replaceChild(m,n);
-}
 function ctopAppendTok (n,t,s){
     m = ctopE(t);
     m.textContent=s;
     n.appendChild(m);
 }
 
-ctopT["naturalnumbers"] = function(n,p) {ctopMI(n,"\u2115")}
-ctopT["integers"] = function(n,p) {ctopMI(n,"\u2124")}
-ctopT["reals"] = function(n,p) {ctopMI(n,"\u211D")}
-ctopT["rationals"] = function(n,p) {ctopMI(n,"\u211A")}
-ctopT["complexes"] = function(n,p) {ctopMI(n,"\u2102")}
-ctopT["primes"] = function(n,p) {ctopMI(n,"\u2119")}
-ctopT["exponentiale"] = function(n,p) {ctopMI(n,"e")}
-ctopT["imaginaryi"] = function(n,p) {ctopMI(n,"i")}
-ctopT["notanumber"] = function(n,p) {ctopMI(n,"NaN")}
-ctopT["eulergamma"] = function(n,p) {ctopMI(n,"\u03B3")}
-ctopT["gamma"] = function(n,p) {ctopMI(n,"\u0263")}
-ctopT["pi"] = function(n,p) {ctopMI(n,"\u03C0")}
-ctopT["infinity"] = function(n,p) {ctopMI(n,"\u221E")}
-ctopT["emptyset"] = function(n,p) {ctopMI(n,"\u2205")}
-ctopT["true"] = function(n,p) {ctopMI(n,"true")}
-ctopT["false"] = function(n,p) {ctopMI(n,"false")}
+
+
+ctopT["naturalnumbers"] = function(nn,n,p) {ctopAppendTok(nn,"mi","\u2115")}
+ctopT["integers"] = function(nn,n,p) {ctopAppendTok(nn,"mi","\u2124")}
+ctopT["reals"] = function(nn,n,p) {ctopAppendTok(nn,"mi","\u211D")}
+ctopT["rationals"] = function(nn,n,p) {ctopAppendTok(nn,"mi","\u211A")}
+ctopT["complexes"] = function(nn,n,p) {ctopAppendTok(nn,"mi","\u2102")}
+ctopT["primes"] = function(nn,n,p) {ctopAppendTok(nn,"mi","\u2119")}
+ctopT["exponentiale"] = function(nn,n,p) {ctopAppendTok(nn,"mi","e")}
+ctopT["imaginaryi"] = function(nn,n,p) {ctopAppendTok(nn,"mi","i")}
+ctopT["notanumber"] = function(nn,n,p) {ctopAppendTok(nn,"mi","NaN")}
+ctopT["eulergamma"] = function(nn,n,p) {ctopAppendTok(nn,"mi","\u03B3")}
+ctopT["gamma"] = function(nn,n,p) {ctopAppendTok(nn,"mi","\u0263")}
+ctopT["pi"] = function(nn,n,p) {ctopAppendTok(nn,"mi","\u03C0")}
+ctopT["infinity"] = function(nn,n,p) {ctopAppendTok(nn,"mi","\u221E")}
+ctopT["emptyset"] = function(nn,n,p) {ctopAppendTok(nn,"mi","\u2205")}
+ctopT["true"] = function(nn,n,p) {ctopAppendTok(nn,"mi","true")}
+ctopT["false"] = function(nn,n,p) {ctopAppendTok(nn,"mi","false")}
 
 
 
 
 
 
-ctopTapply["times"] = function(n,f,a,b,q,p) {
+ctopTapply["times"] = function(nn,n,f,a,b,q,p) {
     var mf = ctopE('mrow');
     if(p>3) {
 	ctopAppendTok(mf,'mo','(');
     }
     for(var j=0;j<a.length; j++ ) {
-	var z= a[j].cloneNode(true);
 	if(j>0) {
 	    ctopAppendTok(mf,'mo',(a[j].localName=='cn') ? "\u00D7" :"\u2062");
 	}
-  	mf.appendChild(z)
-	ctopAT(z,3);
+	ctopAT(mf,a[j],3);
     }
     if(p>3) {
 	ctopAppendTok(mf,'mo',')');
     }
-    n.parentNode.replaceChild(mf,n);
+    nn.appendChild(mf);
 }
 
 
-ctopTapply["plus"] = function(n,f,a,b,q,p) {
+ctopTapply["plus"] = function(nn,n,f,a,b,q,p) {
     var mf = ctopE('mrow');
     if(p>2) {
 	ctopAppendTok(mf,'mo','(');
     }
     for(var j=0;j<a.length; j++ ) {
-	var z= a[j].cloneNode(true);
+	var z= a[j];
 	var c=ctopChildren(z);
 	if(j>0) {
-	    if(a[j].localName=='cn' && !(c.length) && Number(a[j].textContent) <0) {
+	    if(z.localName=='cn' && !(c.length) && Number(z.textContent) <0) {
 		ctopAppendTok(mf,'mo','\u2212');
 		ctopAppendTok(mf,'mn', -1 * Number(a[j].textContent));
-	    } else if(a[j].localName=='apply' && c.length==2 && c[0].localName=='minus') {
+	    } else if(z.localName=='apply' && c.length==2 && c[0].localName=='minus') {
 		ctopAppendTok(mf,'mo','\u2212');
-		z=c[1];
-  		mf.appendChild(z)
-		ctopAT(z,3);
+		ctopAT(mf,c[1],3);
 	    } else if(a[j].localName=='apply' && c.length>2 && c[0].localName=='times' && c[1].localName=='cn' &&( Number(c[1].textContent) < 0)) {
 		ctopAppendTok(mf,'mo','\u2212');
-		c[1].textContent=-(Number(c[1].textContent));
-  		mf.appendChild(z)
-		ctopAT(z,3);
+		c[1].textContent=-(Number(c[1].textContent));// fix me: modifying document
+		ctopAT(mf,z,3);
 	    } else{
 		ctopAppendTok(mf,'mo','+');
-  		mf.appendChild(z)
-		ctopAT(z,3);
+		ctopAT(mf,z,3);
 	    }
 	} else {
-  	    mf.appendChild(z)
-	    ctopAT(z,3);	}
+	    ctopAT(mf,z,3);	}
     }
     if(p>2) {
 	ctopAppendTok(mf,'mo',')');
     }
-    n.parentNode.replaceChild(mf,n);
+    nn.appendChild(mf);
 }
 
 
-ctopI = function(n,f,a,p,tp,s)  {
+ctopI = function(nn,f,a,p,tp,s)  {
     var mf = ctopE('mrow');
     if(p>tp) {
 	ctopAppendTok(mf,'mo','(');
     }
     for(var j=0;j<a.length; j++ ) {
-	var z= a[j].cloneNode(true);
 	if(j>0) {
 	    ctopAppendTok(mf,'mo',s);
 	}
-  	mf.appendChild(z)
-	ctopAT(z,tp);
+	ctopAT(mf,a[j],tp);
     }
     if(p>tp) {
 	ctopAppendTok(mf,'mo',')');
     }
-    n.parentNode.replaceChild(mf,n);
+    nn.appendChild(mf);
 }
 
 
-ctopTapply["eq"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,"=")}
-ctopTapply["compose"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,"\u2218")}
-ctopTapply["left_compose"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,"\u2218")}
-ctopTapply["and"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,2,"\u2227")}
-ctopTapply["or"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,3,"\u2228")}
-ctopTapply["xor"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,3,"xor")}
-ctopTapply["neq"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,"\u2260")}
-ctopTapply["gt"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,"<")}
-ctopTapply["lt"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,">")}
-ctopTapply["geq"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,"\u2265")}
-ctopTapply["leq"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,"\u2264")}
-ctopTapply["equivalent"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,"\u2261")}
-ctopTapply["approx"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,1,"\u2243")}
-ctopTapply["union"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,2,"\u222A")}
-ctopTapply["intersect"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,3,"\u2229")}
-ctopTapply["subset"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,2,"\u2286")}
-ctopTapply["prsubset"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,2,"\u2282")}
-ctopTapply["cartesianproduct"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,2,"\u00D7")}
-ctopTapply["cartesian_product"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,2,"\u00D7")}
-ctopTapply["vectorproduct"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,2,"\u00D7")}
-ctopTapply["scalarproduct"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,2,".")}
-ctopTapply["outerproduct"] = function(n,f,a,b,q,p) {ctopI(n,f,a,p,2,"\u2297")}
+ctopTapply["eq"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,1,"=")}
+ctopTapply["compose"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,1,"\u2218")}
+ctopTapply["left_compose"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,1,"\u2218")}
+ctopTapply["and"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,2,"\u2227")}
+ctopTapply["or"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,3,"\u2228")}
+ctopTapply["xor"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,3,"xor")}
+ctopTapply["neq"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,1,"\u2260")}
+ctopTapply["gt"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,1,"<")}
+ctopTapply["lt"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,1,">")}
+ctopTapply["geq"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,1,"\u2265")}
+ctopTapply["leq"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,1,"\u2264")}
+ctopTapply["equivalent"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,1,"\u2261")}
+ctopTapply["approx"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,1,"\u2243")}
+ctopTapply["union"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,2,"\u222A")}
+ctopTapply["intersect"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,3,"\u2229")}
+ctopTapply["subset"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,2,"\u2286")}
+ctopTapply["prsubset"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,2,"\u2282")}
+ctopTapply["cartesianproduct"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,2,"\u00D7")}
+ctopTapply["cartesian_product"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,2,"\u00D7")}
+ctopTapply["vectorproduct"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,2,"\u00D7")}
+ctopTapply["scalarproduct"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,2,".")}
+ctopTapply["outerproduct"] = function(nn,n,f,a,b,q,p) {ctopI(nn,f,a,p,2,"\u2297")}
 
 
-ctopT["set"] = function(n,p) {ctopS(n,ctopChildren(n),'{','}')};
-ctopTapply["set"] = function(n,f,a,b,q,p) {ctopS(n,a,'{','}')};
-ctopT["list"] = function(n,p) {ctopS(n,ctopChildren(n),'(',')')};
-ctopTapply["list"] = function(n,f,a,b,q,p) {ctopS(n,a,'(',')')};
+ctopT["set"] = function(nn,n,p) {ctopS(nn,ctopChildren(n),'{','}')};
+ctopTapply["set"] = function(nn,n,f,a,b,q,p) {ctopS(nn,a,'{','}')};
+ctopT["list"] = function(nn,n,p) {ctopS(nn,ctopChildren(n),'(',')')};
+ctopTapply["list"] = function(nn,n,f,a,b,q,p) {ctopS(nn,a,'(',')')};
 
-ctopT["interval"] = function(n,p) {
+ctopT["interval"] = function(nn,n,p) {
     var c=n.getAttribute('closure');
-    ctopS(n,ctopChildren(n),
+    ctopS(nn,ctopChildren(n),
 	  (c=='open' || c=='open-closed')?'(':'[',
 	  (c=='open' || c=='closed-open')?')':']'
 	 )};
 
-function ctopS (n,a,o,c){
-    n.parentNode.replaceChild(ctopMF(a,o,c),n);
+function ctopS (nn,a,o,c){
+    nn.appendChild(ctopMF(a,o,c));
 }
 
 				   
 
-ctopT["piecewise"] = function(n,p)  {
+ctopT["piecewise"] = function(nn,n,p)  {
     var mr = ctopE('mrow');
     ctopAppendTok(mr,'mo','{');
     var mt = ctopE('mtable');
     mr.appendChild(mt);
     var c=ctopChildren(n);
     for(var i=0;i<c.length;i++){
-	var z= c[i].cloneNode(true);
-	mt.appendChild(z)
-	ctopAT(z,0);
+	ctopAT(mt,c[i],0);
     }
-    n.parentNode.replaceChild(mr,n);
+    nn.appendChild(mr);
 }
 
-ctopT["piece"] = function(n,p) {
+ctopT["piece"] = function(nn,n,p) {
     var mtr = ctopE('mtr');
     var c=ctopChildren(n);
     for(i=0;i<c.length;i++){
 	var mtd = ctopE('mtd');
 	mtr.appendChild(mtd);
-	var z= c[i].cloneNode(true);
-	mtd.appendChild(z)
-	ctopAT(z,0);
+	ctopAT(mtd,c[i],0);
 	if(i==0){
 	var mtd = ctopE('mtd');
-	    mtd.textContent="\u00A0if\u00A0";
+	    ctopAppendTok(mtd,"mtext","\u00A0if\u00A0");
 	    mtr.appendChild(mtd);
 	}
     }
-    n.parentNode.replaceChild(mtr,n);
+    nn.appendChild(mtr);
 };
 
-ctopT["otherwise"] = function(n,p) {
+ctopT["otherwise"] = function(nn,n,p) {
     var mtr = ctopE('mtr');
     var c=ctopChildren(n);
-    if(c.length>0){
+    if(c.length){
 	var mtd = ctopE('mtd');
 	mtr.appendChild(mtd);
-	var z= c[0].cloneNode(true);
-	mtd.appendChild(z)
-	ctopAT(z,0);
+	ctopAT(mtd,c[0],0);
 	var mtd = ctopE('mtd');
 	mtd.setAttribute('columnspan','2');
-	mtd.textContent="\u00A0otherwise";
+	ctopAppendTok(mtd,"mtext","\u00A0otherwise");
 	mtr.appendChild(mtd);
     }
-    n.parentNode.replaceChild(mtr,n);
+    nn.appendChild(mtr);
 };
 
-ctopT["matrix"] = function(n,p) {
+ctopT["matrix"] = function(nn,n,p) {
     var a=[],b=[],q=[];
     for(var j=0;j<n.childNodes.length; j++ ) {
 	var c=n.childNodes[j]
@@ -542,152 +498,114 @@ ctopT["matrix"] = function(n,p) {
     }
     if(b.length||q.length){
 	var mr = ctopE('mrow');
-	var mo=ctopfa.cloneNode(true);
-	mo.textContent="[";
-	mr.appendChild(mo);
+	ctopAppendTok(mr,"mo","[");
 	var ms = ctopE('msub');
 	ctopAppendTok(ms,'mi','m');
 	var mr2 = ctopE('mrow');
 	for(var i=0;i<b.length;i++){
 	    if(i!=0){
-		mo=ctopfa.cloneNode(true);
-		mo.textContent=",";
-		mr2.appendChild(mo);
+		ctopAppendTok(mr2,'mo',',');
 	    }	
-	    var z=b[i].childNodes[0];
-	    mr2.appendChild(z);
-            ctopAT(z,0);
+            ctopAT(mr2,b[i].childNodes[0],0);
 	}
 	ms.appendChild(mr2);
-	var ms2=ms.cloneNode(true);
 	mr.appendChild(ms);
-	mo=ctopfa.cloneNode(true);
-	mo.textContent="|";
-	mr.appendChild(mo);
+	var ms2=ms.cloneNode(true);
+	ctopAppendTok(mr,'mo','|');
 	mr.appendChild(ms2);
-	mo=ctopfa.cloneNode(true);
-	mo.textContent="=";
-	mr.appendChild(mo);
+	ctopAppendTok(mr,'mo','=');
 	for(var i=0;i<a.length;i++){
 	    if(i!=0){
-		mo=ctopfa.cloneNode(true);
-		mo.textContent=",";
-		mr.appendChild(mo);
+		ctopAppendTok(mr,'mo',',');
 	    }	
-	    mr.appendChild(a[i]);
-            ctopAT(a[i],0);
+            ctopAT(mr,a[i],0);
 	}
-	mo=ctopfa.cloneNode(true);				 
-	mo.textContent=";";
-	mr.appendChild(mo);
+	ctopAppendTok(mr,'mo',';');
 	for(var i=0;i<q.length;i++){
 	    if(i!=0){
-		mo=ctopfa.cloneNode(true);
-		mo.textContent=",";
-		mr.appendChild(mo);
+		ctopAppendTok(mr,'mo',',');
 	    }	
-	    mr.appendChild(q[i]);
-            ctopAT(q[i],0);
+            ctopAT(mr,q[i],0);
 	}
-	mo=ctopfa.cloneNode(true);
-	mo.textContent="]";
-	mr.appendChild(mo);
-      	n.parentNode.replaceChild(mr,n);
+	ctopAppendTok(mr,'mo',']');
+      	nn.appendChild(mr);
     } else {
 	var mf = ctopE('mfenced');
 	var mt = ctopE('mtable');
 	for(var i=0;i<a.length;i++){
-	    mt.appendChild(a[i]);
-	    ctopAT(a[i],0);
+	    ctopAT(mt,a[i],0);
 	}
       	mf.appendChild(mt);
-      	n.parentNode.replaceChild(mf,n);
+      	nn.appendChild(mf);
     }
 }
 	  
 
-ctopT["matrixrow"] = function(n,p){
+ctopT["matrixrow"] = function(nn,n,p){
     var mtr = ctopE('mtr');
     var c=ctopChildren(n);
     for(var i=0;i<c.length;i++){
 	var mtd = ctopE('mtd');
-	var z=c[i];
-	mtd.appendChild(z);
-	ctopAT(z,0);
+	ctopAT(mtd,c[i],0);
 	mtr.appendChild(mtd);
     }
-    n.parentNode.replaceChild(mtr,n);
+    nn.appendChild(mtr);
 }
 
 
-ctopTapply["power"] = function(n,f,a,b,q,p)  {
+ctopTapply["power"] = function(nn,n,f,a,b,q,p)  {
     var s = ctopE('msup');
-    var z= a[0].cloneNode(true);
-    s.appendChild(z)
-    ctopAT(z,p);
-    var z= a[1].cloneNode(true);
-    s.appendChild(z)
-    ctopAT(z,p);
-    n.parentNode.replaceChild(s,n);
+    ctopAT(s,a[0],p);
+    ctopAT(s,a[1],p);
+    nn.appendChild(s);
 }
 
 
-ctopT["condition"] = function(n,p)  {
+ctopT["condition"] = function(nn,n,p)  {
     var mr = ctopE('mrow');
     var c=ctopChildren(n);
     for(var i=0;i<c.length;i++){
-	var z= c[i];
-	mr.appendChild(z)
-	ctopAT(z,0);
+	ctopAT(mr,c[i],0);
     }
-    n.parentNode.replaceChild(mr,n);
+    nn.appendChild(mr);
 }
 
 
-ctopTapply["selector"] = function(n,f,a,b,q,p){
+ctopTapply["selector"] = function(nn,n,f,a,b,q,p){
     var ms = ctopE('msub');
     var z=(a)? a[0]: ctopE('mrow');
-    ms.appendChild(z);
-    ctopAT(z,0);
+    ctopAT(ms,z,0);
     var mr2 = ctopE('mrow');
     for(var i=1;i<a.length;i++){
 	if(i!=1){
-	    mo=ctopfa.cloneNode(true);
-	    mo.textContent=",";
-	    mr2.appendChild(mo);
+	    ctopAppendTok(mr2,'mo',',');
 	}	
-	var z=ctopChildren(n)[i];
-	mr2.appendChild(z);
-	ctopAT(z,0);
+	ctopAT(mr2,a[i],0);
     }
     ms.appendChild(mr2);
-    n.parentNode.replaceChild(ms,n);
+    nn.appendChild(ms);
 }
 
 
 
-ctopTapply["log"] = function(n,f,a,b,q,p)  {
+ctopTapply["log"] = function(nn,n,f,a,b,q,p)  {
     var mr = ctopE('mrow');
     var mi = ctopE('mi');
     mi.textContent='log';
     if(q.length &&q[0].localName=='logbase'){
 	var ms = ctopE('msub');
 	ms.appendChild(mi);
-	var z=ctopChildren(q[0])[0];
-	ms.appendChild(z);
-	ctopAT(z,0);
+	ctopAT(ms,ctopChildren(q[0])[0],0);
 	mr.appendChild(ms);
     } else {
 	mr.appendChild(mi);
     }
-    var z=a[0];
-    mr.appendChild(z);
-    ctopAT(z,7);
-    n.parentNode.replaceChild(mr,n);
+    ctopAT(mr,a[0],7);
+    nn.appendChild(mr);
 }
 
 
-ctopTapply["int"] = function(n,f,a,b,q,p)  {
+ctopTapply["int"] = function(nn,n,f,a,b,q,p)  {
     var mr = ctopE('mrow');
     var mo = ctopE('mo');
     mo.textContent='\u222B';
@@ -701,38 +619,34 @@ ctopTapply["int"] = function(n,f,a,b,q,p)  {
 	{
 	    var qc=ctopChildren(q[i]);
 	    for(var j=0;j<qc.length;j++){
-		var z=qc[j];
-		mr1.appendChild(z);
-		ctopAT(z,0);
+		ctopAT(mr1,qc[j],0);
 	    }
 	} else {
 	    var qc=ctopChildren(q[i]);
 	    if (q[i].localName=='interval' && qc.length==2) {
-		var z=qc[0];
-		mr1.appendChild(z);
-		ctopAT(z,0);
+		ctopAT(mr1,qc[0],0);
 	    }
 	}
     }
     mss.appendChild(mr1);
     var mr2 = ctopE('mrow');
     for(var i=0; i<q.length;i++){
-	if(q[i].localName=='uplimit' ||q[i].localName=='interval' )
-	{
+	if(q[i].localName=='uplimit'){
 	    var qc=ctopChildren(q[i]);
 	    for(j=0;j<qc.length;j++){
-		var z=qc[j];
-		mr2.appendChild(z);
-		ctopAT(z,0);
+		ctopAT(mr2,qc[j],0);
 	    }
+	    break;
+	} else if(q[i].localName=='interval' ){
+	    var qc=ctopChildren(q[i]);
+	    ctopAT(mr2,qc[qc.length -1],0);
+	    break;
 	}
     }
     mss.appendChild(mr2);
     mr.appendChild(mss);
     for(var i=0; i<a.length;i++){
-	var z=a[i];
-	mr.appendChild(z);
-	ctopAT(z,0);
+	ctopAT(mr,a[i],0);
     }
     for(var i=0; i<b.length;i++){
 	var z=b[i];
@@ -740,17 +654,16 @@ ctopTapply["int"] = function(n,f,a,b,q,p)  {
 	if(zc.length){
 	    var mr3=ctopE("mrow");
 	    ctopAppendTok(mr3,'mi','d');
-	    mr3.appendChild(zc[0]);
-	    ctopAT(z,0);
+	    ctopAT(mr3,zc[0],0);
 	    mr.appendChild(mr3);
 	}
     }
-    n.parentNode.replaceChild(mr,n);
+    nn.appendChild(mr);
 }
 
 
 
-function ctopO(n,f,a,b,q,p,s)  {
+function ctopO(nn,f,a,b,q,p,s)  {
     var mr = ctopE('mrow');
     var mo = ctopE('mo');
     mo.textContent=s;
@@ -772,16 +685,12 @@ function ctopO(n,f,a,b,q,p,s)  {
 		    }
 		}
 		if(b.length){
-		    mo=ctopfa.cloneNode(true);
-		    mo.textContent="=";
-		    mr1.appendChild(mo);
+		    ctopAppendTok(mr1,"mo","=");
 		}
 	    }
 	    var qc=ctopChildren(q[i]);
 	    for(j=0;j<qc.length;j++){
-		var z=qc[j];
-		mr1.appendChild(z);
-		ctopAT(z,0);
+		ctopAT(mr1,qc[j],0);
 	    }
 	} else {
 	    var qc=ctopChildren(q[i]);
@@ -790,18 +699,13 @@ function ctopO(n,f,a,b,q,p,s)  {
 		    var z=b[j];
 		    var zc=ctopChildren(z);
 		    if(zc.length){
-			mr1.appendChild(zc[0]);
-			ctopAT(z,0);
+			ctopAT(mr1,zc[0],0);
 		    }
 		}
 		if(b.length){
-		    mo=ctopfa.cloneNode(true);
-		    mo.textContent="=";
-		    mr1.appendChild(mo);
+		    ctopAppendTok(mr1,"mo","=");
 		}
-		var z=ctopChildren(q[i])[0];
-		mr1.appendChild(z);
-		ctopAT(z,0);
+		ctopAT(mr1,ctopChildren(q[i])[0],0);
 	    }
 	}
     }
@@ -812,29 +716,25 @@ function ctopO(n,f,a,b,q,p,s)  {
 	{
 	    var qc=ctopChildren(q[i]);
 	    for(j=0;j<qc.length;j++){
-		var z=qc[j];
-		mr2.appendChild(z);
-		ctopAT(z,0);
+		ctopAT(mr2,qc[j],0);
 	    }
 	}
     }
     mss.appendChild(mr2);
     mr.appendChild(mss);
     for(var i=0; i<a.length;i++){
-	var z=a[i];
-	mr.appendChild(z);
-	ctopAT(z,0);
+	ctopAT(mr,a[i],0);
     }
-    n.parentNode.replaceChild(mr,n);
+    nn.appendChild(mr);
 }
 
 
-ctopTapply["sum"] = function (n,f,a,b,q,p){ctopO(n,f,a,b,q,p,'\u2211')};
+ctopTapply["sum"] = function (nn,n,f,a,b,q,p){ctopO(nn,f,a,b,q,p,'\u2211')};
 
-ctopTapply["product"] = function (n,f,a,b,q,p){ctopO(n,f,a,b,q,p,'\u220F')};
+ctopTapply["product"] = function (nn,n,f,a,b,q,p){ctopO(nn,f,a,b,q,p,'\u220F')};
 
 
-function ctopBd(n,f,a,b,q,p,s)  {
+function ctopBd(nn,f,a,b,q,p,s)  {
     var mr = ctopE('mrow');
     ctopAppendTok(mr,'mo',s);
     var cnd=0,qc=[];
@@ -843,9 +743,7 @@ function ctopBd(n,f,a,b,q,p,s)  {
 	    cnd=1;
 	    qc=ctopChildren(q[i]);
 	    for(var j=0;j<qc.length;j++){
-		var z=qc[j];
-		mr.appendChild(z);
-		ctopAT(z,0);
+		ctopAT(mr,qc[j],0);
 	    }
 	}
     }
@@ -854,8 +752,7 @@ function ctopBd(n,f,a,b,q,p,s)  {
 	    var z=b[j];
 	    var zc=ctopChildren(z);
 	    if(zc.length){
-		mr.appendChild(zc[0]);
-		ctopAT(z,0);
+		ctopAT(mr,zc[0],0);
 	    }
 	}
     }
@@ -864,30 +761,24 @@ function ctopBd(n,f,a,b,q,p,s)  {
             ctopAppendTok(mr,'mo','\u2208');
 	    qc=ctopChildren(q[i]);
 	    for(var j=0;j<qc.length;j++){
-		var z=qc[j];
-		mr.appendChild(z);
-		ctopAT(z,0);
+		ctopAT(mr,qc[j],0);
 	    }
 	}
     }
     if(b.length||qc.length){
-	mo=ctopfa.cloneNode(true);
-	mo.textContent=".";
-	mr.appendChild(mo);
+        ctopAppendTok(mr,'mo','.');
     }
     for(var i=0; i<a.length;i++){
-	var z=a[i];
-	mr.appendChild(z);
-	ctopAT(z,0);
+	ctopAT(mr,a[i],0);
     }
-    n.parentNode.replaceChild(mr,n);
+    nn.appendChild(mr);
 }
 
-ctopTapply["forall"] = function (n,f,a,b,q,p){ctopBd(n,f,a,b,q,p,'\u2200')};
-ctopTapply["exists"] = function (n,f,a,b,q,p){ctopBd(n,f,a,b,q,p,'\u2203')};
-ctopTapply["lambda"] = function (n,f,a,b,q,p){ctopBd(n,f,a,b,q,p,'\u03BB')};
+ctopTapply["forall"] = function (nn,n,f,a,b,q,p){ctopBd(nn,f,a,b,q,p,'\u2200')};
+ctopTapply["exists"] = function (nn,n,f,a,b,q,p){ctopBd(nn,f,a,b,q,p,'\u2203')};
+ctopTapply["lambda"] = function (nn,n,f,a,b,q,p){ctopBd(nn,f,a,b,q,p,'\u03BB')};
 
-ctopT["lambda"] = function (n,p) {
+ctopT["lambda"] = function (nn,n,p) {
     var f=ctopE('lambda');
     var a=[],b=[],q=[];
     for(var j=0;j<n.childNodes.length; j++ ) {
@@ -900,7 +791,7 @@ ctopT["lambda"] = function (n,p) {
 		      nm=='logbase'||
 		      nm=='lowlimit'||
 		      nm=='uplimit'||
-		      nm=='interval'||
+		      (nm=='interval' && !(a.length))||
 		      nm=='domainofapplication') {
 		q[q.length]=nd;
 	    } else if(f==null){
@@ -911,12 +802,11 @@ ctopT["lambda"] = function (n,p) {
 	}
     }
     if(b.length){
-	ctopTapply["lambda"](n,f,a,b,q,p);
+	ctopTapply["lambda"](nn,n,f,a,b,q,p);
     } else {
 	var mr=ctopE('mrow');
 	for(var i=0;i<a.length;i++){
-	    mr.appendChild(a[i]);
-	    ctopAT(a[i],0);
+	    ctopAT(mr,a[i],0);
 	}
 	if(q.length){
 	    var ms=ctopE('msub');
@@ -925,107 +815,95 @@ ctopT["lambda"] = function (n,p) {
 	    for(var i=0;i<q.length;i++){
 		var c=ctopChildren(q[i]);
 		for(var j=0;j<c.length;j++){
-		    mr2.appendChild(c[j]);
-		    ctopAT(c[j],0);
+		    ctopAT(mr2,c[j],0);
 		}
 	    }
 	    ms.appendChild(mr2);
 	    mr.appendChild(ms);
 	}
-    n.parentNode.replaceChild(mr,n);
+    nn.appendChild(mr);
     }
 }
 
 
-ctopTapply["inverse"] = function(n,f,a,b,q,p)  {
+ctopTapply["inverse"] = function(nn,n,f,a,b,q,p)  {
     var s = ctopE('msup');
     var z= (a.length)? a[0]:ctopE('mrow');
-    s.appendChild(z)
-    ctopAT(z,p);
+    ctopAT(s,z,p);
     var mf=ctopE('mfenced');
     ctopAppendTok(mf,'mn','-1');
     s.appendChild(mf);
-    n.parentNode.replaceChild(s,n);
+    nn.appendChild(s);
 }
 
 
-ctopT["ident"] = function(n,p) {ctopMI(n,"id")}
+ctopT["ident"] = function(nn,n,p) {ctopAppendTok(nn,"mi","id")}
 
-ctopT["domainofapplication"] = function(n,p) {
+ctopT["domainofapplication"] = function(nn,n,p) {
     var me=ctopE('merror');
     ctopAppendTok(me,'mtext','unexpected domainofapplication');
-    n.parentNode.replaceChild(me,n);
+    nn.appendChild(me);
 }
 
-ctopT["share"] = function(n,p) {
+ctopT["share"] = function(nn,n,p) {
     var mi=ctopE('mi');
     mi.setAttribute('href',n.getAttribute('href'));
     mi.textContent="share" + n.getAttribute('href');
-    n.parentNode.replaceChild(mi,n);
+    nn.appendChild(mi);
 }
 
 
-ctopT["cerror"] = function(n,p) {
+ctopT["cerror"] = function(nn,n,p) {
     var me=ctopE('merror');
     var c=ctopChildren(n);
     for(var i=0;i<c.length;i++){
-	me.appendChild(c[i]);
-	ctopAT(c[i],0);
+	ctopAT(me,c[i],0);
     }
-    n.parentNode.replaceChild(me,n);
+    nn.appendChild(me);
 }
 
 
-ctopTapply["quotient"] = function(n,f,a,b,q,p)  {
+ctopTapply["quotient"] = function(nn,n,f,a,b,q,p)  {
     var mr=ctopE('mrow');
     ctopAppendTok(mr,'mo','\u230A');
     if(a.length) {
-	var z= a[0].cloneNode(true);
-	mr.appendChild(z)
-	ctopAT(z,0);
+	ctopAT(mr,a[0],0);
 	ctopAppendTok(mr,'mo','/');
 	if(a.length>1){
-	    var z= a[1].cloneNode(true);
-	    mr.appendChild(z)
-	    ctopAT(z,0);
+	    ctopAT(mr,a[1],0);
 	}
     }
     ctopAppendTok(mr,'mo','\u230B');
-    n.parentNode.replaceChild(mr,n);
+    nn.appendChild(mr);
 }
 
 
-ctopTapply["factorial"] = function(n,f,a,b,q,p)  {
+ctopTapply["factorial"] = function(nn,n,f,a,b,q,p)  {
     var mr=ctopE('mrow');
-    var z= a[0];
-    mr.appendChild(z);
-    ctopAT(z,0);
+    ctopAT(mr,a[0],0);
     ctopAppendTok(mr,'mo','!');
-    n.parentNode.replaceChild(mr,n);
+    nn.appendChild(mr);
 }
 
 
-ctopTapply["root"] = function(n,f,a,b,q,p)  {
+ctopTapply["root"] = function(nn,n,f,a,b,q,p)  {
     var mr;
     if(f.localName=='root' && (q.length==0 || (q[0].localName=='degree' && q[0].textContent=='2'))){
 	mr=ctopE('msqrt');
 	for(var i=0;i<a.length;i++){
-	    mr.appendChild(a[i]);
-	    ctopAT(a[i],0);
+	    ctopAT(mr,a[i],0);
 	}
     } else {
 	mr=ctopE('mroot');
-	mr.appendChild(a[0]);
-	ctopAT(a[0],0);
+	ctopAT(mr,a[0],0);
 	var z=(f.localName=='root') ? q[0].childNodes[0] : a[1];
-	mr.appendChild(z);
-	ctopAT(z,0);
+	ctopAT(mr,z,0);
     }
-    n.parentNode.replaceChild(mr,n);
+    nn.appendChild(mr);
 }
 
 
-ctopTapply["diff"] = function(n,f,a,b,q,p)  {
+ctopTapply["diff"] = function(nn,n,f,a,b,q,p)  {
     var m;
     var mr1=ctopE('mrow');
     if(b.length){
@@ -1040,69 +918,52 @@ ctopTapply["diff"] = function(n,f,a,b,q,p)  {
 		if(z.textContent!='1'){
 		    ms=ctopE('msup');
 		    ms.appendChild(mi);
-		    ms.appendChild(z);
-		    ctopAT(z,0);
+		    ctopAT(ms,z,0);
 		}
 	    } else {
-		bv=z=ctopChildren(b[0])[j];
+		bv=ctopChildren(b[0])[j];
 	    }
 	}
 	mr1.appendChild(ms||mi);
 	if(a.length){
-	    mr1.appendChild(a[0]);
-	    ctopAT(a[0]);
+	    ctopAT(mr1,a[0],0);
 	}
-
 	m.appendChild(mr1);
 	mr1=ctopE('mrow');
 	ctopAppendTok(mr1,'mi','d');
 	if(ms){
 	    var ms2=ms.cloneNode(true);
-	    ms2.replaceChild(bv,ms2.childNodes[0]);
+	    ms2.replaceChild(bv,ms2.childNodes[0]); // fix me
 	    mr1.appendChild(ms2);
+	    //ctopAT(bv,0);
 	} else {
-	    mr1.appendChild(bv);
+	    ctopAT(mr1,bv,0);
 	}
-	ctopAT(bv,0);
 	m.appendChild(mr1);
     } else {
 	m=ctopE('msup');
 	m.appendChild(mr1);
-	mr1.appendChild(a[0]);
-	ctopAT(a[0],0); 
+	ctopAT(mr1,a[0],0); 
 	ctopAppendTok(m,'mo','\u2032');
     }
-    n.parentNode.replaceChild(m,n);
+    nn.appendChild(m);
 }
 
 
-// .children causes problems in IE and is a pain
-// as it's a live list
-function ctopChildren(n) {
-    var c=[];
-    for(var j=0;j<n.childNodes.length; j++ ) {
-	if(n.childNodes[j].nodeType==1) {
-	    c[c.length]=n.childNodes[j];
-	}
-    }
-    return c;
-}
 
-ctopTapply["partialdiff"] = function(n,f,a,b,q,p)  {
+
+ctopTapply["partialdiff"] = function(nn,n,f,a,b,q,p)  {
     var m,mi,ms,mr,mo,z;
     if(b.length==0 && a.length==2 && a[0].localName=='list'){
 	if(a[1].localName=='lambda') {
 	    m=ctopE('mfrac');
             ms=ctopE('msup');
 	    ctopAppendTok(ms,'mo','\u2202');
-	    mi=ctopE('mn');
-	    mi.textContent=(ctopChildren(a[0]).length);
-	    ms.appendChild(mi);
+	    ctopAppendTok(ms,'mn',ctopChildren(a[0]).length);
             mr=ctopE('mrow');
 	    mr.appendChild(ms);
-	    z=ctopChildren(a[1])[ctopChildren(a[1]).length - 1].cloneNode(true);
-	    mr.appendChild(z);
-	    ctopAT(z,0);
+	    z=ctopChildren(a[1])[ctopChildren(a[1]).length - 1];
+	    ctopAT(mr,z,0);
 	    m.appendChild(mr);
             mr=ctopE('mrow');
 	    var bv=[];
@@ -1115,22 +976,20 @@ ctopTapply["partialdiff"] = function(n,f,a,b,q,p)  {
 	    }
 	    for(var i=0;i<ls.length;i++){
 		ctopAppendTok(mr,'mo','\u2202');
-		z=bv[Number(ls[i].textContent)-1].cloneNode(true);
-		mr.appendChild(z);
-		ctopAT(z,0);
+		z=bv[Number(ls[i].textContent)-1];
+		ctopAT(mr,z,0);
 	    }
 	    m.appendChild(mr);
-	    n.parentNode.replaceChild(m,n);
+	    nn.appendChild(m);
 	} else {
             m=ctopE('mrow');
             ms=ctopE('msub');
 	    ctopAppendTok(ms,'mi','D');
-	    z=ctopChildren(a[0].cloneNode(true));
+	    z=ctopChildren(a[0]);
 	    ms.appendChild(ctopMF(z,'',''));
 	    m.appendChild(ms);
-	    m.appendChild(a[1]);
-	    ctopAT(a[1],0);
-	    n.parentNode.replaceChild(m,n);
+	    ctopAT(m,a[1],0);
+	    nn.appendChild(m);
 	}
     } else {
         m=ctopE('mfrac');
@@ -1139,8 +998,7 @@ ctopTapply["partialdiff"] = function(n,f,a,b,q,p)  {
         mr=ctopE('mrow');
 	if(q.length && q[0].localName=='degree' && ctopChildren(q[0]).length){
             z=ctopChildren(q[0])[0];
-	    mr.appendChild(z);
-	    ctopAT(z,0);
+	    ctopAT(mr,z,0);
 	} else {
 	    d=0;
 	    var f=false;
@@ -1156,9 +1014,8 @@ ctopTapply["partialdiff"] = function(n,f,a,b,q,p)  {
 				    ctopAppendTok(mr,'mo','+');
 				}
 			    f=true;
-			    var zz=ctopChildren(z[j])[0].cloneNode(true);
-			    mr.appendChild(zz);
-			    ctopAT(zz,0);
+			    var zz=ctopChildren(z[j])[0];
+			    ctopAT(mr,zz,0);
 			}
 		    }
 		} else {
@@ -1169,15 +1026,14 @@ ctopTapply["partialdiff"] = function(n,f,a,b,q,p)  {
 		if(f){
 		    ctopAppendTok(mr,'mo','+');
 		}   
-		ctopAppendTok(mr,'mo','d');
+		ctopAppendTok(mr,'mn',d);
 	    }
 	}
 	ms.appendChild(mr);
 	mr=ctopE('mrow');
 	mr.appendChild(ms);
 	if(a.length){
-	    mr.appendChild(a[0]);
-	    ctopAT(a[0],0);
+	    ctopAT(mr,a[0],0);
 	}
 	m.appendChild(mr);
 	mr=ctopE('mrow');
@@ -1188,42 +1044,25 @@ ctopTapply["partialdiff"] = function(n,f,a,b,q,p)  {
 		    for(j=0;j<2;j++){
 			if(z[j].localName=='degree'){
 			    ms=ctopE('msup');
-			    zz=z[1-j].cloneNode(true);
-			    ms.appendChild(zz);
-			    ctopAT(zz,0);
-			    zz=ctopChildren(z[j])[0].cloneNode(true);
-			    ms.appendChild(zz);
-			    ctopAT(zz,0);
+			    ctopAT(ms,z[1-j],0);
+			    zz=ctopChildren(z[j])[0];
+			    ctopAT(ms,zz,0);
 			    mr.appendChild(ms);
 			}
 		    }
 		} else if(z.length==1) {
-		    mr.appendChild(z[0].cloneNode(true));
-		    ctopAT(z[0],0);
+		    ctopAT(mr,z[0],0);
 		}
 	    }
 	m.appendChild(mr);
-	n.parentNode.replaceChild(m,n);
+	nn.appendChild(m);
     }
 }
 
 
 
-ctopT["piecewise"] = function(n,p)  {
-    var mr = ctopE('mrow');
-    ctopAppendTok(mr,'mo','{');
-    var mt = ctopE('mtable');
-    mr.appendChild(mt);
-    var c=ctopChildren(n);
-    for(var i=0;i<c.length;i++){
-	var z= c[i].cloneNode(true);
-	mt.appendChild(z)
-	ctopAT(z,0);
-    }
-    n.parentNode.replaceChild(mr,n);
-}
 
-ctopT["semantics"] = function(n,p)  {
+ctopT["semantics"] = function(nn,n,p)  {
     var mr = ctopE('mrow');
     var c=ctopChildren(n);
     if(c.length){
@@ -1234,19 +1073,18 @@ ctopT["semantics"] = function(n,p)  {
 		break;
 	    }
 	}
-	mr.appendChild(z);
-	ctopAT(z,0);
+	ctopAT(mr,z,0);
     }
-    n.parentNode.replaceChild(mr,n);
+    nn.appendChild(mr);
 }
 
-ctopT["annotation-xml"] = function(n,p)  {
+ctopT["annotation-xml"] = function(nn,n,p)  {
     var mr = ctopE('mrow');
     var c=ctopChildren(n);
     for(var i=0;i<c.length;i++){
-	mr.appendChild(c[i]);
-	ctopAT(c[i],0);
+	ctopAT(mr,c[i],0);
     }
-    n.parentNode.replaceChild(mr,n);
+    nn.appendChild(mr);
 }
+
 
