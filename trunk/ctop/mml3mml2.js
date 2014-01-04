@@ -7,7 +7,7 @@ ctopT["mstack"] = function(nn,n,p) {
     for(var i=0;i<c.length;i++){
 	if(c[i].localName=="msrow"){
 	    var rc=ctopChildren(c[i]);
-	    ctopMsrow(mt,rc,c[i].getAttribute("position")||0,al);
+	    ctopMsrow(mt,rc,Number(c[i].getAttribute("position"))||0,al);
 	} else if(c[i].localName=="msline"){
 	    var m=ctopE("mtd");
 	    m.setAttribute("style","border-style: solid; border-width: 0 0 .15em 0");
