@@ -59,7 +59,7 @@ ctopT["cs"] = function(nn,n,p) {
 }
 ctopT["csymbol"] = function(nn,n,p) {
     if(ctopG[n.textContent]){
-	ctopAppendTok(nn,ctopG[n.textContent]);
+	ctopAppendTok(nn,'mi',ctopG[n.textContent]);
     } else {
 	ctopToken(nn,n,'mi');
     }
