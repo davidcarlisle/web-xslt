@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>js mml3</title>
+<script>
+var time1=performance.now();
+</script>
+<script src="../ctop.js"></script>
+<script src="../mml3mml2.js"></script>
+<script>
+var time2=performance.now();
+</script>
+</head>
+<body>
+<p id="time"></p>
+<hr/>
+<math display="block">
+<mstack>
+  <mn>42.4</mn>
+  <msrow> <mo>+</mo> <none/> <mn>33</mn> </msrow>
+  <msline/>
+</mstack>
+<mo>&#x27f6;</mo>
+<mstack>
+  <mn>424</mn>
+  <msrow> <mo>+</mo> <none/> <mn>33</mn> </msrow>
+  <msline/>
+</mstack>
+</math>
+<script>
+var time3=performance.now();
+ctop();
+var time4=performance.now();
+document.getElementById("time").innerHTML= 
+"Loading time: " + Math.round(time2 - time1) + 
+"ms<br/>Transformation time: "  + Math.round(time4 - time3) + "ms";
+</script>
+</body>
+</html>
+
