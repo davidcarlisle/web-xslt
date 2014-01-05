@@ -15,17 +15,17 @@ ctopT["mstack"] = function(nn,n,p) {
     }
     for(var i=0;i<rs.length;i++){
 	thisc=rs[i].getAttribute("class");
-	if(thisc=="msline"){
+	thisl=Number(rs[i].getAttribute("l"));
+	thisr=Number(rs[i].getAttribute("r"));
+	if(thisc=="msline" && thisl==0 && thisr==0){
 	    rs[i].firstChild.setAttribute("columnspan",maxl+maxr);
 	} else {
-	    thisl=Number(rs[i].getAttribute("l"));
 	    while(thisl<maxl){
 		var mtd=ctopE("mtd");
 		ctopAppendTok(mtd,'mi','`'); // debug only
 		rs[i].insertBefore(mtd, rs[i].firstChild);
 		thisl++;
 	    }
-	    thisr=Number(rs[i].getAttribute("r"));
 	    while(thisr<maxr){
 		var mtd=ctopE("mtd");
 		ctopAppendTok(mtd,'mi','`'); // debug only
@@ -88,10 +88,21 @@ function ctopMsgroup(nn,c,gp,gs,al) {
 	} else if(c[i].localName=="msline"){
 	    var m=ctopE("mtd");
 	    m.setAttribute("style","border-style: solid; border-width: 0 0 .15em 0");
+	    var len=Number(c[i].getAttribute("length"))||0;
+	    var psn = (Number(c[i].getAttribute("position"))||0)+gp + i*gs;
+	    m.setAttribute("columnspan",len);
 	    var mr=ctopE("mtr");
 	    mr.appendChild(m);
-	    mr.setAttribute("l","0");
-	    mr.setAttribute("r","0");
+	    if(len==0){
+		mr.setAttribute("l","0");
+		mr.setAttribute("r","0");
+	    } else if(al=='left') {
+		mr.setAttribute("l", psn);
+		mr.setAttribute("r",len - psn);
+	    } else {
+		mr.setAttribute("l",len + psn);
+		mr.setAttribute("r",len - psn);
+	    }
 	    mr.setAttribute("class","msline");
 	    nn.appendChild(mr);
 	} else if(c[i].localName=="msgroup"){
