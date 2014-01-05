@@ -4,24 +4,7 @@ ctopT["mstack"] = function(nn,n,p) {
     var mt=ctopE("mtable");
     mt.setAttribute("columnspacing","0em");
     var c=ctopChildren(n);
-    for(var i=0;i<c.length;i++){
-	if(c[i].localName=="msrow"){
-	    var rc=ctopChildren(c[i]);
-	    ctopMsrow(mt,rc,Number(c[i].getAttribute("position"))||0,al);
-	} else if(c[i].localName=="msline"){
-	    var m=ctopE("mtd");
-	    m.setAttribute("style","border-style: solid; border-width: 0 0 .15em 0");
-	    var mr=ctopE("mtr");
-	    mr.appendChild(m);
-	    mr.setAttribute("l","0");
-	    mr.setAttribute("r","0");
-	    mr.setAttribute("class","msline");
-	    mt.appendChild(mr);
-	} else {
-	    var rc = [c[i]];
-	    ctopMsrow(mt,rc,0,al);
-	}
-    }
+    ctopMsgroup(mt,c,0,0,al);
     var rs=ctopChildren(mt);
     var maxl=0, maxr=0,thisl,thisr,thisc;
     for(var i=0;i<rs.length;i++){
@@ -38,12 +21,14 @@ ctopT["mstack"] = function(nn,n,p) {
 	    thisl=Number(rs[i].getAttribute("l"));
 	    while(thisl<maxl){
 		var mtd=ctopE("mtd");
+		ctopAppendTok(mtd,'mi','\u00B7'); // debug only
 		rs[i].insertBefore(mtd, rs[i].firstChild);
 		thisl++;
 	    }
 	    thisr=Number(rs[i].getAttribute("r"));
 	    while(thisr<maxr){
 		var mtd=ctopE("mtd");
+		ctopAppendTok(mtd,'mi','\u00B7'); // debug only
 		rs[i].appendChild(mtd);
 		thisr++;
 	    }
@@ -90,10 +75,38 @@ function ctopMsrow (nn,c,psn,al){
 	l=t;
     }		    
     mtr.setAttribute("l", psn+l);
-    mtr.setAttribute("r", (al=='left')?t:t-l);
+    mtr.setAttribute("r", ((al=='left')?t:t-l)- psn);
     nn.appendChild(mtr);
 }
 
+
+function ctopMsgroup(nn,c,gp,gs,al) {
+    for(var i=0;i<c.length;i++){
+	if(c[i].localName=="msrow"){
+	    var rc=ctopChildren(c[i]);
+	    ctopMsrow(nn,rc,(Number(c[i].getAttribute("position"))||0)+gp + i*gs,al);
+	} else if(c[i].localName=="msline"){
+	    var m=ctopE("mtd");
+	    m.setAttribute("style","border-style: solid; border-width: 0 0 .15em 0");
+	    var mr=ctopE("mtr");
+	    mr.appendChild(m);
+	    mr.setAttribute("l","0");
+	    mr.setAttribute("r","0");
+	    mr.setAttribute("class","msline");
+	    nn.appendChild(mr);
+	} else if(c[i].localName=="msgroup"){
+	    ctopMsgroup(nn,
+			ctopChildren(c[i]),
+			(Number(c[i].getAttribute("position"))||0)+gp+i*gs,
+			(Number(c[i].getAttribute("shift"))||0),
+			al
+		       );
+        } else{
+	    var rc = [c[i]];
+	    ctopMsrow(nn,rc,gp+i*gs,al);
+	}
+    }
+}
 
 
 	    
