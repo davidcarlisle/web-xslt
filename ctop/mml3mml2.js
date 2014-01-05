@@ -4,7 +4,25 @@ ctopT["mstack"] = function(nn,n,p) {
     var mt=ctopE("mtable");
     mt.setAttribute("columnspacing","0em");
     var c=ctopChildren(n);
-    ctopMsgroup(mt,c,0,0,al);
+    if(n.localName=="mlongdiv" && c.length>2){
+	var divisor=c[0].cloneNode(true);
+	var result =c[1].cloneNode(true);
+	var dividend =c[2].cloneNode(true);
+	var ms=ctopE("msrow");
+	var mr=ctopE("mrow");
+	mr.appendChild(divisor);
+	ms.appendChild(mr);
+	ctopAppendTok(ms,"mo",")");
+	ms.appendChild(dividend);
+	var ml=ctopE("msline");
+	ml.setAttribute("length",(dividend.textContent.trim()).length);
+	c[0]=result;
+	c[1]=ml;
+	c[2]=ms;	
+	ctopMsgroup(mt,c,0,0,al);
+    } else {
+	ctopMsgroup(mt,c,0,0,al);
+    }
     var rs=ctopChildren(mt);
     var maxl=0, maxr=0,thisl,thisr,thisc;
     for(var i=0;i<rs.length;i++){
@@ -22,13 +40,13 @@ ctopT["mstack"] = function(nn,n,p) {
 	} else {
 	    while(thisl<maxl){
 		var mtd=ctopE("mtd");
-		ctopAppendTok(mtd,'mi','`'); // debug only
+//		ctopAppendTok(mtd,'mi','`'); // debug only
 		rs[i].insertBefore(mtd, rs[i].firstChild);
 		thisl++;
 	    }
 	    while(thisr<maxr){
 		var mtd=ctopE("mtd");
-		ctopAppendTok(mtd,'mi','`'); // debug only
+//		ctopAppendTok(mtd,'mi','`'); // debug only
 		rs[i].appendChild(mtd);
 		thisr++;
 	    }
@@ -37,6 +55,7 @@ ctopT["mstack"] = function(nn,n,p) {
     nn.appendChild(mt);
 }
 
+ctopT["mlongdiv"] = ctopT["mstack"];
 
 function ctopMsrow (nn,c,psn,al){
     var mtr=ctopE("mtr");
@@ -85,6 +104,8 @@ function ctopMsgroup(nn,c,gp,gs,al) {
 	if(c[i].localName=="msrow"){
 	    var rc=ctopChildren(c[i]);
 	    ctopMsrow(nn,rc,(Number(c[i].getAttribute("position"))||0)+gp + i*gs,al);
+	} else if(c[i].localName=="mscarries"){
+// fix me
 	} else if(c[i].localName=="msline"){
 	    var m=ctopE("mtd");
 	    m.setAttribute("style","border-style: solid; border-width: 0 0 .15em 0");
