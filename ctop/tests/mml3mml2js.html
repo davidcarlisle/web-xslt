@@ -13,6 +13,52 @@ var time2=performance.now();
 </head>
 <body>
 <p id="time"></p>
+
+<hr/>
+<math display="block">
+<mstack>
+  <mn> 1306</mn>
+
+  <msgroup position="2" shift="-1">
+    <msgroup>
+      <mn> 12</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 10</mn>
+      <mn> 9</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 16</mn>
+      <mn> 15</mn>
+      <msline length="2"/>
+      <mn> 1.0</mn>           <!-- aligns on '.', not the right edge ('0') -->
+    </msgroup>
+    <msgroup position='-1'>   <!-- extra shift to move to the right of the "." -->
+       <mn> 9</mn>
+      <msline length="3"/>
+      <mn> 1</mn>
+    </msgroup>
+  </msgroup>
+</mstack>
+</math>
+<hr/>
+<math display="block">
+<mstack>
+  <msgroup>
+    <mn>123</mn>
+    <msrow><mo>&#xD7;<!--MULTIPLICATION SIGN--></mo><mn>321</mn></msrow>
+  </msgroup>
+  <msline/>
+  <msgroup shift="1">
+    <mn>123</mn>
+    <mn>246</mn>
+    <mn>369</mn>
+  </msgroup>
+  <msline/>
+</mstack>
+</math>
 <hr/>
 <math display="block">
 <mstack>

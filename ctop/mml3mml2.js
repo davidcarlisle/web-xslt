@@ -21,14 +21,14 @@ ctopT["mstack"] = function(nn,n,p) {
 	    thisl=Number(rs[i].getAttribute("l"));
 	    while(thisl<maxl){
 		var mtd=ctopE("mtd");
-		ctopAppendTok(mtd,'mi','\u00B7'); // debug only
+		ctopAppendTok(mtd,'mi','`'); // debug only
 		rs[i].insertBefore(mtd, rs[i].firstChild);
 		thisl++;
 	    }
 	    thisr=Number(rs[i].getAttribute("r"));
 	    while(thisr<maxr){
 		var mtd=ctopE("mtd");
-		ctopAppendTok(mtd,'mi','\u00B7'); // debug only
+		ctopAppendTok(mtd,'mi','`'); // debug only
 		rs[i].appendChild(mtd);
 		thisr++;
 	    }
