@@ -10,15 +10,54 @@ ctopT["mstack"] = function(nn,n,p) {
 	var dividend =c[2].cloneNode(true);
 	var ms=ctopE("msrow");
 	var mr=ctopE("mrow");
-	mr.appendChild(divisor);
-	ms.appendChild(mr);
-	ctopAppendTok(ms,"mo",")");
-	ms.appendChild(dividend);
-	var ml=ctopE("msline");
-	ml.setAttribute("length",(dividend.textContent.trim()).length);
-	c[0]=result;
-	c[1]=ml;
-	c[2]=ms;	
+	var mr2=ctopE("mrow");
+	var lds=n.getAttribute("longdivstyle");
+	if(lds=='left/\\right') {
+	    mr2.appendChild(divisor);
+	    ms.appendChild(mr2);
+	    ctopAppendTok(ms,"mo","/");
+	    ms.appendChild(dividend);
+	    ctopAppendTok(ms,"mo","\\");
+	    mr.appendChild(result);
+	    ms.appendChild(mr);
+	    c[0]=null;
+	    c[1]=null;
+	    ms.setAttribute("position",-2);
+	    c[2]=ms;
+	} else if(lds=='left)(right') {
+	    mr2.appendChild(divisor);
+	    ms.appendChild(mr2);
+	    ctopAppendTok(ms,"mo",")");
+	    ms.appendChild(dividend);
+	    ctopAppendTok(ms,"mo","(");
+	    mr.appendChild(result);
+	    ms.appendChild(mr);
+	    c[0]=null;
+	    c[1]=null;
+	    ms.setAttribute("position",-2);
+	    c[2]=ms;
+	} else if(lds=='right=right') {
+	    ms.appendChild(dividend);
+	    ctopAppendTok(ms,"mo",":");
+	    mr2.appendChild(divisor);
+	    ctopAppendTok(mr2,"mo","=");
+	    mr2.appendChild(result);
+	    ms.appendChild(mr2);
+	    c[0]=null;
+	    c[1]=null;
+	    ms.setAttribute("position",-2);
+	    c[2]=ms;
+	} else {
+	    mr.appendChild(divisor);
+	    ms.appendChild(mr);
+	    ctopAppendTok(ms,"mo",")");
+	    ms.appendChild(dividend);
+	    var ml=ctopE("msline");
+	    ml.setAttribute("length",(dividend.textContent.trim()).length);
+	    c[0]=result;
+	    c[1]=ml;
+	    c[2]=ms;
+	}	
 	ctopMsgroup(mt,c,0,0,al);
     } else {
 	ctopMsgroup(mt,c,0,0,al);
@@ -101,6 +140,7 @@ function ctopMsrow (nn,c,psn,al){
 
 function ctopMsgroup(nn,c,gp,gs,al) {
     for(var i=0;i<c.length;i++){
+	if(c[i]!=null){
 	if(c[i].localName=="msrow"){
 	    var rc=ctopChildren(c[i]);
 	    ctopMsrow(nn,rc,(Number(c[i].getAttribute("position"))||0)+gp + i*gs,al);
@@ -136,6 +176,7 @@ function ctopMsgroup(nn,c,gp,gs,al) {
         } else{
 	    var rc = [c[i]];
 	    ctopMsrow(nn,rc,gp+i*gs,al);
+	}
 	}
     }
 }
