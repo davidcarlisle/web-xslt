@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>MathML3 </title>
+
+	<!--
+       <script type="text/x-mathjax-config">
+       // from http://docs.mathjax.org/en/latest/mathml.html
+MathJax.Hub.Config({
+MathML: {
+       extensions: ["http://web-xslt.googlecode.com/svn/trunk/ctop/mml3mj.js"]
+}
+});
+</script>
+       -->
+	
+       <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+   </head>
+    <body>
+
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+
+<mstack stackalign="right">
+  <msline length="1"/>
+  <mn> 0.3334 </mn>
+</mstack>
+
+<mo linebreak="newline"/>
+
+
+<mstack>
+  <mscarries>
+    <mscarry crossout='updiagonalstrike'><none/></mscarry>
+    <menclose notation='bottom'> <mn>10</mn> </menclose>
+  </mscarries>
+  <mn>52</mn>
+  <msrow> <mo>-</mo> <mn> 7</mn> </msrow>
+  <msline/>
+  <mn>45</mn>
+</mstack>
+
+
+<mo linebreak="newline"/>
+
+<mlongdiv longdivstyle="lefttop">
+  <mn> 3 </mn>
+  <mn> 435.3</mn>
+
+  <mn> 1306</mn>
+
+  <msgroup position="2" shift="-1">
+    <msgroup>
+      <mn> 12</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 10</mn>
+      <mn> 9</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 16</mn>
+      <mn> 15</mn>
+      <msline length="2"/>
+      <mn> 1.0</mn>           <!-- aligns on '.', not the right edge ('0') -->
+    </msgroup>
+    <msgroup position='-1'>   <!-- extra shift to move to the right of the "." -->
+       <mn> 9</mn>
+      <msline length="3"/>
+      <mn> 1</mn>
+    </msgroup>
+  </msgroup>
+</mlongdiv>
+
+
+<mo linebreak="newline"/>
+
+<mlongdiv longdivstyle="stackedrightright">
+  <mn> 3 </mn>
+  <mn> 435.3</mn>
+
+  <mn> 1306</mn>
+
+  <msgroup position="2" shift="-1">
+    <msgroup>
+      <mn> 12</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 10</mn>
+      <mn> 9</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 16</mn>
+      <mn> 15</mn>
+      <msline length="2"/>
+      <mn> 1.0</mn>           <!-- aligns on '.', not the right edge ('0') -->
+    </msgroup>
+    <msgroup position='-1'>   <!-- extra shift to move to the right of the "." -->
+       <mn> 9</mn>
+      <msline length="3"/>
+      <mn> 1</mn>
+    </msgroup>
+  </msgroup>
+</mlongdiv>
+
+
+<mo linebreak="newline"/>
+
+<mlongdiv longdivstyle=":right=right">
+  <mn> 3 </mn>
+  <mn> 435.3</mn>
+
+  <mn> 1306</mn>
+
+  <msgroup position="2" shift="-1">
+    <msgroup>
+      <mn> 12</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 10</mn>
+      <mn> 9</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 16</mn>
+      <mn> 15</mn>
+      <msline length="2"/>
+      <mn> 1.0</mn>           <!-- aligns on '.', not the right edge ('0') -->
+    </msgroup>
+    <msgroup position='-1'>   <!-- extra shift to move to the right of the "." -->
+       <mn> 9</mn>
+      <msline length="3"/>
+      <mn> 1</mn>
+    </msgroup>
+  </msgroup>
+</mlongdiv>
+
+</math>
+
+</body>
+</html>
