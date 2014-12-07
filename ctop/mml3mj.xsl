@@ -204,15 +204,10 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 <xsl:template match="text()[.='&gt;']" mode="rtl">&lt;</xsl:template>
 <xsl:template match="text()[.='&#x2208;']" mode="rtl">&#x220b;</xsl:template>
 <xsl:template match="text()[.='&#x220b;']" mode="rtl">&#x2208;</xsl:template>
-<xsl:template match="text()[.='&#x2211;']|text()[.='&#x222b;']" mode="rtl">
- <svg width="20" height="20" version="1.1" xmlns="http://www.w3.org/2000/svg">
-  <g transform="matrix(-1 0 0 1 0 0 )">
-   <text id="TextElement" x="-20" y="15" >
-    <xsl:value-of select="."/>
-   </text>
-  </g>
- </svg>
+<!-- no svg
+     <xsl:template match="text()[.='&#x2211;']|text()[.='&#x222b;']" mode="rtl">
 </xsl:template>
+-->
 
 <xsl:template match="@notation[.='radical']" mode="rtl">
  <xsl:attribute name="notation">top right</xsl:attribute>
