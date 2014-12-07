@@ -13,6 +13,12 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 		xmlns:c="http://exslt.org/common"
 		exclude-result-prefixes="m c">
 
+ <msxsl:script language="JScript" implements-prefix="c" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+ this['node-set'] =  function (x) {
+  return x;
+  }
+</msxsl:script>
+
 <xsl:output indent="yes" omit-xml-declaration="yes"/>
 
 <xsl:template match="*">
