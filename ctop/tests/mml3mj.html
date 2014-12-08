@@ -18,29 +18,58 @@ MathML: {
    </head>
     <body>
 
-
-     <h2>rtl</h2>
+     
+<h2>RTL</h2>
 
 
 <math xmlns="http://www.w3.org/1998/Math/MathML">
+ <mrow>
+  <mi>a</mi><mo>+</mo><mi>b</mi><mo>+</mo><mi>c</mi>
+ </mrow>
+ <mo>&#x2192;</mo>
  <mrow dir="rtl">
   <mi>a</mi><mo>+</mo><mi>b</mi><mo>+</mo><mi>c</mi>
  </mrow>
 
  <mo linebreak="newline"/>
 
+  <mrow>
+   <munderover><mo>&#x202b;&#x2211;</mo><mn>0</mn><mi>n</mi></munderover>
+   <msup><mi>i</mi><mn>2</mn></msup></mrow>
+ <mo>&#x2192;</mo>
   <mrow dir="rtl">
    <munderover><mo>&#x202b;&#x2211;</mo><mn>0</mn><mi>n</mi></munderover>
    <msup><mi>i</mi><mn>2</mn></msup></mrow>
+
+   <mo linebreak="newline"/>
+
+  <mrow>
+   <mfrac>
+    <mrow><mn>1</mn><mo>+</mo><mn>2</mn></mrow>
+    <mi>a</mi>
+   </mfrac>
+   <mo>+</mo>
+   <msub><mi>x</mi><mn>2</mn></msub>
+  </mrow>
+   <mo>&#x2192;</mo>
+  <mrow dir="rtl">
+   <mfrac>
+    <mrow><mn>1</mn><mo>+</mo><mn>2</mn></mrow>
+    <mi>a</mi>
+   </mfrac>
+   <mo>+</mo>
+   <msub><mi>x</mi><mn>2</mn></msub>
+  </mrow>
 </math>
 
 
 
 
-      <h2>elem math</h2>
+<h2>Elementary Mathematics Layouts</h2>
 
-      <math xmlns="http://www.w3.org/1998/Math/MathML">
+<math xmlns="http://www.w3.org/1998/Math/MathML">
 
+<mtext>msline</mtext><mo>&#x2192;</mo>
 <mstack stackalign="right">
   <msline length="1"/>
   <mn> 0.3334 </mn>
@@ -49,6 +78,7 @@ MathML: {
 <mo linebreak="newline"/>
 
 
+<mtext>mscarries</mtext><mo>&#x2192;</mo>
 <mstack>
   <mscarries>
     <mscarry crossout='updiagonalstrike'><none/></mscarry>
@@ -63,6 +93,8 @@ MathML: {
 
 <mo linebreak="newline"/>
 
+<mtext>longdiv@lefttop</mtext>
+<mo>&#x2192;</mo><mo linebreak="newline"/>
 <mlongdiv longdivstyle="lefttop">
   <mn> 3 </mn>
   <mn> 435.3</mn>
@@ -95,7 +127,8 @@ MathML: {
 
 
 <mo linebreak="newline"/>
-
+<mtext>longdiv@stackedrightright</mtext>
+<mo>&#x2192;</mo><mo linebreak="newline"/>
 <mlongdiv longdivstyle="stackedrightright">
   <mn> 3 </mn>
   <mn> 435.3</mn>
@@ -126,9 +159,176 @@ MathML: {
   </msgroup>
 </mlongdiv>
 
+<mo linebreak="newline"/>
+<mtext>longdiv@mediumstackedrightright</mtext>
+<mo>&#x2192;</mo><mo linebreak="newline"/>
+<mlongdiv longdivstyle="mediumstackedrightright">
+  <mn> 3 </mn>
+  <mn> 435.3</mn>
+
+  <mn> 1306</mn>
+
+  <msgroup position="2" shift="-1">
+    <msgroup>
+      <mn> 12</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 10</mn>
+      <mn> 9</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 16</mn>
+      <mn> 15</mn>
+      <msline length="2"/>
+      <mn> 1.0</mn>           <!-- aligns on '.', not the right edge ('0') -->
+    </msgroup>
+    <msgroup position='-1'>   <!-- extra shift to move to the right of the "." -->
+       <mn> 9</mn>
+      <msline length="3"/>
+      <mn> 1</mn>
+    </msgroup>
+  </msgroup>
+</mlongdiv>
 
 <mo linebreak="newline"/>
+<mtext>longdiv@shortstackedrightright</mtext>
+<mo>&#x2192;</mo><mo linebreak="newline"/>
+<mlongdiv longdivstyle="shortstackedrightright">
+  <mn> 3 </mn>
+  <mn> 435.3</mn>
 
+  <mn> 1306</mn>
+
+  <msgroup position="2" shift="-1">
+    <msgroup>
+      <mn> 12</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 10</mn>
+      <mn> 9</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 16</mn>
+      <mn> 15</mn>
+      <msline length="2"/>
+      <mn> 1.0</mn>           <!-- aligns on '.', not the right edge ('0') -->
+    </msgroup>
+    <msgroup position='-1'>   <!-- extra shift to move to the right of the "." -->
+       <mn> 9</mn>
+      <msline length="3"/>
+      <mn> 1</mn>
+    </msgroup>
+  </msgroup>
+</mlongdiv>
+
+<mo linebreak="newline"/>
+<mtext>longdiv@righttop</mtext>
+<mo>&#x2192;</mo><mo linebreak="newline"/>
+<mlongdiv longdivstyle="righttop">
+  <mn> 3 </mn>
+  <mn> 435.3</mn>
+
+  <mn> 1306</mn>
+
+  <msgroup position="2" shift="-1">
+    <msgroup>
+      <mn> 12</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 10</mn>
+      <mn> 9</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 16</mn>
+      <mn> 15</mn>
+      <msline length="2"/>
+      <mn> 1.0</mn>           <!-- aligns on '.', not the right edge ('0') -->
+    </msgroup>
+    <msgroup position='-1'>   <!-- extra shift to move to the right of the "." -->
+       <mn> 9</mn>
+      <msline length="3"/>
+      <mn> 1</mn>
+    </msgroup>
+  </msgroup>
+</mlongdiv>
+
+<mo linebreak="newline"/>
+<mtext>longdiv@left/\right</mtext>
+<mo>&#x2192;</mo><mo linebreak="newline"/>
+<mlongdiv longdivstyle="left/\right">
+  <mn> 3 </mn>
+  <mn> 435.3</mn>
+
+  <mn> 1306</mn>
+
+  <msgroup position="2" shift="-1">
+    <msgroup>
+      <mn> 12</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 10</mn>
+      <mn> 9</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 16</mn>
+      <mn> 15</mn>
+      <msline length="2"/>
+      <mn> 1.0</mn>           <!-- aligns on '.', not the right edge ('0') -->
+    </msgroup>
+    <msgroup position='-1'>   <!-- extra shift to move to the right of the "." -->
+       <mn> 9</mn>
+      <msline length="3"/>
+      <mn> 1</mn>
+    </msgroup>
+  </msgroup>
+</mlongdiv>
+
+<mo linebreak="newline"/>
+<mtext>longdiv@left)(right</mtext>
+<mo>&#x2192;</mo><mo linebreak="newline"/>
+<mlongdiv longdivstyle="left)(right">
+  <mn> 3 </mn>
+  <mn> 435.3</mn>
+
+  <mn> 1306</mn>
+
+  <msgroup position="2" shift="-1">
+    <msgroup>
+      <mn> 12</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 10</mn>
+      <mn> 9</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 16</mn>
+      <mn> 15</mn>
+      <msline length="2"/>
+      <mn> 1.0</mn>           <!-- aligns on '.', not the right edge ('0') -->
+    </msgroup>
+    <msgroup position='-1'>   <!-- extra shift to move to the right of the "." -->
+       <mn> 9</mn>
+      <msline length="3"/>
+      <mn> 1</mn>
+    </msgroup>
+  </msgroup>
+</mlongdiv>
+
+
+
+<mo linebreak="newline"/>
+<mtext>longdiv@:right=right</mtext>
+<mo>&#x2192;</mo><mo linebreak="newline"/>
 <mlongdiv longdivstyle=":right=right">
   <mn> 3 </mn>
   <mn> 435.3</mn>
@@ -158,6 +358,74 @@ MathML: {
     </msgroup>
   </msgroup>
 </mlongdiv>
+
+<mo linebreak="newline"/>
+<mtext>longdiv@stackedleftleft</mtext>
+<mo>&#x2192;</mo><mo linebreak="newline"/>
+<mlongdiv longdivstyle="stackedleftleft">
+  <mn> 3 </mn>
+  <mn> 435.3</mn>
+
+  <mn> 1306</mn>
+
+  <msgroup position="2" shift="-1">
+    <msgroup>
+      <mn> 12</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 10</mn>
+      <mn> 9</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 16</mn>
+      <mn> 15</mn>
+      <msline length="2"/>
+      <mn> 1.0</mn>           <!-- aligns on '.', not the right edge ('0') -->
+    </msgroup>
+    <msgroup position='-1'>   <!-- extra shift to move to the right of the "." -->
+       <mn> 9</mn>
+      <msline length="3"/>
+      <mn> 1</mn>
+    </msgroup>
+  </msgroup>
+</mlongdiv>
+
+<mo linebreak="newline"/>
+<mtext>longdiv@stackedleftlinetop</mtext>
+<mo>&#x2192;</mo><mo linebreak="newline"/>
+<mlongdiv longdivstyle="stackedleftlinetop">
+  <mn> 3 </mn>
+  <mn> 435.3</mn>
+
+  <mn> 1306</mn>
+
+  <msgroup position="2" shift="-1">
+    <msgroup>
+      <mn> 12</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 10</mn>
+      <mn> 9</mn>
+      <msline length="2"/>
+    </msgroup>
+    <msgroup>
+      <mn> 16</mn>
+      <mn> 15</mn>
+      <msline length="2"/>
+      <mn> 1.0</mn>           <!-- aligns on '.', not the right edge ('0') -->
+    </msgroup>
+    <msgroup position='-1'>   <!-- extra shift to move to the right of the "." -->
+       <mn> 9</mn>
+      <msline length="3"/>
+      <mn> 1</mn>
+    </msgroup>
+  </msgroup>
+</mlongdiv>
+
+
 
 </math>
 
