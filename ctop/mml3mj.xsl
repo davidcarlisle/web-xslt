@@ -618,6 +618,15 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
       <xsl:copy-of select="*[2]"/>
      </m:msrow>
     </xsl:when>
+    <xsl:when test="@longdivstyle='left/\right'">
+     <m:msrow>
+      <m:mrow><xsl:copy-of select="*[1]"/></m:mrow>
+      <m:mo>/</m:mo>
+      <xsl:copy-of select="*[3]"/>
+      <m:mo>\</m:mo>
+      <xsl:copy-of select="*[2]"/>
+     </m:msrow>
+    </xsl:when>
     <xsl:when test="@longdivstyle=':right=right'">
      <m:msrow>
       <xsl:copy-of select="*[3]"/>
@@ -627,9 +636,34 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
       <xsl:copy-of select="*[2]"/>
      </m:msrow>
     </xsl:when>
-    <xsl:when test="@longdivstyle='stackedrightright'">
+    <xsl:when test="@longdivstyle='stackedrightright'
+		    or @longdivstyle='mediumstackedrightright'
+		    or @longdivstyle='shortstackedrightright'
+		    or @longdivstyle='stackedleftleft'
+		    ">
      <xsl:attribute name="align">top</xsl:attribute>
      <xsl:copy-of select="*[3]"/>
+    </xsl:when>
+    <xsl:when test="@longdivstyle='stackedleftlinetop'">
+     <xsl:copy-of select="*[2]"/>
+     <m:msline length="{string-length(*[3])-1}"/>
+     <m:msrow>
+      <m:mrow>
+     <m:menclose notation="bottom right">
+      <xsl:copy-of select="*[1]"/>
+     </m:menclose>
+      </m:mrow>
+      <xsl:copy-of select="*[3]"/>
+     </m:msrow>
+    </xsl:when>
+    <xsl:when test="@longdivstyle='righttop'">
+     <xsl:copy-of select="*[2]"/>
+     <m:msline length="{string-length(*[3])}"/>
+     <m:msrow>
+      <xsl:copy-of select="*[3]"/>
+      <m:menclose notation="top left bottom">
+       <xsl:copy-of select="*[1]"/></m:menclose>
+     </m:msrow>
     </xsl:when>
     <xsl:otherwise>
      <xsl:copy-of select="*[2]"/>
@@ -659,6 +693,49 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
      <mtd><xsl:copy-of select="*[2]"/></mtd>
     </m:mtr>
    </m:mtable>
+  </xsl:when>
+    <xsl:when test="@longdivstyle='mediumstackedrightright'">
+    <xsl:apply-templates select="c:node-set($ms)"/>
+   <m:menclose notation="left">
+   <m:mtable align="top">
+    <m:mtr>
+     <m:menclose notation="bottom">
+      <xsl:copy-of select="*[1]"/>
+     </m:menclose>
+    </m:mtr>
+    <m:mtr>
+     <mtd><xsl:copy-of select="*[2]"/></mtd>
+    </m:mtr>
+   </m:mtable>
+   </m:menclose>
+  </xsl:when>
+  <xsl:when test="@longdivstyle='shortstackedrightright'">
+    <xsl:apply-templates select="c:node-set($ms)"/>
+   <m:mtable align="top">
+    <m:mtr>
+     <m:menclose notation="left bottom">
+      <xsl:copy-of select="*[1]"/>
+     </m:menclose>
+    </m:mtr>
+    <m:mtr>
+     <mtd><xsl:copy-of select="*[2]"/></mtd>
+    </m:mtr>
+   </m:mtable>
+  </xsl:when>
+  <xsl:when test="@longdivstyle='stackedleftleft'">
+   <m:mtable align="top">
+    <m:mtr>
+     <m:menclose notation="bottom">
+      <xsl:copy-of select="*[1]"/>
+     </m:menclose>
+    </m:mtr>
+    <m:mtr>
+     <mtd><xsl:copy-of select="*[2]"/></mtd>
+    </m:mtr>
+   </m:mtable>
+   <m:menclose notation="left">
+    <xsl:apply-templates select="c:node-set($ms)"/>
+   </m:menclose>
   </xsl:when>
   <xsl:otherwise>
    <xsl:apply-templates select="c:node-set($ms)"/>
