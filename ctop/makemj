@@ -5,6 +5,7 @@ $ss="";
 
 while($line = <MML2>) {
 $line =~ s/ *[\r\n]+//g;
+$line =~ s/\\/\\\\/;
 $line =~ s/xsl:/x:/g;
 $line =~ s/<(\/?)m:/<$1/g;
 $line =~ s/'/\\'/g;
