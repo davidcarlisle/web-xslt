@@ -600,15 +600,6 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
   <m:mstack>
    <xsl:copy-of select="(ancestor-or-self::*/@decimalpoint)[last()]"/>
    <xsl:choose>
-    <xsl:when test="@longdivstyle='left/\right'">
-     <m:msrow>
-      <m:mrow><xsl:copy-of select="*[1]"/></m:mrow>
-      <m:mo>/</m:mo>
-      <xsl:copy-of select="*[3]"/>
-      <m:mo>\</m:mo>
-      <xsl:copy-of select="*[2]"/>
-     </m:msrow>
-    </xsl:when>
     <xsl:when test="@longdivstyle='left)(right'">
      <m:msrow>
       <m:mrow><xsl:copy-of select="*[1]"/></m:mrow>
