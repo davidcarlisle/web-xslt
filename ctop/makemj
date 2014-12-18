@@ -35,8 +35,8 @@ print MJ  "/*************************************************************
  *  
  *  in your configuration.
  *
- *  A portion of this file is taken from ctop.xsl which is
- *  Copyright (c) David Carlisle 2001, 2002, 2008, 2009, 2013, 2014
+ *  A portion of this file is taken from mml3mj.xsl which is
+ *  Copyright (c) David Carlisle 2008-2014
  *  and is used by permission of David Carlisle, who has agreed to allow us
  *  to release it under the Apache2 license (see below).  That portion is
  *  indicated via comments.
@@ -70,14 +70,14 @@ MathJax.Hub.Register.StartupHook(\"MathML Jax Ready\",function () {
       PARSE = MATHML.Parse.prototype;
 
   MATHML.prefilterHooks.Add(function (data) {
-    if (!MATHML.ctopXSLT) return;
+    if (!MATHML.mml3XSLT) return;
 
     // Parse the <math> but use MATHML.Parse's preProcessMath to apply the normal preprocessing.
     if (!MATHML.ParseXML) {MATHML.ParseXML = MATHML.createParser()}
     var doc = MATHML.ParseXML(PARSE.preProcessMath(data.math));
 
-    // Now transform the <math> using the ctop stylesheet.
-    var newdoc = MATHML.ctopXSLT.transformToDocument(doc);
+    // Now transform the <math> using the mml3 stylesheet.
+    var newdoc = MATHML.mml3XSLT.transformToDocument(doc);
 
     if ((typeof newdoc) === \"string\") {
       // Internet Explorer returns a string, so just use it.
@@ -92,12 +92,12 @@ MathJax.Hub.Register.StartupHook(\"MathML Jax Ready\",function () {
 
   /*
    *  The following is taken from mml3mj.xsl 
-   *  (https://web-xslt.googlecode.com/svn/trunk/ctop/)
-   *  which is Copyright (c) David Carlisle 2001, 2002, 2008, 2009, 2013, 2014.
+   *  (https://web-xslt.googlecode.com/svn/trunk/ctop/mml3mj.xsl)
+   *  which is Copyright (c) David Carlisle 2008-2014.
    *  It is used by permission of David Carlisle, who has agreed to allow it to
    *  be released under the Apache License, Version 2.0.
    */
-  var ctopStylesheet = '<x:stylesheet version=\"1.0\" xmlns:x=\"http://www.w3.org/1999/XSL/Transform\" xmlns:m=\"http://www.w3.org/1998/Math/MathML\" xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:c=\"http://exslt.org/common\" exclude-result-prefixes=\"m c\">";
+  var mml3Stylesheet = '<x:stylesheet version=\"1.0\" xmlns:x=\"http://www.w3.org/1999/XSL/Transform\" xmlns:m=\"http://www.w3.org/1998/Math/MathML\" xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:c=\"http://exslt.org/common\" exclude-result-prefixes=\"m c\">";
 
 
 print MJ $ss;
@@ -108,46 +108,46 @@ print MJ "';
    *  End of mml3mj.xsl material.
    */
   
-  var ctop;
+  var mml3;
   if (window.XSLTProcessor) {
     // standard method: just use an XSLTProcessor and parse the stylesheet
     if (!MATHML.ParseXML) {MATHML.ParseXML = MATHML.createParser()}
-    MATHML.ctopXSLT = new XSLTProcessor();
-    MATHML.ctopXSLT.importStylesheet(MATHML.ParseXML(ctopStylesheet));
+    MATHML.mml3XSLT = new XSLTProcessor();
+    MATHML.mml3XSLT.importStylesheet(MATHML.ParseXML(mml3Stylesheet));
   } else if (MathJax.Hub.Browser.isMSIE) {
     // nonstandard methods for Internet Explorer
     if (MathJax.Hub.Browser.versionAtLeast(\"9.0\") || (document.documentMode||0) >= 9) {
       // For Internet Explorer >= 9, use createProcessor
-      ctop = new ActiveXObject(\"Msxml2.FreeThreadedDOMDocument\");
-      ctop.loadXML(ctopStylesheet);
+      mml3 = new ActiveXObject(\"Msxml2.FreeThreadedDOMDocument\");
+      mml3.loadXML(mml3Stylesheet);
       var xslt = new ActiveXObject(\"Msxml2.XSLTemplate\");
-      xslt.stylesheet = ctop;
-      MATHML.ctopXSLT = {
-        ctop: xslt.createProcessor(),
+      xslt.stylesheet = mml3;
+      MATHML.mml3XSLT = {
+        mml3: xslt.createProcessor(),
         transformToDocument: function(doc) {
-          this.ctop.input = doc;
-          this.ctop.transform();
-          return this.ctop.output;
+          this.mml3.input = doc;
+          this.mml3.transform();
+          return this.mml3.output;
         }
       }
     } else {
       // For Internet Explorer <= 8, use transformNode
-      ctop = MATHML.createMSParser();
-      ctop.async = false;
-      ctop.loadXML(ctopStylesheet);
-      MATHML.ctopXSLT = {
-        ctop: ctop,
+      mml3 = MATHML.createMSParser();
+      mml3.async = false;
+      mml3.loadXML(mml3Stylesheet);
+      MATHML.mml3XSLT = {
+        mml3: mml3,
         transformToDocument: function(doc) {
-          return doc.documentElement.transformNode(this.ctop);
+          return doc.documentElement.transformNode(this.mml3);
         }
       }
     }
   } else {
     // No XSLT support. Do not change the <math> content.
-    MATHML.ctopXSLT = null;
+    MATHML.mml3XSLT = null;
   }
 
-  MathJax.Hub.Startup.signal.Post(\"MathML mml3 Ready\");
+  MathJax.Hub.Startup.signal.Post(\"MathML mml3.js Ready\");
 });
 
 MathJax.Ajax.loadComplete(\"http://web-xslt.googlecode.com/svn/trunk/ctop/mml3.js\");
