@@ -220,41 +220,6 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 </xsl:template>
 
 
-<!-- attributes-->
-<xsl:template name="mml2attrib">
- <!--
-     <xsl:copy-of select="@*[not(local-name()='href')]"/>
- -->
- <xsl:copy-of select="@*[not(local-name()='href')]"/>
- <xsl:attribute name="style">
-  <xsl:if test="@style"><xsl:value-of select="@style"/>;</xsl:if>
-  <xsl:if test="@mathcolor">color:<xsl:value-of select="@mathcolor"/>;</xsl:if>
-  <xsl:if test="@mathbackground">background-color:<xsl:value-of select="@mathbackground"/>;</xsl:if>
- </xsl:attribute>
-</xsl:template>
-
-<!-- links -->
-<!--
-    <xsl:template match="*[@href]" priority="3">
-    <a xmlns="http://www.w3.org/1999/xhtml" style="text-decoration: none" href="{@href}">
-    <xsl:copy>
-    <xsl:call-template name="mml2attrib"/>
-    <xsl:attribute name="class">
-    <xsl:text>mmlhref </xsl:text>
-    <xsl:value-of select="@class"/>
-    </xsl:attribute>
-    <xsl:apply-templates/>
-    </xsl:copy>
-    </a>
-    </xsl:template>
--->
-<xsl:template match="*[@mathcolor|@mathbackground]">
- <xsl:copy>
-  <xsl:call-template name="mml2attrib"/>
-  <xsl:apply-templates/>
- </xsl:copy>
-</xsl:template>
-
 
 <!-- mstack -->
 
