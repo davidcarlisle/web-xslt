@@ -220,11 +220,16 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 </xsl:template>
 
 
+<xsl:template match="m:mlongdiv|m:mstack" mode="rtl">
+ <m:mrow dir="ltr">
+ <xsl:apply-templates select="."/>
+ </m:mrow>
+</xsl:template>
 
 <!-- mstack -->
 
 
-<xsl:template match="m:mstack">
+<xsl:template match="m:mstack" priority="11">
  <xsl:variable name="m">
   <m:mtable columnspacing="0em">
    <xsl:copy-of select="@align"/>
@@ -560,7 +565,7 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 </xsl:template>
 
 
-<xsl:template match="m:mlongdiv">
+<xsl:template match="m:mlongdiv" priority="11">
  <xsl:variable name="ms">
   <m:mstack>
    <xsl:copy-of select="(ancestor-or-self::*/@decimalpoint)[last()]"/>
