@@ -267,7 +267,8 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
        <xsl:variable name="cy" select="$c/*[position()=$pn - $loffset]"/>
 	 <m:mtd>
 	  <xsl:if test="$cy/*"/>
-	  <m:mover><m:mphantom><m:mn>0</m:mn></m:mphantom><m:mpadded width="0em" lspace="-0.5width"><xsl:copy-of select="$cy/*/*"/></m:mpadded></m:mover>
+	  <m:mover><m:mphantom><m:mn>0</m:mn></m:mphantom><m:mpadded width="0em" lspace="-0.5width">
+	  <xsl:copy-of select="$cy/*"/></m:mpadded></m:mover>
 	 </m:mtd>
       </xsl:for-each>
       <xsl:for-each select="*">
@@ -284,9 +285,13 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 	 </xsl:choose>
 	</xsl:variable>
 	<xsl:choose>
-	 <xsl:when test="$cy/*/m:none or not($cy/*/*)"><xsl:copy-of select="$b"/></xsl:when>
+	 <xsl:when test="$cy/m:none or not($cy/*)"><xsl:copy-of select="$b"/></xsl:when>
 	 <xsl:when test="not(string($cy/@location)) or $cy/@location='n'">
-	  <m:mover><xsl:copy-of select="$b"/><m:mpadded width="0em" lspace="-0.5width"><xsl:copy-of select="$cy/*/*"/></m:mpadded></m:mover>
+	  <m:mover>
+	   <xsl:copy-of select="$b"/><m:mpadded width="0em" lspace="-0.5width">
+	   <xsl:copy-of select="$cy/*"/>
+	  </m:mpadded>
+	  </m:mover>
 	 </xsl:when>
 	 <xsl:when test="$cy/@location='nw'">
 	  <m:mmultiscripts><xsl:copy-of select="$b"/><m:mprescripts/><m:none/><m:mpadded lspace="-1width" width="0em"><xsl:copy-of select="$cy/*/*"/></m:mpadded></m:mmultiscripts>
@@ -557,14 +562,34 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
 
 <xsl:template match="*" mode="msc">
  <m:mtd>
- <xsl:copy-of select="../@location|../@crossout"/>
- <m:mstyle mathsize="70%"><xsl:apply-templates select="."/></m:mstyle></m:mtd>
+  <xsl:copy-of select="../@location|../@crossout"/>
+  <xsl:choose>
+   <xsl:when test="../@scriptsizemultiplier">
+    <m:mstyle mathsize="{round(../@scriptsizemultiplier div .007)}%">
+     <xsl:apply-templates select="."/>
+    </m:mstyle>
+   </xsl:when>
+   <xsl:otherwise>
+    <xsl:apply-templates select="."/>
+   </xsl:otherwise>
+  </xsl:choose>
+ </m:mtd>
 </xsl:template>
 
 <xsl:template match="m:mscarry" mode="msc">
  <m:mtd>
  <xsl:copy-of select="@location|@crossout"/>
- <m:mstyle mathsize="70%"><xsl:apply-templates select="*"/></m:mstyle></m:mtd>
+  <xsl:choose>
+   <xsl:when test="../@scriptsizemultiplier">
+    <m:mstyle mathsize="{round(../@scriptsizemultiplier div .007)}%">
+     <xsl:apply-templates/>
+    </m:mstyle>
+   </xsl:when>
+   <xsl:otherwise>
+    <xsl:apply-templates/>
+   </xsl:otherwise>
+  </xsl:choose>
+ </m:mtd>
 </xsl:template>
 
 
