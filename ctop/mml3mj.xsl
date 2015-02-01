@@ -456,6 +456,9 @@ Or the Apache 2, MIT or MPL 1.1 or MPL 2.0 licences.
    <xsl:when test="$align='right' or ($align='decimalpoint' and not(contains($mn,$dp)))">
     <xsl:attribute name="l"><xsl:value-of select="$p + $len"/></xsl:attribute>
    </xsl:when>
+   <xsl:when test="$align='center'">
+    <xsl:attribute name="l"><xsl:value-of select="round(($p + $len) div 2)"/></xsl:attribute>
+   </xsl:when>
    <xsl:when test="$align='decimalpoint'">
     <xsl:attribute name="l"><xsl:value-of select="$p + string-length(substring-before($mn,$dp))"/></xsl:attribute>
    </xsl:when>
